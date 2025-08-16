@@ -1,154 +1,182 @@
-<div class="item-card">
-    <div class="item-image">
-        @if(($row->is_discount == 1) && ($row->old_price !=''))
-            @php
-                $discount = number_format((($row->old_price - $row->sale_price)*100)/$row->old_price);
-            @endphp
-            <span class="item-label">{{ $discount }}% {{ __('Off') }}</span>
-        @endif
-        <a href="{{ route('frontend.product', [$row->id, $row->slug]) }}">
-            <img src="{{ asset('public/media/'.$row->f_thumbnail) }}" alt="{{ $row->title }}" loading="lazy" class="product-img" />
+<div class="product-card">
+    <!-- Discount Badge -->
+    @if($row->is_discount == 1 && $row->old_price != '')
+        @php
+            $discount = number_format((($row->old_price - $row->sale_price)*100)/$row->old_price);
+        @endphp
+        <span class="discount-badge">{{ $discount }}% {{ __('Off') }}</span>
+    @endif
+
+    <!-- Product Image -->
+    <div class="product-image">
+        <a href="{{ route('frontend.product', ['id' => $row->id, 'slug' => $row->slug ?? Str::slug($row->title)]) }}">
+            <img src="{{ asset('storage/'.$row->f_thumbnail) }}"
+                 alt="{{ $row->title }}"
+                 class="product-img"
+                 loading="lazy">
         </a>
     </div>
-    <div class="item-content">
-        <div class="item-title">
-            <a href="{{ route('frontend.product', [$row->id, $row->slug]) }}">{{ str_limit($row->title, 50) }}</a>
-        </div>
-        <div class="rating-wrap">
-            <div class="stars-outer">
-                <div class="stars-inner" style="width:{{ $row->ReviewPercentage }}%;"></div>
-            </div>
+
+    <!-- Product Content -->
+    <div class="product-content">
+        <!-- Title -->
+        <h3 class="product-title">
+            <a href="{{ route('frontend.product', ['id' => $row->id, 'slug' => $row->slug ?? Str::slug($row->title)]) }}">
+                {{ \Illuminate\Support\Str::limit($row->title, 50) }}
+            </a>
+        </h3>
+
+        <!-- Rating -->
+        <div class="product-rating">
+            <div class="stars" style="--rating: {{ $row->ReviewPercentage / 20 }};"></div>
             <span class="rating-count">({{ $row->TotalReview }})</span>
         </div>
-        <div class="item-sold">
-            {{ __('Sold By') }} <a href="{{ route('frontend.stores', [$row->seller_id, str_slug($row->shop_url)]) }}" class="seller-link">{{ str_limit($row->shop_name, 20) }}</a>
+
+        <!-- Seller -->
+        <div class="product-seller">
+            {{ __('Sold By') }}
+            <a href="{{ route('frontend.stores', ['id' => $row->seller_id, 'shop' => Str::slug($row->shop_url ?? $row->shop_name)]) }}" class="seller-link">
+                {{ \Illuminate\Support\Str::limit($row->shop_name, 20) }}
+            </a>
         </div>
-        <div class="item-price-card">
+
+        <!-- Price -->
+        <div class="product-pricing">
             @if($row->sale_price != '')
-                @if($gtext['currency_position'] == 'left')
-                <div class="new-price">{{ $gtext['currency_icon'] }}{{ NumberFormat($row->sale_price) }}</div>
-                @else
-                <div class="new-price">{{ NumberFormat($row->sale_price) }}{{ $gtext['currency_icon'] }}</div>
-                @endif
-            @endif
-            @if(($row->is_discount == 1) && ($row->old_price !=''))
-                @if($gtext['currency_position'] == 'left')
-                <div class="old-price">{{ $gtext['currency_icon'] }}{{ NumberFormat($row->old_price) }}</div>
-                @else
-                <div class="old-price">{{ NumberFormat($row->old_price) }}{{ $gtext['currency_icon'] }}</div>
+                <div class="current-price">
+                    {{ $gtext['currency_position'] == 'left' ? $gtext['currency_icon'] : '' }}
+                    {{ NumberFormat($row->sale_price) }}
+                    {{ $gtext['currency_position'] == 'right' ? $gtext['currency_icon'] : '' }}
+                </div>
+
+                @if($row->is_discount == 1 && $row->old_price != '')
+                    <div class="original-price">
+                        {{ $gtext['currency_position'] == 'left' ? $gtext['currency_icon'] : '' }}
+                        {{ NumberFormat($row->old_price) }}
+                        {{ $gtext['currency_position'] == 'right' ? $gtext['currency_icon'] : '' }}
+                    </div>
                 @endif
             @endif
         </div>
-        <div class="item-card-bottom">
-            <a data-id="{{ $row->id }}" href="javascript:void(0);" class="btn add-to-cart addtocart">{{ __('Add To Cart') }}</a>
-            <ul class="item-action-list">
-                <li><a class="action-btn addtowishlist" data-id="{{ $row->id }}" href="javascript:void(0);" title="{{ __('Add to Wishlist') }}"><i class="bi bi-heart"></i></a></li>
-                <li><a class="action-btn" href="{{ route('frontend.product', [$row->id, $row->slug]) }}" title="{{ __('View Details') }}"><i class="bi bi-eye"></i></a></li>
-            </ul>
+
+        <!-- Actions -->
+        <div class="product-actions">
+            <button class="add-to-cart-btn" data-id="{{ $row->id }}">
+                <i class="bi bi-cart-plus"></i> {{ __('Add To Cart') }}
+            </button>
+
+            <div class="action-buttons">
+                <button class="wishlist-btn" data-id="{{ $row->id }}" title="{{ __('Add to Wishlist') }}">
+                    <i class="bi bi-heart"></i>
+                </button>
+                <a href="{{ route('frontend.product', ['id' => $row->id, 'slug' => $row->slug ?? Str::slug($row->title)]) }}" class="quick-view-btn" title="{{ __('View Details') }}">
+                    <i class="bi bi-eye"></i>
+                </a>
+            </div>
         </div>
     </div>
 </div>
 
 <style>
-/* Product Card Styles */
-.item-card {
-    background: #ffffff;
+/* Base Product Card Styles */
+.product-card {
+    position: relative;
+    background: #fff;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
     transition: all 0.3s ease;
     height: 100%;
     display: flex;
     flex-direction: column;
 }
 
-.item-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+.product-card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transform: translateY(-3px);
 }
 
-.item-image {
-    position: relative;
-    padding: 15px;
-    text-align: center;
-    background: #f9f9f9;
-}
-
-.item-image .product-img {
-    width: 100%;
-    height: 180px;
-    object-fit: contain;
-    transition: transform 0.3s ease;
-}
-
-.item-card:hover .product-img {
-    transform: scale(1.03);
-}
-
-.item-label {
+/* Discount Badge */
+.discount-badge {
     position: absolute;
     top: 10px;
     right: 10px;
-    background: var(--theme-color);
+    background: #e53935;
     color: white;
     padding: 3px 8px;
     border-radius: 3px;
     font-size: 12px;
     font-weight: 600;
+    z-index: 2;
 }
 
-.item-content {
+/* Product Image */
+.product-image {
+    position: relative;
+    padding: 15px;
+    background: #f9f9f9;
+    text-align: center;
+}
+
+.product-img {
+    width: 100%;
+    height: 160px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-img {
+    transform: scale(1.05);
+}
+
+/* Product Content */
+.product-content {
     padding: 15px;
     flex: 1;
     display: flex;
     flex-direction: column;
 }
 
-.item-title a {
+.product-title {
+    margin: 0 0 8px;
+}
+
+.product-title a {
     font-size: 15px;
     font-weight: 600;
     color: #333;
-    margin-bottom: 8px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
     min-height: 42px;
+    text-decoration: none;
 }
 
-.item-title a:hover {
+.product-title a:hover {
     color: var(--theme-color);
 }
 
-.rating-wrap {
+/* Rating */
+.product-rating {
     display: flex;
     align-items: center;
     margin: 5px 0;
 }
 
-.stars-outer {
-    position: relative;
+.stars {
+    --percent: calc(var(--rating) / 5 * 100%);
     display: inline-block;
     font-size: 14px;
+    position: relative;
 }
 
-.stars-outer::before {
-    content: "\2605 \2605 \2605 \2605 \2605";
-    color: #ddd;
-}
-
-.stars-inner {
-    position: absolute;
-    top: 0;
-    left: 0;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-.stars-inner::before {
-    content: "\2605 \2605 \2605 \2605 \2605";
-    color: #ffb300;
+.stars::before {
+    content: '★★★★★';
+    background: linear-gradient(90deg, #ffb300 var(--percent), #ddd var(--percent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .rating-count {
@@ -157,7 +185,8 @@
     margin-left: 5px;
 }
 
-.item-sold {
+/* Seller */
+.product-seller {
     font-size: 12px;
     color: #666;
     margin: 5px 0;
@@ -168,96 +197,102 @@
     font-weight: 500;
 }
 
-.item-price-card {
+/* Pricing */
+.product-pricing {
     margin: 8px 0 12px;
 }
 
-.new-price {
+.current-price {
     font-size: 18px;
     font-weight: 700;
     color: var(--theme-color);
 }
 
-.old-price {
+.original-price {
     font-size: 14px;
     color: #999;
     text-decoration: line-through;
-    margin-left: 5px;
 }
 
-.item-card-bottom {
+/* Actions */
+.product-actions {
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
     margin-top: auto;
 }
 
-.add-to-cart {
+.add-to-cart-btn {
+    flex: 1;
+    padding: 8px 12px;
     background: var(--theme-color);
     color: white;
     border: none;
-    padding: 8px 15px;
     border-radius: 4px;
     font-size: 14px;
     font-weight: 500;
-    flex: 1;
-    text-align: center;
+    cursor: pointer;
     transition: all 0.3s ease;
-}
-
-.add-to-cart:hover {
-    background: #333;
-    color: white;
-}
-
-.item-action-list {
-    display: flex;
-    margin-left: 10px;
-}
-
-.action-btn {
-    width: 36px;
-    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f5f5f5;
+    gap: 5px;
+}
+
+.add-to-cart-btn:hover {
+    background: #333;
+}
+
+.action-buttons {
+    display: flex;
+    margin-left: 10px;
+    gap: 5px;
+}
+
+.wishlist-btn, .quick-view-btn {
+    width: 36px;
+    height: 36px;
     border-radius: 4px;
+    background: #f5f5f5;
+    border: none;
     color: #666;
-    margin-left: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
     transition: all 0.3s ease;
 }
 
-.action-btn:hover {
+.wishlist-btn:hover, .quick-view-btn:hover {
     background: var(--theme-color);
     color: white;
 }
 
-/* Mobile Specific Styles */
+/* Mobile Styles */
 @media (max-width: 767px) {
-    .item-image .product-img {
-        height: 140px;
+    .product-img {
+        height: 120px;
     }
 
-    .item-title a {
+    .product-title a {
         font-size: 14px;
         min-height: 38px;
     }
 
-    .new-price {
+    .current-price {
         font-size: 16px;
     }
 
-    .old-price {
+    .original-price {
         font-size: 13px;
     }
 
-    .add-to-cart {
+    .add-to-cart-btn {
         padding: 7px 10px;
         font-size: 13px;
     }
 
-    .action-btn {
+    .wishlist-btn, .quick-view-btn {
         width: 32px;
         height: 32px;
         font-size: 14px;

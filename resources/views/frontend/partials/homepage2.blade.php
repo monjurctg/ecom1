@@ -264,12 +264,7 @@
 	<!-- /Offer Section/ -->
 
 	<!-- New Products -->
-	 <!-- Featured Products Section -->
-@if(isset($section4) && $section4->is_publish == 1)
-          @include('frontend.partials.product-card', ['row' => $row])
-
-@endif
-	<!-- @if($section4->is_publish == 1)
+	@if($section4->is_publish == 1)
 	<section class="section product-section">
 		<div class="container">
 			<div class="row">
@@ -286,8 +281,10 @@
 				</div>
 			</div>
 			<div class="row owl-carousel caro-common category-carousel">
+
 				@foreach ($new_products as $row)
-				<div class="col-lg-12">
+				 @include('frontend.partials.product-card', ['row' => $product, 'gtext' => $gtext])
+				<!-- <div class="col-lg-12">
 					<div class="item-card">
 						<div class="item-image">
 							@if(($row->is_discount == 1) && ($row->old_price !=''))
@@ -336,12 +333,12 @@
 							</ul>
 						</div>
 					</div>
-				</div>
+				</div> -->
 				@endforeach
 			</div>
 		</div>
 	</section>
-	@endif -->
+	@endif
 	<!-- /New Products/ -->
 
 	<!-- Popular Products -->
