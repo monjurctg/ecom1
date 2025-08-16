@@ -283,7 +283,7 @@
 			<div class="row owl-carousel caro-common category-carousel">
 
 				@foreach ($new_products as $row)
-				 @include('frontend.partials.product-card', ['row' => $product, 'gtext' => $gtext])
+				 @include('frontend.partials.product-card', ['row' => $row, 'gtext' => $gtext])
 				<!-- <div class="col-lg-12">
 					<div class="item-card">
 						<div class="item-image">
