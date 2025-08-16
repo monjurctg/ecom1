@@ -34,7 +34,7 @@
 	<!-- /Home Slider/ -->
 
 	<!-- Featured Categories -->
-	<!-- @if($section2->is_publish == 1)
+	@if($section2->is_publish == 1)
 	<section class="section">
 		<div class="container">
 			<div class="row">
@@ -68,9 +68,10 @@
 			</div>
 		</div>
 	</section>
-	@endif -->
-	<!-- /Featured Categories/ -->
-@if($section2->is_publish == 1)
+	@endif
+	<!-- for mobile section -->
+
+	@if($section2->is_publish == 1)
     <section class="category-section">
         <div class="container">
             <div class="section-header">
@@ -83,25 +84,8 @@
                 @endif
             </div>
 
-            <!-- Desktop - Carousel -->
-            <div class="categories-carousel owl-carousel d-none d-lg-block">
-                @foreach ($pro_category as $row)
-                <div class="category-card">
-                    <a href="{{ route('frontend.product-category', [$row->id, $row->slug]) }}" class="category-link">
-                        <div class="category-img-container">
-                            <img src="{{ asset('public/media/'.$row->thumbnail) }}"
-                                 alt="{{ $row->name }}"
-                                 class="category-img"
-                                 loading="lazy">
-                        </div>
-                        <h3 class="category-title">{{ $row->name }}</h3>
-                    </a>
-                </div>
-                @endforeach
-            </div>
-
-            <!-- Mobile - Grid -->
-            <div class="categories-grid d-lg-none">
+            <!-- Mobile/Tablet Grid Only -->
+            <div class="categories-grid">
                 @foreach ($pro_category as $row)
                 <div class="category-item">
                     <a href="{{ route('frontend.product-category', [$row->id, $row->slug]) }}" class="category-link">
@@ -121,47 +105,47 @@
 
     <style>
     /* ======================
-       Featured Categories - Professional Redesign
+       Mobile/Tablet Category Grid Only
        ====================== */
     .category-section {
-        padding: 40px 0;
+        padding: 30px 0;
         background: #f9f9f9;
     }
 
     .section-header {
         text-align: center;
-        margin-bottom: 40px;
+        margin-bottom: 30px;
     }
 
     .section-subtitle {
         color: #666;
-        font-size: 16px;
-        margin-bottom: 10px;
+        font-size: 14px;
+        margin-bottom: 8px;
     }
 
     .section-title {
         color: #333;
-        font-size: 28px;
+        font-size: 22px;
         font-weight: 600;
     }
 
-    /* Desktop Carousel */
-    .categories-carousel .category-card {
-        padding: 0 15px;
+    /* Grid Layout */
+    .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
     }
 
-    .category-card {
+    .category-item {
         background: white;
-        border-radius: 12px;
+        border-radius: 8px;
         overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        height: 100%;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        transition: transform 0.2s ease;
     }
 
-    .category-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    .category-item:active {
+        transform: scale(0.98);
     }
 
     .category-link {
@@ -171,57 +155,24 @@
     }
 
     .category-img-container {
-        padding: 25px;
+        padding: 15px;
         text-align: center;
-        border-bottom: 1px solid #f0f0f0;
+        background: #f5f5f5;
     }
 
     .category-img {
-        width: 80px;
-        height: 80px;
+        width: 50px;
+        height: 50px;
         object-fit: contain;
-        transition: transform 0.3s ease;
-    }
-
-    .category-card:hover .category-img {
-        transform: scale(1.05);
     }
 
     .category-title {
-        padding: 20px;
-        font-size: 16px;
-        font-weight: 600;
+        padding: 12px 8px;
+        font-size: 12px;
+        font-weight: 500;
         text-align: center;
         margin: 0;
         color: #333;
-    }
-
-    /* Mobile Grid */
-    .categories-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 15px;
-    }
-
-    .categories-grid .category-item {
-        background: white;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-
-    .categories-grid .category-img-container {
-        padding: 15px;
-    }
-
-    .categories-grid .category-img {
-        width: 60px;
-        height: 60px;
-    }
-
-    .categories-grid .category-title {
-        padding: 12px 8px;
-        font-size: 13px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -231,17 +182,34 @@
     @media (max-width: 575px) {
         .categories-grid {
             grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .category-img-container {
+            padding: 12px;
+        }
+
+        .category-img {
+            width: 45px;
+            height: 45px;
         }
     }
 
-    @media (min-width: 576px) and (max-width: 991px) {
+    @media (min-width: 992px) {
         .categories-grid {
-            grid-template-columns: repeat(3, 1fr);
+            display: none; /* Hide completely on desktop */
+        }
+
+        .category-section {
+            padding: 0;
+            background: transparent;
         }
     }
     </style>
 @endif
 
+
+	<!-- /Featured Categories/ -->
 
 	<!-- Offer Section -->
 	@if($section3->is_publish == 1)
@@ -296,7 +264,15 @@
 	<!-- /Offer Section/ -->
 
 	<!-- New Products -->
-	@if($section4->is_publish == 1)
+	 <!-- Featured Products Section -->
+@if(isset($section4) && $section4->is_publish == 1)
+    @include('sections.featured-products', [
+        'section4' => $section4,
+        'new_products' => $new_products,
+        'gtext' => $gtext
+    ])
+@endif
+	<!-- @if($section4->is_publish == 1)
 	<section class="section product-section">
 		<div class="container">
 			<div class="row">
@@ -368,7 +344,7 @@
 			</div>
 		</div>
 	</section>
-	@endif
+	@endif -->
 	<!-- /New Products/ -->
 
 	<!-- Popular Products -->
