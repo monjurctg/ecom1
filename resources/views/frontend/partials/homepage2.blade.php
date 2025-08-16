@@ -266,7 +266,7 @@
 	<!-- New Products -->
 	 <!-- Featured Products Section -->
 @if(isset($section4) && $section4->is_publish == 1)
-          @include('partials.product-card', ['row' => $row])
+          @include('frontend.partials.product-card', ['row' => $row])
 
 @endif
 	<!-- @if($section4->is_publish == 1)
