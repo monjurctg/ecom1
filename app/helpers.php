@@ -194,7 +194,9 @@ function HeaderMenuList($MenuType){
 			}
 
 		//Menu list for Mobile
-		}else{
+		}
+
+		else{
 
 			if($row->child_menu_type == 'mega_menu'){
 				$MegaDropdownMenuList = makeMegaMenu($menu_id, $menu_parent_id, $row->width_type, $row->width, $MenuType);

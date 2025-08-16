@@ -70,177 +70,178 @@
 	</section>
 	@endif -->
 	<!-- /Featured Categories/ -->
+@if($section2->is_publish == 1)
+    <section class="category-section">
+        <div class="container">
+            <div class="section-header">
+                @if($section2->desc !='')
+                <p class="section-subtitle">{{ $section2->desc }}</p>
+                @endif
 
-	@if($section2->is_publish == 1)
-<section class="category-section">
-    <div class="container">
-        <div class="section-header">
-            @if($section2->desc !='')
-            <p class="section-subtitle">{{ $section2->desc }}</p>
-            @endif
-
-            @if($section2->title !='')
-            <h2 class="section-title">{{ $section2->title }}</h2>
-            @endif
-        </div>
-
-        <!-- Desktop - Carousel -->
-        <div class="categories-carousel owl-carousel d-none d-lg-block">
-            @foreach ($pro_category as $row)
-            <div class="category-card">
-                <a href="{{ route('frontend.product-category', [$row->id, $row->slug]) }}" class="category-link">
-                    <div class="category-img-container">
-                        <img src="{{ asset('public/media/'.$row->thumbnail) }}"
-                             alt="{{ $row->name }}"
-                             class="category-img"
-                             loading="lazy">
-                    </div>
-                    <h3 class="category-title">{{ $row->name }}</h3>
-                </a>
+                @if($section2->title !='')
+                <h2 class="section-title">{{ $section2->title }}</h2>
+                @endif
             </div>
-            @endforeach
-        </div>
 
-        <!-- Mobile - Grid -->
-        <div class="categories-grid d-lg-none">
-            @foreach ($pro_category as $row)
-            <div class="category-item">
-                <a href="{{ route('frontend.product-category', [$row->id, $row->slug]) }}" class="category-link">
-                    <div class="category-img-container">
-                        <img src="{{ asset('public/media/'.$row->thumbnail) }}"
-                             alt="{{ $row->name }}"
-                             class="category-img"
-                             loading="lazy">
-                    </div>
-                    <h3 class="category-title">{{ $row->name }}</h3>
-                </a>
+            <!-- Desktop - Carousel -->
+            <div class="categories-carousel owl-carousel d-none d-lg-block">
+                @foreach ($pro_category as $row)
+                <div class="category-card">
+                    <a href="{{ route('frontend.product-category', [$row->id, $row->slug]) }}" class="category-link">
+                        <div class="category-img-container">
+                            <img src="{{ asset('public/media/'.$row->thumbnail) }}"
+                                 alt="{{ $row->name }}"
+                                 class="category-img"
+                                 loading="lazy">
+                        </div>
+                        <h3 class="category-title">{{ $row->name }}</h3>
+                    </a>
+                </div>
+                @endforeach
             </div>
-            @endforeach
+
+            <!-- Mobile - Grid -->
+            <div class="categories-grid d-lg-none">
+                @foreach ($pro_category as $row)
+                <div class="category-item">
+                    <a href="{{ route('frontend.product-category', [$row->id, $row->slug]) }}" class="category-link">
+                        <div class="category-img-container">
+                            <img src="{{ asset('public/media/'.$row->thumbnail) }}"
+                                 alt="{{ $row->name }}"
+                                 class="category-img"
+                                 loading="lazy">
+                        </div>
+                        <h3 class="category-title">{{ $row->name }}</h3>
+                    </a>
+                </div>
+                @endforeach
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<style>
-/* ======================
-   Featured Categories - Professional Redesign
-   ====================== */
-.category-section {
-    padding: 40px 0;
-    background: #f9f9f9;
-}
-
-.section-header {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.section-subtitle {
-    color: #666;
-    font-size: 16px;
-    margin-bottom: 10px;
-}
-
-.section-title {
-    color: #333;
-    font-size: 28px;
-    font-weight: 600;
-}
-
-/* Desktop Carousel */
-.categories-carousel .category-card {
-    padding: 0 15px;
-}
-
-.category-card {
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    height: 100%;
-}
-
-.category-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
-}
-
-.category-link {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-}
-
-.category-img-container {
-    padding: 25px;
-    text-align: center;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.category-img {
-    width: 80px;
-    height: 80px;
-    object-fit: contain;
-    transition: transform 0.3s ease;
-}
-
-.category-card:hover .category-img {
-    transform: scale(1.05);
-}
-
-.category-title {
-    padding: 20px;
-    font-size: 16px;
-    font-weight: 600;
-    text-align: center;
-    margin: 0;
-    color: #333;
-}
-
-/* Mobile Grid */
-.categories-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-}
-
-.categories-grid .category-item {
-    background: white;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-.categories-grid .category-img-container {
-    padding: 15px;
-}
-
-.categories-grid .category-img {
-    width: 60px;
-    height: 60px;
-}
-
-.categories-grid .category-title {
-    padding: 12px 8px;
-    font-size: 13px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 575px) {
-    .categories-grid {
-        grid-template-columns: repeat(2, 1fr);
+    <style>
+    /* ======================
+       Featured Categories - Professional Redesign
+       ====================== */
+    .category-section {
+        padding: 40px 0;
+        background: #f9f9f9;
     }
-}
 
-@media (min-width: 576px) and (max-width: 991px) {
+    .section-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .section-subtitle {
+        color: #666;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    .section-title {
+        color: #333;
+        font-size: 28px;
+        font-weight: 600;
+    }
+
+    /* Desktop Carousel */
+    .categories-carousel .category-card {
+        padding: 0 15px;
+    }
+
+    .category-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
+    }
+
+    .category-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    }
+
+    .category-link {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .category-img-container {
+        padding: 25px;
+        text-align: center;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .category-img {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+    }
+
+    .category-card:hover .category-img {
+        transform: scale(1.05);
+    }
+
+    .category-title {
+        padding: 20px;
+        font-size: 16px;
+        font-weight: 600;
+        text-align: center;
+        margin: 0;
+        color: #333;
+    }
+
+    /* Mobile Grid */
     .categories-grid {
+        display: grid;
         grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
     }
-}
-</style>
+
+    .categories-grid .category-item {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .categories-grid .category-img-container {
+        padding: 15px;
+    }
+
+    .categories-grid .category-img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .categories-grid .category-title {
+        padding: 12px 8px;
+        font-size: 13px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 575px) {
+        .categories-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (min-width: 576px) and (max-width: 991px) {
+        .categories-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+    </style>
+@endif
+
 
 	<!-- Offer Section -->
 	@if($section3->is_publish == 1)
