@@ -212,9 +212,9 @@
 						<div class="tp-mega-full">
 							<div class="tp-menu align-self-center">
 								<nav>
-									<!-- <ul class="main-menu">
+									<ul class="main-menu">
 										@php echo HeaderMenuList('HeaderMenuListForDesktop'); @endphp
-									</ul> -->
+									</ul>
 								</nav>
 							</div>
 						</div>
@@ -225,7 +225,7 @@
 	</header>
 
 	<!-- off-canvas menu start -->
-	<!-- <aside class="mobile-menu-wrapper">
+	<aside class="mobile-menu-wrapper">
 		<div class="off-canvas-overlay"></div>
 		<div class="offcanvas-body">
 			<div class="offcanvas-top">
@@ -252,5 +252,5 @@
 				</nav>
 			</div>
 		</div>
-	</aside> -->
+	</aside>
 	<!-- /off-canvas menu start -->
