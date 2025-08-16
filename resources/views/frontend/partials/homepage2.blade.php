@@ -266,11 +266,8 @@
 	<!-- New Products -->
 	 <!-- Featured Products Section -->
 @if(isset($section4) && $section4->is_publish == 1)
-    @include('sections.featured-products', [
-        'section4' => $section4,
-        'new_products' => $new_products,
-        'gtext' => $gtext
-    ])
+          @include('partials.product-card', ['row' => $row])
+
 @endif
 	<!-- @if($section4->is_publish == 1)
 	<section class="section product-section">
