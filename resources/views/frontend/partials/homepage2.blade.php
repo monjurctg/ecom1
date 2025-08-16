@@ -72,165 +72,175 @@
 	<!-- /Featured Categories/ -->
 
 	@if($section2->is_publish == 1)
-    <section class="section">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="section-heading text-center">
-                        @if($section2->desc !='')
-                        <h5>{{ $section2->desc }}</h5>
-                        @endif
+<section class="category-section">
+    <div class="container">
+        <div class="section-header">
+            @if($section2->desc !='')
+            <p class="section-subtitle">{{ $section2->desc }}</p>
+            @endif
 
-                        @if($section2->title !='')
-                        <h2>{{ $section2->title }}</h2>
-                        @endif
-                    </div>
-                </div>
-            </div>
-
-            <!-- Desktop Carousel -->
-            <div class="row owl-carousel caro-common featured-categories d-none d-md-flex">
-                @foreach ($pro_category as $row)
-                <div class="col-lg-12">
-                    <div class="featured-card">
-                        <div class="featured-image">
-                            <a href="{{ route('frontend.product-category', [$row->id, $row->slug]) }}">
-                                <img src="{{ asset('public/media/'.$row->thumbnail) }}" alt="{{ $row->name }}" />
-                            </a>
-                        </div>
-                        <div class="featured-title">
-                            <a href="{{ route('frontend.product-category', [$row->id, $row->slug]) }}">{{ $row->name }}</a>
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-
-            <!-- Mobile Grid (3 items per row) -->
-            <div class="row featured-categories-grid d-md-none">
-                @foreach ($pro_category as $row)
-                <div class="col-4">
-                    <div class="featured-card">
-                        <div class="featured-image">
-                            <a href="{{ route('frontend.product-category', [$row->id, $row->slug]) }}">
-                                <img src="{{ asset('public/media/'.$row->thumbnail) }}" alt="{{ $row->name }}" />
-                            </a>
-                        </div>
-                        <div class="featured-title">
-                            <a href="{{ route('frontend.product-category', [$row->id, $row->slug]) }}">{{ $row->name }}</a>
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
+            @if($section2->title !='')
+            <h2 class="section-title">{{ $section2->title }}</h2>
+            @endif
         </div>
-    </section>
 
-    <style>
-        /* ======================
-           Featured Categories - Mobile
-           ====================== */
-        .featured-categories-grid {
-            display: flex;
-            flex-wrap: wrap;
-            margin: 0 -7.5px;
-        }
+        <!-- Desktop - Carousel -->
+        <div class="categories-carousel owl-carousel d-none d-lg-block">
+            @foreach ($pro_category as $row)
+            <div class="category-card">
+                <a href="{{ route('frontend.product-category', [$row->id, $row->slug]) }}" class="category-link">
+                    <div class="category-img-container">
+                        <img src="{{ asset('public/media/'.$row->thumbnail) }}"
+                             alt="{{ $row->name }}"
+                             class="category-img"
+                             loading="lazy">
+                    </div>
+                    <h3 class="category-title">{{ $row->name }}</h3>
+                </a>
+            </div>
+            @endforeach
+        </div>
 
-        .featured-categories-grid .col-4 {
-            padding: 0 7.5px;
-            flex: 0 0 33.333%;
-            max-width: 33.333%;
-            margin-bottom: 15px;
-        }
+        <!-- Mobile - Grid -->
+        <div class="categories-grid d-lg-none">
+            @foreach ($pro_category as $row)
+            <div class="category-item">
+                <a href="{{ route('frontend.product-category', [$row->id, $row->slug]) }}" class="category-link">
+                    <div class="category-img-container">
+                        <img src="{{ asset('public/media/'.$row->thumbnail) }}"
+                             alt="{{ $row->name }}"
+                             class="category-img"
+                             loading="lazy">
+                    </div>
+                    <h3 class="category-title">{{ $row->name }}</h3>
+                </a>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
 
-        /* Maintain your existing card style */
-        .featured-card {
-            background: var(--color-light-green);
-            padding: 0;
-            text-align: center;
-            overflow: hidden;
-            height: auto;
-            border-radius: 0 0 10px 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
+<style>
+/* ======================
+   Featured Categories - Professional Redesign
+   ====================== */
+.category-section {
+    padding: 40px 0;
+    background: #f9f9f9;
+}
 
-        /* Mobile-specific adjustments */
-        .featured-categories-grid .featured-card {
-            margin-right: 0;
-        }
+.section-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
 
-        .featured-card .featured-image {
-            border-radius: 0 0 50% 50%;
-            padding: 10px;
-            overflow: hidden;
-            width: 100%;
-            border-bottom: 3px solid var(--theme-color);
-            background: var(--color-white);
-        }
+.section-subtitle {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
 
-        .featured-card .featured-image img {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto;
-            object-fit: contain;
-        }
+.section-title {
+    color: #333;
+    font-size: 28px;
+    font-weight: 600;
+}
 
-        .featured-card .featured-title {
-            padding: 10px 5px;
-        }
+/* Desktop Carousel */
+.categories-carousel .category-card {
+    padding: 0 15px;
+}
 
-        .featured-card .featured-title a {
-            font-size: 12px;
-            font-weight: 800;
-            font-family: var(--secondary-font-family);
-            color: var(--color-black);
-            display: block;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+.category-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
 
-        .featured-card .featured-title a:hover {
-            color: var(--theme-color);
-        }
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
 
-        /* Responsive visibility */
-        @media (max-width: 767px) {
-            .featured-categories {
-                display: none;
-            }
-        }
+.category-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
 
-        @media (min-width: 768px) {
-            .featured-categories-grid {
-                display: none;
-            }
+.category-img-container {
+    padding: 25px;
+    text-align: center;
+    border-bottom: 1px solid #f0f0f0;
+}
 
-            /* Restore original desktop styles */
-            .owl-carousel .featured-card {
-                margin-right: 15px;
-            }
+.category-img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
 
-            .featured-card .featured-image {
-                padding: 15px;
-                border-bottom-width: 5px;
-            }
+.category-card:hover .category-img {
+    transform: scale(1.05);
+}
 
-            .featured-card .featured-image img {
-                width: 120px;
-                height: 120px;
-            }
+.category-title {
+    padding: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    margin: 0;
+    color: #333;
+}
 
-            .featured-card .featured-title {
-                padding: 20px 15px;
-            }
+/* Mobile Grid */
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
 
-            .featured-card .featured-title a {
-                font-size: var(--font-size-100);
-            }
-        }
-    </style>
-@endif
+.categories-grid .category-item {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.categories-grid .category-img-container {
+    padding: 15px;
+}
+
+.categories-grid .category-img {
+    width: 60px;
+    height: 60px;
+}
+
+.categories-grid .category-title {
+    padding: 12px 8px;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 575px) {
+    .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 576px) and (max-width: 991px) {
+    .categories-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+</style>
 
 	<!-- Offer Section -->
 	@if($section3->is_publish == 1)
