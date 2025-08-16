@@ -16,7 +16,7 @@
 									@if($aRow->sub_title != '')
 									<p class="relative">{{ $aRow->sub_title }}</p>
 									@endif
-									
+
 									@if($aRow->button_text != '')
 									<a href="{{ $row->url }}" class="btn theme-btn" {{ $aRow->target =='' ? '' : "target=".$aRow->target }}>{{ $aRow->button_text }}</a>
 									@endif
@@ -32,9 +32,9 @@
 	</section>
 	@endif
 	<!-- /Home Slider/ -->
-	
+
 	<!-- Featured Categories -->
-	@if($section2->is_publish == 1)
+	<!-- @if($section2->is_publish == 1)
 	<section class="section">
 		<div class="container">
 			<div class="row">
@@ -43,7 +43,7 @@
 						@if($section2->desc !='')
 						<h5>{{ $section2->desc }}</h5>
 						@endif
-						
+
 						@if($section2->title !='')
 						<h2>{{ $section2->title }}</h2>
 						@endif
@@ -68,9 +68,170 @@
 			</div>
 		</div>
 	</section>
-	@endif
+	@endif -->
 	<!-- /Featured Categories/ -->
-	
+
+	@if($section2->is_publish == 1)
+    <section class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="section-heading text-center">
+                        @if($section2->desc !='')
+                        <h5>{{ $section2->desc }}</h5>
+                        @endif
+
+                        @if($section2->title !='')
+                        <h2>{{ $section2->title }}</h2>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desktop Carousel -->
+            <div class="row owl-carousel caro-common featured-categories d-none d-md-flex">
+                @foreach ($pro_category as $row)
+                <div class="col-lg-12">
+                    <div class="featured-card">
+                        <div class="featured-image">
+                            <a href="{{ route('frontend.product-category', [$row->id, $row->slug]) }}">
+                                <img src="{{ asset('public/media/'.$row->thumbnail) }}" alt="{{ $row->name }}" />
+                            </a>
+                        </div>
+                        <div class="featured-title">
+                            <a href="{{ route('frontend.product-category', [$row->id, $row->slug]) }}">{{ $row->name }}</a>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+
+            <!-- Mobile Grid (3 items per row) -->
+            <div class="row featured-categories-grid d-md-none">
+                @foreach ($pro_category as $row)
+                <div class="col-4">
+                    <div class="featured-card">
+                        <div class="featured-image">
+                            <a href="{{ route('frontend.product-category', [$row->id, $row->slug]) }}">
+                                <img src="{{ asset('public/media/'.$row->thumbnail) }}" alt="{{ $row->name }}" />
+                            </a>
+                        </div>
+                        <div class="featured-title">
+                            <a href="{{ route('frontend.product-category', [$row->id, $row->slug]) }}">{{ $row->name }}</a>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    <style>
+        /* ======================
+           Featured Categories - Mobile
+           ====================== */
+        .featured-categories-grid {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -7.5px;
+        }
+
+        .featured-categories-grid .col-4 {
+            padding: 0 7.5px;
+            flex: 0 0 33.333%;
+            max-width: 33.333%;
+            margin-bottom: 15px;
+        }
+
+        /* Maintain your existing card style */
+        .featured-card {
+            background: var(--color-light-green);
+            padding: 0;
+            text-align: center;
+            overflow: hidden;
+            height: auto;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* Mobile-specific adjustments */
+        .featured-categories-grid .featured-card {
+            margin-right: 0;
+        }
+
+        .featured-card .featured-image {
+            border-radius: 0 0 50% 50%;
+            padding: 10px;
+            overflow: hidden;
+            width: 100%;
+            border-bottom: 3px solid var(--theme-color);
+            background: var(--color-white);
+        }
+
+        .featured-card .featured-image img {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto;
+            object-fit: contain;
+        }
+
+        .featured-card .featured-title {
+            padding: 10px 5px;
+        }
+
+        .featured-card .featured-title a {
+            font-size: 12px;
+            font-weight: 800;
+            font-family: var(--secondary-font-family);
+            color: var(--color-black);
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .featured-card .featured-title a:hover {
+            color: var(--theme-color);
+        }
+
+        /* Responsive visibility */
+        @media (max-width: 767px) {
+            .featured-categories {
+                display: none;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .featured-categories-grid {
+                display: none;
+            }
+
+            /* Restore original desktop styles */
+            .owl-carousel .featured-card {
+                margin-right: 15px;
+            }
+
+            .featured-card .featured-image {
+                padding: 15px;
+                border-bottom-width: 5px;
+            }
+
+            .featured-card .featured-image img {
+                width: 120px;
+                height: 120px;
+            }
+
+            .featured-card .featured-title {
+                padding: 20px 15px;
+            }
+
+            .featured-card .featured-title a {
+                font-size: var(--font-size-100);
+            }
+        }
+    </style>
+@endif
+
 	<!-- Offer Section -->
 	@if($section3->is_publish == 1)
 	@if(count($offer_ad_position1)>0)
@@ -82,7 +243,7 @@
 						@if($section3->desc !='')
 						<h5>{{ $section3->desc }}</h5>
 						@endif
-						
+
 						@if($section3->title !='')
 						<h2>{{ $section3->title }}</h2>
 						@endif
@@ -133,7 +294,7 @@
 						@if($section4->desc !='')
 						<h5>{{ $section4->desc }}</h5>
 						@endif
-						
+
 						@if($section4->title !='')
 						<h2>{{ $section4->title }}</h2>
 						@endif
@@ -146,7 +307,7 @@
 					<div class="item-card">
 						<div class="item-image">
 							@if(($row->is_discount == 1) && ($row->old_price !=''))
-								@php 
+								@php
 									$discount = number_format((($row->old_price - $row->sale_price)*100)/$row->old_price);
 								@endphp
 							<span class="item-label">{{ $discount }}% {{ __('Off') }}</span>
@@ -197,8 +358,8 @@
 		</div>
 	</section>
 	@endif
-	<!-- /New Products/ -->	
-	
+	<!-- /New Products/ -->
+
 	<!-- Popular Products -->
 	@if($section5->is_publish == 1)
 	<section class="section product-section" style="background-image: url({{ $section5->image ? asset('public/media/'.$section5->image) : '' }});">
@@ -209,7 +370,7 @@
 						@if($section5->desc !='')
 						<h5>{{ $section5->desc }}</h5>
 						@endif
-						
+
 						@if($section5->title !='')
 						<h2>{{ $section5->title }}</h2>
 						@endif
@@ -222,7 +383,7 @@
 					<div class="item-card">
 						<div class="item-image">
 							@if(($row->is_discount == 1) && ($row->old_price !=''))
-								@php 
+								@php
 									$discount = number_format((($row->old_price - $row->sale_price)*100)/$row->old_price);
 								@endphp
 							<span class="item-label">{{ $discount }}% {{ __('Off') }}</span>
@@ -274,7 +435,7 @@
 	</section>
 	@endif
 	<!-- /Popular Products/ -->
-	
+
 	<!-- Top Selling Products -->
 	@if($section6->is_publish == 1)
 	<section class="section product-section">
@@ -285,7 +446,7 @@
 						@if($section6->desc !='')
 						<h5>{{ $section6->desc }}</h5>
 						@endif
-						
+
 						@if($section6->title !='')
 						<h2>{{ $section6->title }}</h2>
 						@endif
@@ -298,7 +459,7 @@
 					<div class="item-card">
 						<div class="item-image">
 							@if(($row->is_discount == 1) && ($row->old_price !=''))
-								@php 
+								@php
 									$discount = number_format((($row->old_price - $row->sale_price)*100)/$row->old_price);
 								@endphp
 							<span class="item-label">{{ $discount }}% {{ __('Off') }}</span>
@@ -350,7 +511,7 @@
 	</section>
 	@endif
 	<!-- /Top Selling Products/ -->
-	
+
 	<!-- Trending Products -->
 	@if($section8->is_publish == 1)
 	<section class="section product-section" style="background-image: url({{ $section8->image ? asset('public/media/'.$section8->image) : '' }});">
@@ -361,7 +522,7 @@
 						@if($section8->desc !='')
 						<h5>{{ $section8->desc }}</h5>
 						@endif
-						
+
 						@if($section8->title !='')
 						<h2>{{ $section8->title }}</h2>
 						@endif
@@ -374,7 +535,7 @@
 					<div class="item-card">
 						<div class="item-image">
 							@if(($row->is_discount == 1) && ($row->old_price !=''))
-								@php 
+								@php
 									$discount = number_format((($row->old_price - $row->sale_price)*100)/$row->old_price);
 								@endphp
 							<span class="item-label">{{ $discount }}% {{ __('Off') }}</span>
@@ -426,7 +587,7 @@
 	</section>
 	@endif
 	<!-- /Trending Products/ -->
-	
+
 	<!-- Top Rated Products -->
 	@if($section9->is_publish == 1)
 	<section class="section product-section">
@@ -437,7 +598,7 @@
 						@if($section9->desc !='')
 						<h5>{{ $section9->desc }}</h5>
 						@endif
-						
+
 						@if($section9->title !='')
 						<h2>{{ $section9->title }}</h2>
 						@endif
@@ -450,7 +611,7 @@
 					<div class="item-card">
 						<div class="item-image">
 							@if(($row->is_discount == 1) && ($row->old_price !=''))
-								@php 
+								@php
 									$discount = number_format((($row->old_price - $row->sale_price)*100)/$row->old_price);
 								@endphp
 							<span class="item-label">{{ $discount }}% {{ __('Off') }}</span>
@@ -529,7 +690,7 @@
 	</section>
 	@endif
 	<!-- /Video Section/ -->
-	
+
 	<!-- Deals Section -->
 	@if($section10->is_publish == 1)
 	<section class="section deals-section">
@@ -540,7 +701,7 @@
 						@if($section10->desc !='')
 						<h5>{{ $section10->desc }}</h5>
 						@endif
-						
+
 						@if($section10->title !='')
 						<h2>{{ $section10->title }}</h2>
 						@endif
@@ -575,7 +736,7 @@
 							<div class="item-card">
 								<div class="item-image">
 									@if(($row->is_discount == 1) && ($row->old_price !=''))
-										@php 
+										@php
 											$discount = number_format((($row->old_price - $row->sale_price)*100)/$row->old_price);
 										@endphp
 									<span class="item-label">{{ $discount }}% {{ __('Off') }}</span>
