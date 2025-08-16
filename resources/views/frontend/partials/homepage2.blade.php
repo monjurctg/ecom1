@@ -107,6 +107,9 @@
     /* ======================
        Mobile/Tablet Category Grid Only
        ====================== */
+	   .section {
+		display: :none;
+	   }
     .category-section {
         padding: 30px 0;
         background: #f9f9f9;
@@ -194,6 +197,21 @@
             height: 45px;
         }
     }
+	    @media (max-width: 575px) {
+        .categories-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .category-img-container {
+            padding: 12px;
+        }
+
+        .category-img {
+            width: 45px;
+            height: 45px;
+        }
+    }
 
     @media (min-width: 992px) {
         .categories-grid {
@@ -202,9 +220,12 @@
 
         .category-section {
             padding: 0;
+			display: none;
             background: transparent;
         }
+		.section{display: block;}
     }
+
     </style>
 @endif
 
