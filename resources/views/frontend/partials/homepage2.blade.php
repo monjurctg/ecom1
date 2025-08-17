@@ -232,8 +232,8 @@
 @media (min-width: 576px) {
     .categories-grid {
         grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
-        padding: 0 1rem;
+        gap: 0.5rem;
+        padding: 0 0.5rem;
     }
 	.category-title {
 		 font-size: 0.5375rem;
