@@ -235,10 +235,17 @@
         gap: 1rem;
         padding: 0 1rem;
     }
+	.category-title {
+		 font-size: 0.5375rem;
+		    font-weight: 500;
+	}
 
     .category-img-container {
         padding-top: 80%; /* Slightly rectangular */
     }
+	.category-content {
+		padding:0.5rem
+	}
 }
 
 /* Desktop View - Hide completely */
