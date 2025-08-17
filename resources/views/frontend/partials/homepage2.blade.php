@@ -141,8 +141,8 @@
 .categories-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    padding: 0 1rem;
+    gap: 0.7rem;
+    padding: 0 0.5rem;
 }
 
 .category-card {
