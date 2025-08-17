@@ -274,7 +274,7 @@
 .category-card:nth-child(11) { animation-delay: 0.55s; }
 .category-card:nth-child(12) { animation-delay: 0.6s; }
 </style>
-
+	@endif
 	<!-- /Featured Categories/ -->
 
 	<!-- Offer Section -->
