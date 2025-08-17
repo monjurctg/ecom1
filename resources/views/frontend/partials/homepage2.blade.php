@@ -205,8 +205,8 @@
 }
 
 .category-title {
-    font-size: 0.7375rem;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 500;
     color: #212529;
     margin: 0 0 0.5rem;
     display: -webkit-box;
@@ -236,7 +236,7 @@
         padding: 0 0.5rem;
     }
 	.category-title {
-		 font-size: 0.5375rem;
+		 font-size: 12px;
 		    font-weight: 500;
 	}
 
