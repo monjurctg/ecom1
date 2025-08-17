@@ -97,7 +97,10 @@
                                  loading="lazy">
                         </div>
                     </div>
-
+                    <div class="category-content">
+                        <h3 class="category-title">{{ $row->name }}</h3>
+                        <!-- <span class="category-cta">Shop Now <i class="bi bi-arrow-right"></i></span> -->
+                    </div>
                 </a>
             </div>
             @endforeach
@@ -116,7 +119,7 @@
 
 .section-header {
     text-align: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     padding: 0 1rem;
 }
 
@@ -129,7 +132,7 @@
 
 .section-title {
     color: #212529;
-    font-size: 1.5rem;
+    font-size: 1rem;
     font-weight: 700;
     margin: 0;
 }
@@ -179,7 +182,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1.5rem;
+    padding: 1rem;
 }
 
 .category-img {
@@ -202,7 +205,7 @@
 }
 
 .category-title {
-    font-size: 0.9375rem;
+    font-size: 0.7375rem;
     font-weight: 600;
     color: #212529;
     margin: 0 0 0.5rem;
@@ -229,8 +232,8 @@
 @media (min-width: 576px) {
     .categories-grid {
         grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
-        padding: 0 1rem;
+        gap: 1.25rem;
+        padding: 0 1.5rem;
     }
 
     .category-img-container {
