@@ -258,13 +258,21 @@
     animation: fadeIn 0.4s ease forwards;
     opacity: 0;
 }
+/* Animation Enhancements */
 
-/* Create staggered animation */
-@for $i from 1 through 12 {
-    .category-card:nth-child(#{$i}) {
-        animation-delay: $i * 0.05s;
-    }
-}
+/* Manual staggered animation delays */
+.category-card:nth-child(1) { animation-delay: 0.05s; }
+.category-card:nth-child(2) { animation-delay: 0.1s; }
+.category-card:nth-child(3) { animation-delay: 0.15s; }
+.category-card:nth-child(4) { animation-delay: 0.2s; }
+.category-card:nth-child(5) { animation-delay: 0.25s; }
+.category-card:nth-child(6) { animation-delay: 0.3s; }
+.category-card:nth-child(7) { animation-delay: 0.35s; }
+.category-card:nth-child(8) { animation-delay: 0.4s; }
+.category-card:nth-child(9) { animation-delay: 0.45s; }
+.category-card:nth-child(10) { animation-delay: 0.5s; }
+.category-card:nth-child(11) { animation-delay: 0.55s; }
+.category-card:nth-child(12) { animation-delay: 0.6s; }
 </style>
 
 	<!-- /Featured Categories/ -->
