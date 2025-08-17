@@ -214,7 +214,7 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    min-height: 2.8rem;
+    /* min-height: 2.8rem; */
 }
 
 .category-cta {
@@ -232,8 +232,8 @@
 @media (min-width: 576px) {
     .categories-grid {
         grid-template-columns: repeat(3, 1fr);
-        gap: 1.25rem;
-        padding: 0 1.5rem;
+        gap: 1rem;
+        padding: 0 1rem;
     }
 
     .category-img-container {
