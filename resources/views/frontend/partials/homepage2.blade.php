@@ -97,10 +97,7 @@
                                  loading="lazy">
                         </div>
                     </div>
-                    <div class="category-content">
-                        <h3 class="category-title">{{ $row->name }}</h3>
-                        <span class="category-cta">Shop Now <i class="bi bi-arrow-right"></i></span>
-                    </div>
+
                 </a>
             </div>
             @endforeach
@@ -113,7 +110,7 @@
    Professional Mobile Category Grid
    ====================== */
 .category-section {
-    padding: 2rem 0;
+    padding: 1rem 0;
     background: #f8f9fa;
 }
 
@@ -140,7 +137,7 @@
 /* Grid Layout */
 .categories-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
     padding: 0 1rem;
 }
@@ -232,8 +229,8 @@
 @media (min-width: 576px) {
     .categories-grid {
         grid-template-columns: repeat(3, 1fr);
-        gap: 1.25rem;
-        padding: 0 1.5rem;
+        gap: 1rem;
+        padding: 0 1rem;
     }
 
     .category-img-container {
