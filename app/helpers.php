@@ -21,71 +21,38 @@ use App\Models\Section_manage;
 use Illuminate\Support\Facades\Auth;
 
 //Page Variation
-// function PageVariation(){
-// 	// hello test
+function PageVariation(){
+	// hello test
 
-// 	$data = array();
-// 	$results = Tp_option::where('option_name', 'page_variation')->get();
+	$data = array();
+	$results = Tp_option::where('option_name', 'page_variation')->get();
 
-// 	$id = '';
-// 	foreach ($results as $row){
-// 		$id = $row->id;
-// 	}
+	$id = '';
+	foreach ($results as $row){
+		$id = $row->id;
+	}
 
-// 	if($id != ''){
+	if($id != ''){
 
-// 		$sData = json_decode($results);
-// 		$dataObj = json_decode($sData[0]->option_value);
+		$sData = json_decode($results);
+		$dataObj = json_decode($sData[0]->option_value);
 
-// 		$data['home_variation'] = $dataObj->home_variation;
-// 		$data['category_variation'] = $dataObj->category_variation;
-// 		$data['brand_variation'] = $dataObj->brand_variation;
-// 		$data['seller_variation'] = $dataObj->seller_variation;
-// 	}else{
-// 		$data['home_variation'] = 'home_1';
-// 		$data['category_variation'] = 'left_sidebar';
-// 		$data['brand_variation'] = 'left_sidebar';
-// 		$data['seller_variation'] = 'left_sidebar';
-// 	}
+		$data['home_variation'] = $dataObj->home_variation;
+		$data['category_variation'] = $dataObj->category_variation;
+		$data['brand_variation'] = $dataObj->brand_variation;
+		$data['seller_variation'] = $dataObj->seller_variation;
+	}else{
+		$data['home_variation'] = 'home_1';
+		$data['category_variation'] = 'left_sidebar';
+		$data['brand_variation'] = 'left_sidebar';
+		$data['seller_variation'] = 'left_sidebar';
+	}
 
-// 	return $data;
-// }	
+	return $data;
+}	
 
 // Page Variation with caching
-function PageVariation() {
-    $cacheKey = 'page_variation_' . app()->getLocale();
-    
-    return cache()->remember($cacheKey, now()->addHours(24), function() {
-        $data = [];
-        $results = Tp_option::where('option_name', 'page_variation')->get();
 
-        $id = '';
-        foreach ($results as $row) {
-            $id = $row->id;
-        }
-
-        if ($id != '') {
-            $sData = json_decode($results);
-            $dataObj = json_decode($sData[0]->option_value);
-
-            $data = [
-                'home_variation' => $dataObj->home_variation ?? 'home_1',
-                'category_variation' => $dataObj->category_variation ?? 'left_sidebar',
-                'brand_variation' => $dataObj->brand_variation ?? 'left_sidebar',
-                'seller_variation' => $dataObj->seller_variation ?? 'left_sidebar'
-            ];
-        } else {
-            $data = [
-                'home_variation' => 'home_1',
-                'category_variation' => 'left_sidebar',
-                'brand_variation' => 'left_sidebar',
-                'seller_variation' => 'left_sidebar'
-            ];
-        }
-
-        return $data;
-    });
-}
 
 //Get data for Language locale
 function glan(){
@@ -95,64 +62,31 @@ function glan(){
 }
 
 //Category List
-// function CategoryMenuList(){
-// 	$lan = glan();
+function CategoryMenuList(){
+	$lan = glan();
 
-// 	$datalist = Pro_category::where('lan', '=', $lan)->where('is_publish', '=', 1)->orderBy('id', 'ASC')->get();
-// 	$li_List = '';
-// 	$Path = asset('public/media');
-// 	$count = 1;
-// 	foreach($datalist as $row){
-// 		$id = $row->id;
-// 		$slug = $row->slug;
-// 		$thumbnail = '<img src="'.$Path.'/'.$row->thumbnail.'" />';
+	$datalist = Pro_category::where('lan', '=', $lan)->where('is_publish', '=', 1)->orderBy('id', 'ASC')->get();
+	$li_List = '';
+	$Path = asset('public/media');
+	$count = 1;
+	foreach($datalist as $row){
+		$id = $row->id;
+		$slug = $row->slug;
+		$thumbnail = '<img src="'.$Path.'/'.$row->thumbnail.'" />';
 
-// 		if($count>8){
-// 			$li_List .= '<li class="cat-list-hideshow"><a href="'.route('frontend.product-category', [$id, $slug]).'"><div class="cat-icon">'.$thumbnail.'</div>'.$row->name.'</a></li>';
-// 		}else{
-// 			$li_List .= '<li><a href="'.route('frontend.product-category', [$id, $slug]).'"><div class="cat-icon">'.$thumbnail.'</div>'.$row->name.'</a></li>';
-// 		}
+		if($count>8){
+			$li_List .= '<li class="cat-list-hideshow"><a href="'.route('frontend.product-category', [$id, $slug]).'"><div class="cat-icon">'.$thumbnail.'</div>'.$row->name.'</a></li>';
+		}else{
+			$li_List .= '<li><a href="'.route('frontend.product-category', [$id, $slug]).'"><div class="cat-icon">'.$thumbnail.'</div>'.$row->name.'</a></li>';
+		}
 
-// 		$count++;
-// 	}
+		$count++;
+	}
 
-// 	return $li_List;
-// }
-
-function CategoryMenuList() {
-    $lan = glan();
-    $cacheKey = 'category_menu_' . $lan;
-
-    return cache()->remember($cacheKey, now()->addHours(24), function() use ($lan) {
-        $datalist = Pro_category::where('lan', $lan)
-                      ->where('is_publish', 1)
-                      ->orderBy('id', 'ASC')
-                      ->get();
-        
-        $li_List = '';
-        $Path = asset('public/media');
-        $count = 1;
-        
-        foreach($datalist as $row) {
-            $id = $row->id;
-            $slug = $row->slug;
-            $thumbnail = $row->thumbnail ? '<img src="'.$Path.'/'.$row->thumbnail.'" />' : '';
-            
-            $liClass = $count > 8 ? 'cat-list-hideshow' : '';
-            
-            $li_List .= '<li class="'.$liClass.'">
-                        <a href="'.route('frontend.product-category', [$id, $slug]).'">
-                            <div class="cat-icon">'.$thumbnail.'</div>
-                            '.$row->name.'
-                        </a>
-                      </li>';
-            
-            $count++;
-        }
-
-        return $li_List;
-    });
+	return $li_List;
 }
+
+
 
 //Category List for Mobile
 function CategoryListForMobile(){
@@ -187,219 +121,128 @@ function CategoryListOption(){
 }
 
 //Menu List
-// function HeaderMenuList($MenuType){
+function HeaderMenuList($MenuType){
 
-// 	$lan = glan();
+	$lan = glan();
 
-// 	$sql = "SELECT b.id, b.menu_id, b.menu_type, b.child_menu_type, b.item_id, b.item_label, b.custom_url,
-// 	b.target_window, b.css_class, b.`column`, b.width_type, b.width, b.lan, b.sort_order
-// 	FROM menus a
-// 	INNER JOIN menu_parents b ON a.id = b.menu_id
-// 	WHERE a.menu_position = 'header'
-// 	AND a.lan = '".$lan."'
-// 	AND a.status_id  = 1
-// 	ORDER BY sort_order ASC;";
-// 	$datalist = DB::select($sql);
-// 	$MenuList = '';
-// 	$MegaDropdownMenuList = '';
-// 	$full_width = '';
-// 	$hasChildrenMenu = '';
-// 	$upDownClass = '';
-// 	$target_window = '';
-// 	foreach($datalist as $row){
+	$sql = "SELECT b.id, b.menu_id, b.menu_type, b.child_menu_type, b.item_id, b.item_label, b.custom_url,
+	b.target_window, b.css_class, b.`column`, b.width_type, b.width, b.lan, b.sort_order
+	FROM menus a
+	INNER JOIN menu_parents b ON a.id = b.menu_id
+	WHERE a.menu_position = 'header'
+	AND a.lan = '".$lan."'
+	AND a.status_id  = 1
+	ORDER BY sort_order ASC;";
+	$datalist = DB::select($sql);
+	$MenuList = '';
+	$MegaDropdownMenuList = '';
+	$full_width = '';
+	$hasChildrenMenu = '';
+	$upDownClass = '';
+	$target_window = '';
+	foreach($datalist as $row){
 
-// 		$menu_id = $row->menu_id;
-// 		$menu_parent_id = $row->id;
+		$menu_id = $row->menu_id;
+		$menu_parent_id = $row->id;
 
-// 		$item_id = $row->item_id;
-// 		$custom_url = $row->custom_url;
+		$item_id = $row->item_id;
+		$custom_url = $row->custom_url;
 
-// 		if($row->target_window == '_blank'){
-// 			$target_window = ' target="_blank"';
-// 		}else{
-// 			$target_window = '';
-// 		}
-
-
-// 		//Menu list for Desktop
-// 		if($MenuType == 'HeaderMenuListForDesktop'){
-
-// 			if($row->child_menu_type == 'mega_menu'){
-// 				$MegaDropdownMenuList = makeMegaMenu($menu_id, $menu_parent_id, $row->width_type, $row->width, $MenuType);
-// 				$upDownClass = ' class="tp-updown"';
-// 			}elseif($row->child_menu_type == 'dropdown'){
-// 				$MegaDropdownMenuList = makeDropdownMenu($menu_id, $menu_parent_id, $MenuType);
-// 				$upDownClass = ' class="tp-updown"';
-// 			}else{
-// 				$MegaDropdownMenuList = '';
-// 				$upDownClass = '';
-// 			}
-
-// 			if($row->width_type == 'full_width'){
-// 				$full_width = 'class="tp-static"';
-// 			}else{
-// 				$full_width = '';
-// 			}
-
-// 			if($row->menu_type == 'page'){
-// 				$MenuList .= '<li '.$full_width.'><a'.$upDownClass.$target_window.' href="'.route('frontend.page', [$item_id, $custom_url]).'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
-
-// 			}elseif($row->menu_type == 'brand'){
-// 				$MenuList .= '<li '.$full_width.'><a'.$upDownClass.$target_window.' href="'.route('frontend.brand', [$item_id, $custom_url]).'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
-
-// 			}elseif($row->menu_type == 'custom_link'){
-// 				$MenuList .= '<li '.$full_width.'><a'.$upDownClass.$target_window.' href="'.$custom_url.'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
-
-// 			}elseif($row->menu_type == 'product'){
-// 				$MenuList .= '<li '.$full_width.'><a'.$upDownClass.$target_window.' href="'.route('frontend.product', [$item_id, $custom_url]).'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
-
-// 			}elseif($row->menu_type == 'product_category'){
-// 				$MenuList .= '<li '.$full_width.'><a'.$upDownClass.$target_window.' href="'.route('frontend.product-category', [$item_id, $custom_url]).'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
-
-// 			}elseif($row->menu_type == 'blog'){
-// 				if($item_id == 0){
-// 					$MenuList .= '<li '.$full_width.'><a'.$upDownClass.$target_window.' href="'.route('frontend.blog').'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
-// 				}else{
-// 					$MenuList .= '<li '.$full_width.'><a'.$upDownClass.$target_window.' href="'.route('frontend.blog-category', [$item_id, $custom_url]).'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
-// 				}
-// 			}
-
-// 		//Menu list for Mobile
-// 		}
-
-// 		else{
-
-// 			if($row->child_menu_type == 'mega_menu'){
-// 				$MegaDropdownMenuList = makeMegaMenu($menu_id, $menu_parent_id, $row->width_type, $row->width, $MenuType);
-// 				$hasChildrenMenu = 'class="has-children-menu"';
-// 			}elseif($row->child_menu_type == 'dropdown'){
-// 				$MegaDropdownMenuList = makeDropdownMenu($menu_id, $menu_parent_id, $MenuType);
-// 				$hasChildrenMenu = 'class="has-children-menu"';
-// 			}else{
-// 				$MegaDropdownMenuList = '';
-// 				$hasChildrenMenu = '';
-// 			}
-
-// 			if($row->menu_type == 'page'){
-// 				$MenuList .= '<li '.$hasChildrenMenu.'><a'.$target_window.' href="'.route('frontend.page', [$item_id, $custom_url]).'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
-
-// 			}elseif($row->menu_type == 'brand'){
-// 				$MenuList .= '<li '.$hasChildrenMenu.'><a'.$target_window.' href="'.route('frontend.brand', [$item_id, $custom_url]).'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
-
-// 			}elseif($row->menu_type == 'custom_link'){
-// 				$MenuList .= '<li '.$hasChildrenMenu.'><a'.$target_window.' href="'.$row->custom_url.'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
-
-// 			}elseif($row->menu_type == 'product'){
-// 				$MenuList .= '<li '.$hasChildrenMenu.'><a'.$target_window.' href="'.route('frontend.product', [$item_id, $custom_url]).'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
-
-// 			}elseif($row->menu_type == 'product_category'){
-// 				$MenuList .= '<li '.$hasChildrenMenu.'><a'.$target_window.' href="'.route('frontend.product-category', [$item_id, $custom_url]).'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
-
-// 			}elseif($row->menu_type == 'blog'){
-// 				if($item_id == 0){
-// 					$MenuList .= '<li '.$hasChildrenMenu.'><a'.$target_window.' href="'.route('frontend.blog').'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
-// 				}else{
-// 					$MenuList .= '<li '.$hasChildrenMenu.'><a'.$target_window.' href="'.route('frontend.blog-category', [$item_id, $custom_url]).'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
-// 				}
-// 			}
-// 		}
-// 	}
-
-// 	return $MenuList;
-// }
+		if($row->target_window == '_blank'){
+			$target_window = ' target="_blank"';
+		}else{
+			$target_window = '';
+		}
 
 
-function HeaderMenuList($MenuType) {
-    $lan = glan();
-    $cacheKey = 'header_menu_' . $MenuType . '_' . $lan;
+		//Menu list for Desktop
+		if($MenuType == 'HeaderMenuListForDesktop'){
 
-    return cache()->remember($cacheKey, now()->addHours(24), function() use ($MenuType, $lan) {
-        // Use Laravel query builder instead of raw SQL for better security and maintainability
-        $datalist = DB::table('menus as a')
-            ->join('menu_parents as b', 'a.id', '=', 'b.menu_id')
-            ->where('a.menu_position', 'header')
-            ->where('a.lan', $lan)
-            ->where('a.status_id', 1)
-            ->orderBy('b.sort_order', 'ASC')
-            ->select([
-                'b.id',
-                'b.menu_id',
-                'b.menu_type',
-                'b.child_menu_type',
-                'b.item_id',
-                'b.item_label',
-                'b.custom_url',
-                'b.target_window',
-                'b.css_class',
-                'b.column',
-                'b.width_type',
-                'b.width',
-                'b.lan',
-                'b.sort_order'
-            ])
-            ->get();
+			if($row->child_menu_type == 'mega_menu'){
+				$MegaDropdownMenuList = makeMegaMenu($menu_id, $menu_parent_id, $row->width_type, $row->width, $MenuType);
+				$upDownClass = ' class="tp-updown"';
+			}elseif($row->child_menu_type == 'dropdown'){
+				$MegaDropdownMenuList = makeDropdownMenu($menu_id, $menu_parent_id, $MenuType);
+				$upDownClass = ' class="tp-updown"';
+			}else{
+				$MegaDropdownMenuList = '';
+				$upDownClass = '';
+			}
 
-        $MenuList = '';
-        
-        foreach($datalist as $row) {
-            $menu_id = $row->menu_id;
-            $menu_parent_id = $row->id;
-            $item_id = $row->item_id;
-            $custom_url = $row->custom_url;
-            $target_window = $row->target_window == '_blank' ? ' target="_blank"' : '';
+			if($row->width_type == 'full_width'){
+				$full_width = 'class="tp-static"';
+			}else{
+				$full_width = '';
+			}
 
-            if ($MenuType == 'HeaderMenuListForDesktop') {
-                // Desktop menu logic
-                $MegaDropdownMenuList = '';
-                $upDownClass = '';
-                
-                if ($row->child_menu_type == 'mega_menu') {
-                    $MegaDropdownMenuList = makeMegaMenu($menu_id, $menu_parent_id, $row->width_type, $row->width, $MenuType);
-                    $upDownClass = ' class="tp-updown"';
-                } elseif ($row->child_menu_type == 'dropdown') {
-                    $MegaDropdownMenuList = makeDropdownMenu($menu_id, $menu_parent_id, $MenuType);
-                    $upDownClass = ' class="tp-updown"';
-                }
-                
-                $full_width = $row->width_type == 'full_width' ? 'class="tp-static"' : '';
-                
-                $MenuList .= $this->buildMenuItem(
-                    $row->menu_type,
-                    $full_width,
-                    $upDownClass,
-                    $target_window,
-                    $item_id,
-                    $custom_url,
-                    $row->item_label,
-                    $MegaDropdownMenuList
-                );
-            } else {
-                // Mobile menu logic
-                $MegaDropdownMenuList = '';
-                $hasChildrenMenu = '';
-                
-                if ($row->child_menu_type == 'mega_menu' || $row->child_menu_type == 'dropdown') {
-                    $MegaDropdownMenuList = makeMegaMenu($menu_id, $menu_parent_id, $row->width_type, $row->width, $MenuType);
-                    $hasChildrenMenu = 'class="has-children-menu"';
-                }
-                
-                $MenuList .= $this->buildMenuItem(
-                    $row->menu_type,
-                    $hasChildrenMenu,
-                    '',
-                    $target_window,
-                    $item_id,
-                    $custom_url,
-                    $row->item_label,
-                    $MegaDropdownMenuList,
-                    true
-                );
-            }
-        }
+			if($row->menu_type == 'page'){
+				$MenuList .= '<li '.$full_width.'><a'.$upDownClass.$target_window.' href="'.route('frontend.page', [$item_id, $custom_url]).'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
 
-        return $MenuList;
-    });
+			}elseif($row->menu_type == 'brand'){
+				$MenuList .= '<li '.$full_width.'><a'.$upDownClass.$target_window.' href="'.route('frontend.brand', [$item_id, $custom_url]).'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
+
+			}elseif($row->menu_type == 'custom_link'){
+				$MenuList .= '<li '.$full_width.'><a'.$upDownClass.$target_window.' href="'.$custom_url.'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
+
+			}elseif($row->menu_type == 'product'){
+				$MenuList .= '<li '.$full_width.'><a'.$upDownClass.$target_window.' href="'.route('frontend.product', [$item_id, $custom_url]).'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
+
+			}elseif($row->menu_type == 'product_category'){
+				$MenuList .= '<li '.$full_width.'><a'.$upDownClass.$target_window.' href="'.route('frontend.product-category', [$item_id, $custom_url]).'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
+
+			}elseif($row->menu_type == 'blog'){
+				if($item_id == 0){
+					$MenuList .= '<li '.$full_width.'><a'.$upDownClass.$target_window.' href="'.route('frontend.blog').'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
+				}else{
+					$MenuList .= '<li '.$full_width.'><a'.$upDownClass.$target_window.' href="'.route('frontend.blog-category', [$item_id, $custom_url]).'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
+				}
+			}
+
+		//Menu list for Mobile
+		}
+
+		else{
+
+			if($row->child_menu_type == 'mega_menu'){
+				$MegaDropdownMenuList = makeMegaMenu($menu_id, $menu_parent_id, $row->width_type, $row->width, $MenuType);
+				$hasChildrenMenu = 'class="has-children-menu"';
+			}elseif($row->child_menu_type == 'dropdown'){
+				$MegaDropdownMenuList = makeDropdownMenu($menu_id, $menu_parent_id, $MenuType);
+				$hasChildrenMenu = 'class="has-children-menu"';
+			}else{
+				$MegaDropdownMenuList = '';
+				$hasChildrenMenu = '';
+			}
+
+			if($row->menu_type == 'page'){
+				$MenuList .= '<li '.$hasChildrenMenu.'><a'.$target_window.' href="'.route('frontend.page', [$item_id, $custom_url]).'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
+
+			}elseif($row->menu_type == 'brand'){
+				$MenuList .= '<li '.$hasChildrenMenu.'><a'.$target_window.' href="'.route('frontend.brand', [$item_id, $custom_url]).'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
+
+			}elseif($row->menu_type == 'custom_link'){
+				$MenuList .= '<li '.$hasChildrenMenu.'><a'.$target_window.' href="'.$row->custom_url.'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
+
+			}elseif($row->menu_type == 'product'){
+				$MenuList .= '<li '.$hasChildrenMenu.'><a'.$target_window.' href="'.route('frontend.product', [$item_id, $custom_url]).'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
+
+			}elseif($row->menu_type == 'product_category'){
+				$MenuList .= '<li '.$hasChildrenMenu.'><a'.$target_window.' href="'.route('frontend.product-category', [$item_id, $custom_url]).'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
+
+			}elseif($row->menu_type == 'blog'){
+				if($item_id == 0){
+					$MenuList .= '<li '.$hasChildrenMenu.'><a'.$target_window.' href="'.route('frontend.blog').'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
+				}else{
+					$MenuList .= '<li '.$hasChildrenMenu.'><a'.$target_window.' href="'.route('frontend.blog-category', [$item_id, $custom_url]).'">'.$row->item_label.'</a>'.$MegaDropdownMenuList.'</li>';
+				}
+			}
+		}
+	}
+
+	return $MenuList;
 }
+
+
 
 // Helper method to build menu items (could be a separate method in the same class)
 protected function buildMenuItem($menuType, $wrapperClass, $linkClass, $target, $itemId, $customUrl, $label, $dropdownContent, $isMobile = false) {
