@@ -51,7 +51,6 @@ function PageVariation(){
 	return $data;
 }	
 
-// Page Variation with caching
 
 
 //Get data for Language locale
