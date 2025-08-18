@@ -432,9 +432,7 @@ protected function buildMenuItem($menuType, $wrapperClass, $linkClass, $target, 
         $dropdownContent = '<ul class="dropdown">' . $dropdownContent . '</ul>';
     }
 
-	
 
-    
     return sprintf(
         '<li %s><a%s%s href="%s">%s</a>%s</li>',
         $wrapperClass,
