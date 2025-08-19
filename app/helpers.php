@@ -49,7 +49,9 @@ function PageVariation(){
 	}
 
 	return $data;
-}
+}	
+
+
 
 //Get data for Language locale
 function glan(){
@@ -82,6 +84,8 @@ function CategoryMenuList(){
 
 	return $li_List;
 }
+
+
 
 //Category List for Mobile
 function CategoryListForMobile(){
@@ -235,6 +239,51 @@ function HeaderMenuList($MenuType){
 	}
 
 	return $MenuList;
+}
+
+
+
+// Helper method to build menu items (could be a separate method in the same class)
+protected function buildMenuItem($menuType, $wrapperClass, $linkClass, $target, $itemId, $customUrl, $label, $dropdownContent, $isMobile = false) {
+    $url = '';
+    
+    switch ($menuType) {
+        case 'page':
+            $url = route('frontend.page', [$itemId, $customUrl]);
+            break;
+        case 'brand':
+            $url = route('frontend.brand', [$itemId, $customUrl]);
+            break;
+        case 'custom_link':
+            $url = $customUrl;
+            break;
+        case 'product':
+            $url = route('frontend.product', [$itemId, $customUrl]);
+            break;
+        case 'product_category':
+            $url = route('frontend.product-category', [$itemId, $customUrl]);
+            break;
+        case 'blog':
+            $url = $itemId == 0 ? route('frontend.blog') : route('frontend.blog-category', [$itemId, $customUrl]);
+            break;
+        default:
+            $url = '#';
+    }
+    
+    if ($isMobile && !empty($dropdownContent)) {
+        $dropdownContent = '<ul class="dropdown">' . $dropdownContent . '</ul>';
+    }
+
+
+    return sprintf(
+        '<li %s><a%s%s href="%s">%s</a>%s</li>',
+        $wrapperClass,
+        $linkClass,
+        $target,
+        $url,
+        $label,
+        $dropdownContent
+    );
 }
 
 function makeMegaMenu($menu_id, $menu_parent_id, $width_type, $width, $MenuType){
