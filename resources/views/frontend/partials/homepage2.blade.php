@@ -108,6 +108,8 @@
     </div>
 </section>
 
+
+
 <style>
 /* ======================
    Professional Mobile Category Grid
@@ -115,6 +117,7 @@
 .category-section {
     padding: 1rem 0;
     background: #f8f9fa;
+	border:"1px solid"
 }
 
 .section-header {
