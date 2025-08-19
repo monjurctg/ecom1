@@ -105,7 +105,7 @@ function CategoryMenuList()
     $lan = glan(); // current language
     $cacheKey = "category_menu_list_{$lan}";
 
-    return Cache::remember($cacheKey, now()->addDays(2), function () use ($lan) {
+    return Cache::remember($cacheKey, now()->addDays(1), function () use ($lan) {
         $datalist = Pro_category::where('lan', $lan)
             ->where('is_publish', 1)
             ->orderBy('id', 'ASC')
