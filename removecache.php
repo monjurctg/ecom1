@@ -1,5 +1,6 @@
 <?php
 // removecache.php
+use Illuminate\Support\Facades\Cache;
 
 // Optional security
 $secret = 'clear'; // change this
@@ -11,7 +12,7 @@ if (!isset($_GET['key']) || $_GET['key'] !== $secret) {
 require __DIR__.'/vendor/autoload.php';
 $app = require_once __DIR__.'/bootstrap/app.php';
 
-use Illuminate\Support\Facades\Cache;
+
 
 // Boot Laravel
 $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
