@@ -74,6 +74,9 @@
 @if($section2->is_publish == 1)
 <section class="category-section">
     <div class="container">
+
+
+
         <div class="section-header">
             @if($section2->desc != '')
             <p class="section-subtitle">{{ $section2->desc }}</p>
