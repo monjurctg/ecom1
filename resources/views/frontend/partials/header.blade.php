@@ -212,9 +212,9 @@
 						<div class="tp-mega-full">
 							<div class="tp-menu align-self-center">
 								<nav>
-									<!-- <ul class="main-menu">
+									<ul class="main-menu">
 										@php echo HeaderMenuList('HeaderMenuListForDesktop'); @endphp
-									</ul> -->
+									</ul>
 								</nav>
 							</div>
 						</div>

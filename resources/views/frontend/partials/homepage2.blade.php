@@ -34,7 +34,7 @@
 	<!-- /Home Slider/ -->
 
 	<!-- Featured Categories -->
-	<!-- @if($section2->is_publish == 1)
+	@if($section2->is_publish == 1)
 	<section class="section">
 		<div class="container">
 			<div class="row">
@@ -68,7 +68,220 @@
 			</div>
 		</div>
 	</section>
-	@endif -->
+	@endif
+	<!-- for mobile section -->
+
+@if($section2->is_publish == 1)
+<section class="category-section">
+    <div class="container">
+        <div class="section-header">
+            @if($section2->desc != '')
+            <p class="section-subtitle">{{ $section2->desc }}</p>
+            @endif
+
+            @if($section2->title != '')
+            <h2 class="section-title">{{ $section2->title }}</h2>
+            @endif
+        </div>
+
+        <!-- Mobile/Tablet Grid -->
+        <div class="categories-grid">
+            @foreach ($pro_category as $row)
+            <div class="category-card">
+                <a href="{{ route('frontend.product-category', [$row->id, $row->slug]) }}" class="category-link">
+                    <div class="category-img-container">
+                        <div class="category-img-wrapper">
+                            <img src="{{ asset('public/media/'.$row->thumbnail) }}"
+                                 alt="{{ $row->name }}"
+                                 class="category-img"
+                                 loading="lazy">
+                        </div>
+                    </div>
+                    <div class="category-content">
+                        <h3 class="category-title">{{ $row->name }}</h3>
+                        <!-- <span class="category-cta">Shop Now <i class="bi bi-arrow-right"></i></span> -->
+                    </div>
+                </a>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+<style>
+/* ======================
+   Professional Mobile Category Grid
+   ====================== */
+.category-section {
+    padding: 1rem 0;
+    background: #f8f9fa;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 1rem;
+    padding: 0 1rem;
+}
+
+.section-subtitle {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.section-title {
+    color: #212529;
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* Grid Layout */
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.7rem;
+    padding: 0 0.5rem;
+}
+
+.category-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.category-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+.category-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+}
+
+.category-img-container {
+    position: relative;
+    padding-top: 100%; /* 1:1 Aspect Ratio */
+    background: #f1f3f5;
+}
+
+.category-img-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.category-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.category-card:hover .category-img {
+    transform: scale(1.05);
+}
+
+.category-content {
+    padding: 1rem;
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.category-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: #212529;
+    margin: 0 0 0.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* min-height: 2.8rem; */
+}
+
+.category-cta {
+    font-size: 0.8125rem;
+    color: var(--theme-color);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    margin-top: auto;
+}
+
+/* Tablet View */
+@media (min-width: 576px) {
+    .categories-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+        padding: 0 0.5rem;
+    }
+	.category-title {
+		 font-size: 12px;
+		    font-weight: 500;
+	}
+
+    .category-img-container {
+        padding-top: 80%; /* Slightly rectangular */
+    }
+	.category-content {
+		padding:0.5rem
+	}
+}
+
+/* Desktop View - Hide completely */
+@media (min-width: 992px) {
+    .category-section {
+        display: none;
+    }
+}
+
+/* Animation Enhancements */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.category-card {
+    animation: fadeIn 0.4s ease forwards;
+    opacity: 0;
+}
+/* Animation Enhancements */
+
+/* Manual staggered animation delays */
+.category-card:nth-child(1) { animation-delay: 0.05s; }
+.category-card:nth-child(2) { animation-delay: 0.1s; }
+.category-card:nth-child(3) { animation-delay: 0.15s; }
+.category-card:nth-child(4) { animation-delay: 0.2s; }
+.category-card:nth-child(5) { animation-delay: 0.25s; }
+.category-card:nth-child(6) { animation-delay: 0.3s; }
+.category-card:nth-child(7) { animation-delay: 0.35s; }
+.category-card:nth-child(8) { animation-delay: 0.4s; }
+.category-card:nth-child(9) { animation-delay: 0.45s; }
+.category-card:nth-child(10) { animation-delay: 0.5s; }
+.category-card:nth-child(11) { animation-delay: 0.55s; }
+.category-card:nth-child(12) { animation-delay: 0.6s; }
+</style>
+	@endif
 	<!-- /Featured Categories/ -->
 
 	<!-- Offer Section -->
@@ -141,6 +354,7 @@
 				</div>
 			</div>
 			<div class="row owl-carousel caro-common category-carousel">
+
 				@foreach ($new_products as $row)
 				<div class="col-lg-12">
 					<div class="item-card">
