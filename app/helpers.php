@@ -54,13 +54,13 @@ use Illuminate\Support\Facades\Auth;
 
 function PageVariation()
 {
-    return Cache::remember('page_variation', now()->addMinutes(30), function () {
+    return Cache::remember('page_variation', now()->addDays(2), function () {
         $option = Tp_option::where('option_name', 'page_variation')->first();
 
         $dataObj = $option ? json_decode($option->option_value, true) : [];
 
         return [
-            'home_variation'     => data_get($dataObj, 'home_variation', 'home_1'),
+            'home_variation'     => data_get($dataObj, 'home_variation', 'home_2'),
             'category_variation' => data_get($dataObj, 'category_variation', 'left_sidebar'),
             'brand_variation'    => data_get($dataObj, 'brand_variation', 'left_sidebar'),
             'seller_variation'   => data_get($dataObj, 'seller_variation', 'left_sidebar'),
@@ -76,28 +76,61 @@ function glan(){
 }
 
 //Category List
-function CategoryMenuList(){
-	$lan = glan();
+// function CategoryMenuList(){
+// 	$lan = glan();
 
-	$datalist = Pro_category::where('lan', '=', $lan)->where('is_publish', '=', 1)->orderBy('id', 'ASC')->get();
-	$li_List = '';
-	$Path = asset('public/media');
-	$count = 1;
-	foreach($datalist as $row){
-		$id = $row->id;
-		$slug = $row->slug;
-		$thumbnail = '<img src="'.$Path.'/'.$row->thumbnail.'" />';
+// 	$datalist = Pro_category::where('lan', '=', $lan)->where('is_publish', '=', 1)->orderBy('id', 'ASC')->get();
+// 	$li_List = '';
+// 	$Path = asset('public/media');
+// 	$count = 1;
+// 	foreach($datalist as $row){
+// 		$id = $row->id;
+// 		$slug = $row->slug;
+// 		$thumbnail = '<img src="'.$Path.'/'.$row->thumbnail.'" />';
 
-		if($count>8){
-			$li_List .= '<li class="cat-list-hideshow"><a href="'.route('frontend.product-category', [$id, $slug]).'"><div class="cat-icon">'.$thumbnail.'</div>'.$row->name.'</a></li>';
-		}else{
-			$li_List .= '<li><a href="'.route('frontend.product-category', [$id, $slug]).'"><div class="cat-icon">'.$thumbnail.'</div>'.$row->name.'</a></li>';
-		}
+// 		if($count>8){
+// 			$li_List .= '<li class="cat-list-hideshow"><a href="'.route('frontend.product-category', [$id, $slug]).'"><div class="cat-icon">'.$thumbnail.'</div>'.$row->name.'</a></li>';
+// 		}else{
+// 			$li_List .= '<li><a href="'.route('frontend.product-category', [$id, $slug]).'"><div class="cat-icon">'.$thumbnail.'</div>'.$row->name.'</a></li>';
+// 		}
 
-		$count++;
-	}
+// 		$count++;
+// 	}
 
-	return $li_List;
+// 	return $li_List;
+// }
+
+function CategoryMenuList()
+{
+    $lan = glan(); // current language
+    $cacheKey = "category_menu_list_{$lan}";
+
+    return Cache::remember($cacheKey, now()->addDays(2), function () use ($lan) {
+        $datalist = Pro_category::where('lan', $lan)
+            ->where('is_publish', 1)
+            ->orderBy('id', 'ASC')
+            ->get();
+
+        $li_List = '';
+        $Path = asset('public/media');
+        $count = 1;
+
+        foreach ($datalist as $row) {
+            $id   = $row->id;
+            $slug = $row->slug;
+            $thumbnail = '<img src="' . $Path . '/' . $row->thumbnail . '" />';
+
+            if ($count > 8) {
+                $li_List .= '<li class="cat-list-hideshow"><a href="' . route('frontend.product-category', [$id, $slug]) . '"><div class="cat-icon">' . $thumbnail . '</div>' . e($row->name) . '</a></li>';
+            } else {
+                $li_List .= '<li><a href="' . route('frontend.product-category', [$id, $slug]) . '"><div class="cat-icon">' . $thumbnail . '</div>' . e($row->name) . '</a></li>';
+            }
+
+            $count++;
+        }
+
+        return $li_List;
+    });
 }
 
 //Category List for Mobile
