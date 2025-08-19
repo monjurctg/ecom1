@@ -2,6 +2,7 @@
 
 use App\Models\Language;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -21,34 +22,50 @@ use App\Models\Section_manage;
 use Illuminate\Support\Facades\Auth;
 
 //Page Variation
-function PageVariation(){
-	// hello test
+// function PageVariation(){
+// 	// hello test
 
-	$data = array();
-	$results = Tp_option::where('option_name', 'page_variation')->get();
+// 	$data = array();
+// 	$results = Tp_option::where('option_name', 'page_variation')->get();
 
-	$id = '';
-	foreach ($results as $row){
-		$id = $row->id;
-	}
+// 	$id = '';
+// 	foreach ($results as $row){
+// 		$id = $row->id;
+// 	}
 
-	if($id != ''){
+// 	if($id != ''){
 
-		$sData = json_decode($results);
-		$dataObj = json_decode($sData[0]->option_value);
+// 		$sData = json_decode($results);
+// 		$dataObj = json_decode($sData[0]->option_value);
 
-		$data['home_variation'] = $dataObj->home_variation;
-		$data['category_variation'] = $dataObj->category_variation;
-		$data['brand_variation'] = $dataObj->brand_variation;
-		$data['seller_variation'] = $dataObj->seller_variation;
-	}else{
-		$data['home_variation'] = 'home_1';
-		$data['category_variation'] = 'left_sidebar';
-		$data['brand_variation'] = 'left_sidebar';
-		$data['seller_variation'] = 'left_sidebar';
-	}
+// 		$data['home_variation'] = $dataObj->home_variation;
+// 		$data['category_variation'] = $dataObj->category_variation;
+// 		$data['brand_variation'] = $dataObj->brand_variation;
+// 		$data['seller_variation'] = $dataObj->seller_variation;
+// 	}else{
+// 		$data['home_variation'] = 'home_1';
+// 		$data['category_variation'] = 'left_sidebar';
+// 		$data['brand_variation'] = 'left_sidebar';
+// 		$data['seller_variation'] = 'left_sidebar';
+// 	}
 
-	return $data;
+// 	return $data;
+// }
+
+function PageVariation()
+{
+    return Cache::remember('page_variation', now()->addMinutes(30), function () {
+        $option = Tp_option::where('option_name', 'page_variation')->first();
+
+        $dataObj = $option ? json_decode($option->option_value, true) : [];
+
+        return [
+            'home_variation'     => data_get($dataObj, 'home_variation', 'home_1'),
+            'category_variation' => data_get($dataObj, 'category_variation', 'left_sidebar'),
+            'brand_variation'    => data_get($dataObj, 'brand_variation', 'left_sidebar'),
+            'seller_variation'   => data_get($dataObj, 'seller_variation', 'left_sidebar'),
+        ];
+    });
 }
 
 //Get data for Language locale
