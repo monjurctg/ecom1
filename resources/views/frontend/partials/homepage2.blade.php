@@ -85,6 +85,7 @@
         </div>
 
         <!-- Mobile/Tablet Grid -->
+
         <div class="categories-grid">
             @foreach ($pro_category as $row)
             <div class="category-card">
