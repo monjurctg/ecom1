@@ -75,30 +75,63 @@ function glan(){
 	return $lan;
 }
 
-//Category List
-function CategoryMenuList(){
-	$lan = glan();
+function CategoryMenuList()
+{
+    $lan = glan(); // current language
+    $cacheKey = "category_menu_list_{$lan}";
 
-	$datalist = Pro_category::where('lan', '=', $lan)->where('is_publish', '=', 1)->orderBy('id', 'ASC')->get();
-	$li_List = '';
-	$Path = asset('public/media');
-	$count = 1;
-	foreach($datalist as $row){
-		$id = $row->id;
-		$slug = $row->slug;
-		$thumbnail = '<img src="'.$Path.'/'.$row->thumbnail.'" />';
+    return Cache::remember($cacheKey, now()->addDays(2), function () use ($lan) {
+        $datalist = Pro_category::where('lan', $lan)
+            ->where('is_publish', 1)
+            ->orderBy('id', 'ASC')
+            ->get();
 
-		if($count>8){
-			$li_List .= '<li class="cat-list-hideshow"><a href="'.route('frontend.product-category', [$id, $slug]).'"><div class="cat-icon">'.$thumbnail.'</div>'.$row->name.'</a></li>';
-		}else{
-			$li_List .= '<li><a href="'.route('frontend.product-category', [$id, $slug]).'"><div class="cat-icon">'.$thumbnail.'</div>'.$row->name.'</a></li>';
-		}
+        $li_List = '';
+        $Path = asset('public/media');
+        $count = 1;
 
-		$count++;
-	}
+        foreach ($datalist as $row) {
+            $id   = $row->id;
+            $slug = $row->slug;
+            $thumbnail = '<img src="' . $Path . '/' . $row->thumbnail . '" />';
 
-	return $li_List;
+            if ($count > 8) {
+                $li_List .= '<li class="cat-list-hideshow"><a href="' . route('frontend.product-category', [$id, $slug]) . '"><div class="cat-icon">' . $thumbnail . '</div>' . e($row->name) . '</a></li>';
+            } else {
+                $li_List .= '<li><a href="' . route('frontend.product-category', [$id, $slug]) . '"><div class="cat-icon">' . $thumbnail . '</div>' . e($row->name) . '</a></li>';
+            }
+
+            $count++;
+        }
+
+        return $li_List;
+    });
 }
+
+//Category List
+// function CategoryMenuList(){
+// 	$lan = glan();
+
+// 	$datalist = Pro_category::where('lan', '=', $lan)->where('is_publish', '=', 1)->orderBy('id', 'ASC')->get();
+// 	$li_List = '';
+// 	$Path = asset('public/media');
+// 	$count = 1;
+// 	foreach($datalist as $row){
+// 		$id = $row->id;
+// 		$slug = $row->slug;
+// 		$thumbnail = '<img src="'.$Path.'/'.$row->thumbnail.'" />';
+
+// 		if($count>8){
+// 			$li_List .= '<li class="cat-list-hideshow"><a href="'.route('frontend.product-category', [$id, $slug]).'"><div class="cat-icon">'.$thumbnail.'</div>'.$row->name.'</a></li>';
+// 		}else{
+// 			$li_List .= '<li><a href="'.route('frontend.product-category', [$id, $slug]).'"><div class="cat-icon">'.$thumbnail.'</div>'.$row->name.'</a></li>';
+// 		}
+
+// 		$count++;
+// 	}
+
+// 	return $li_List;
+// }
 
 //Category List for Mobile
 function CategoryListForMobile(){
