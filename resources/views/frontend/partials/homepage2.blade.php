@@ -99,7 +99,7 @@
                     </div>
                     <div class="category-content">
                         <h3 class="category-title">{{ $row->name }}</h3>
-                        <span class="category-cta">Shop Now <i class="bi bi-arrow-right"></i></span>
+                       
                     </div>
                 </a>
             </div>
@@ -134,10 +134,10 @@
 
 .section-title {
     color: #1f2937;
-    font-size: 1.625rem;
+    font-size: 1.123rem;
     font-weight: 700;
     position: relative;
-    padding-bottom: 1rem;
+    padding-bottom: 0.888rem;
     margin-bottom: 0;
     line-height: 1.3;
 }
@@ -242,7 +242,7 @@
 }
 
 .category-title {
-    font-size: 0.8125rem;
+    font-size: 0.7525rem;
     font-weight: 600;
     color: #1f2937;
     margin: 0 0 0.5rem;
@@ -251,8 +251,7 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    line-height: 1.3;
-    min-height: 2.1rem;
+    
 }
 
 .category-cta {
@@ -323,7 +322,7 @@
     }
     
     .category-title {
-        font-size: 0.8125rem;
+        font-size: 0.7525rem;
     }
 }
 
@@ -344,7 +343,7 @@
     }
     
     .category-title {
-        font-size: 0.875rem;
+        font-size: 0.7525rem;
     }
 }
 
