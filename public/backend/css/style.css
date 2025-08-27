@@ -2646,31 +2646,28 @@ table.order td p {
 	margin-right: 5px;
 }
 
-.product-card {
+
+
+/* Product Card */
+.item-card {
     background: #fff;
     transition: 0.3s;
-    display: flex;
-    flex-direction: column;
 }
-.product-card:hover {
+.item-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 6px 18px rgba(0,0,0,0.08);
 }
 
-.product-img-wrapper {
-    width: 100%;
-    height: 150px; /* ছোট height */
-    overflow: hidden;
-    border-radius: 6px 6px 0 0;
-}
+/* Image fixed height */
 .product-img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: 160px;     /* ছোট height */
+    object-fit: cover; /* image কাটাকাটি না করে ফিট করাবে */
+    border-radius: 6px;
 }
 
-/* Discount Badge */
-.discount-badge {
+/* Discount label */
+.item-label {
     position: absolute;
     top: 8px;
     left: 8px;
@@ -2681,29 +2678,19 @@ table.order td p {
     border-radius: 4px;
 }
 
-/* Title */
-.product-title a {
-    font-size: 14px;
-    color: #333;
-    text-decoration: none;
+/* Price style */
+.new-price {
+    font-size: 16px;
 }
-.product-title a:hover {
-    color: #0d6efd;
-}
-
-/* Price */
-.price-box .new-price {
-    font-size: 15px;
-}
-.price-box .old-price {
-    margin-left: 6px;
+.old-price {
+    font-size: 13px;
 }
 
 /* Stars */
 .stars-outer {
     display: inline-block;
     position: relative;
-    font-size: 13px;
+    font-size: 14px;
     color: #ccc;
 }
 .stars-inner {
