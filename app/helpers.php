@@ -1518,22 +1518,29 @@ function gMenuUpdate($item_id, $menu_type, $item_label, $slug) {
 	Menu_child::where('item_id', '=', $item_id)->where('menu_type', '=', $menu_type)->update($data);
 }
 
+
+
+
 function FooterSection(){
+    $PageVariation = PageVariation();
+    $HomeVariation = $PageVariation['home_variation'];
 
-	$PageVariation = PageVariation();
-	$HomeVariation = $PageVariation['home_variation'];
+    return Cache::remember("footer_section_{$HomeVariation}", 3600, function () use ($HomeVariation) {
+        $section15 = Section_manage::where('manage_type', $HomeVariation)
+            ->where('section', 'section_15')
+            ->where('is_publish', 1)
+            ->first();
 
-	//Home Page Section 15
-	$section15 = Section_manage::where('manage_type', '=', $HomeVariation)->where('section', '=', 'section_15')->where('is_publish', '=', 1)->first();
-	if($section15 ==''){
-		$section15_array =  array();
-		$section15_array['title'] = '';
-		$section15_array['desc'] = '';
-		$section15_array['image'] = '';
-		$section15_array['is_publish'] = 2;
-		$section15 = json_decode(json_encode($section15_array));
-	}
+        if (!$section15) {
+            $section15_array = [
+                'title'      => '',
+                'desc'       => '',
+                'image'      => '',
+                'is_publish' => 2,
+            ];
+            $section15 = (object) $section15_array;
+        }
 
-	return $section15;
+        return $section15;
+    });
 }
-
