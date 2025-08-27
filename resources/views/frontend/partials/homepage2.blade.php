@@ -74,15 +74,15 @@
 @if($section2->is_publish == 1)
 <section class="category-section">
     <div class="container">
-        <div class="section-header">
-            @if($section2->desc != '')
-            <p class="section-subtitle">{{ $section2->desc }}</p>
-            @endif
+       	<div class="section-heading text-center">
+						@if($section2->desc !='')
+						<h5>{{ $section2->desc }}</h5>
+						@endif
 
-            @if($section2->title != '')
-            <h2 class="section-title">{{ $section2->title }}</h2>
-            @endif
-        </div>
+						@if($section2->title !='')
+						<h2>{{ $section2->title }}</h2>
+						@endif
+					</div>
 
         <!-- Mobile/Tablet Grid -->
         <div class="categories-grid">
