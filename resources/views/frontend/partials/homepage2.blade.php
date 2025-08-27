@@ -70,7 +70,6 @@
 	</section>
 	@endif
 	<!-- for mobile section -->
-
 @if($section2->is_publish == 1)
 <section class="category-section">
     <div class="container">
@@ -114,12 +113,13 @@
    Enhanced Professional Category Grid
    ====================== */
 .category-section {
-    padding: 2rem 0;
+    padding: 2.5rem 0;
     background: linear-gradient(180deg, #f9fafb 0%, #ffffff 100%);
 }
 
 .section-heading {
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
+    padding: 0 1rem;
 }
 
 .section-subtitle {
@@ -128,17 +128,18 @@
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     display: block;
 }
 
 .section-title {
     color: #1f2937;
-    font-size: 1.5rem;
+    font-size: 1.625rem;
     font-weight: 700;
     position: relative;
-    padding-bottom: 0.75rem;
+    padding-bottom: 1rem;
     margin-bottom: 0;
+    line-height: 1.3;
 }
 
 .section-title:after {
@@ -153,26 +154,28 @@
     border-radius: 2px;
 }
 
-/* Grid Layout */
+/* Grid Layout - 3 columns for mobile */
 .categories-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-    padding: 0 0.5rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+    padding: 0 0.8rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .category-card {
     background: #fff;
-    border-radius: 16px;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
     transition: all 0.3s ease;
     position: relative;
 }
 
 .category-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
 }
 
 .category-link {
@@ -199,7 +202,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1.5rem;
+    padding: 1rem;
     z-index: 2;
 }
 
@@ -209,28 +212,28 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(0deg, rgba(0,0,0,0.03) 0%, rgba(0,0,0,0) 100%);
+    background: linear-gradient(0deg, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0) 100%);
     z-index: 1;
     transition: all 0.3s ease;
 }
 
 .category-card:hover .category-overlay {
-    background: linear-gradient(0deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0) 100%);
+    background: linear-gradient(0deg, rgba(0,0,0,0.04) 0%, rgba(0,0,0,0) 100%);
 }
 
 .category-img {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    transition: all 0.4s ease;
+    transition: all 0.3s ease;
 }
 
 .category-card:hover .category-img {
-    transform: scale(1.08);
+    transform: scale(1.06);
 }
 
 .category-content {
-    padding: 1rem 1rem 1.25rem;
+    padding: 0.9rem 0.5rem 1rem;
     text-align: center;
     flex-grow: 1;
     display: flex;
@@ -239,41 +242,96 @@
 }
 
 .category-title {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-weight: 600;
     color: #1f2937;
-    margin: 0 0 0.75rem;
+    margin: 0 0 0.5rem;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    line-height: 1.4;
+    line-height: 1.3;
+    min-height: 2.1rem;
 }
 
 .category-cta {
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     color: var(--theme-color);
     font-weight: 600;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.25rem;
+    gap: 0.2rem;
     transition: all 0.3s ease;
-    opacity: 0;
-    transform: translateY(5px);
+    margin-top: auto;
 }
 
-.category-card:hover .category-cta {
-    opacity: 1;
-    transform: translateY(0);
+.category-cta i {
+    transition: transform 0.3s ease;
+}
+
+.category-card:hover .category-cta i {
+    transform: translateX(2px);
+}
+
+/* Very small mobile devices */
+@media (max-width: 340px) {
+    .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.7rem;
+        padding: 0 0.7rem;
+    }
+    
+    .category-title {
+        font-size: 0.75rem;
+    }
+}
+
+/* Small mobile devices */
+@media (min-width: 341px) and (max-width: 380px) {
+    .categories-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.6rem;
+        padding: 0 0.6rem;
+    }
+    
+    .category-title {
+        font-size: 0.75rem;
+    }
+    
+    .category-content {
+        padding: 0.7rem 0.4rem 0.8rem;
+    }
+}
+
+/* Standard mobile devices */
+@media (min-width: 381px) and (max-width: 480px) {
+    .categories-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.8rem;
+        padding: 0 0.8rem;
+    }
+}
+
+/* Larger mobile devices */
+@media (min-width: 481px) and (max-width: 575px) {
+    .categories-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.9rem;
+        padding: 0 0.9rem;
+    }
+    
+    .category-title {
+        font-size: 0.8125rem;
+    }
 }
 
 /* Tablet View */
-@media (min-width: 576px) {
+@media (min-width: 576px) and (max-width: 767px) {
     .categories-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1.25rem;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
         padding: 0 1rem;
     }
     
@@ -282,18 +340,19 @@
     }
     
     .category-content {
-        padding: 1.25rem 1rem 1.5rem;
+        padding: 1rem 0.5rem 1.1rem;
     }
     
     .category-title {
-        font-size: 0.9375rem;
+        font-size: 0.875rem;
     }
 }
 
 /* Small Desktop View */
 @media (min-width: 768px) and (max-width: 991px) {
     .categories-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(5, 1fr);
+        gap: 1.1rem;
     }
 }
 
@@ -308,7 +367,7 @@
 @keyframes fadeInUp {
     from { 
         opacity: 0; 
-        transform: translateY(15px); 
+        transform: translateY(10px); 
     }
     to { 
         opacity: 1; 
@@ -317,7 +376,7 @@
 }
 
 .category-card {
-    animation: fadeInUp 0.5s ease forwards;
+    animation: fadeInUp 0.4s ease forwards;
     opacity: 0;
 }
 
@@ -339,7 +398,7 @@
 .category-link:focus {
     outline: 2px solid var(--theme-color);
     outline-offset: 2px;
-    border-radius: 16px;
+    border-radius: 12px;
 }
 </style>
 @endif
