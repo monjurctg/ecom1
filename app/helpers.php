@@ -355,51 +355,50 @@ function makeMegaMenu($menu_id, $menu_parent_id, $width_type, $width, $MenuType)
 
 
 
+
 function mega_liList($menu_id, $menu_parent_id, $mega_menu_id, $MenuType){
+    // Unique cache key for each variation
+    $cacheKey = "mega_liList_{$menu_id}_{$menu_parent_id}_{$mega_menu_id}_{$MenuType}";
 
-	$datalist = Menu_child::where('menu_id', '=', $menu_id)
-			->where('menu_parent_id', '=', $menu_parent_id)
-			->where('mega_menu_id', '=', $mega_menu_id)
-			->orderBy('sort_order','ASC')->get();
+    return Cache::remember($cacheKey, 3600, function () use ($menu_id, $menu_parent_id, $mega_menu_id) {
+        $datalist = Menu_child::where('menu_id', $menu_id)
+            ->where('menu_parent_id', $menu_parent_id)
+            ->where('mega_menu_id', $mega_menu_id)
+            ->orderBy('sort_order', 'ASC')
+            ->get();
 
-	$li_List = '';
-	$target_window = '';
-	foreach($datalist as $row){
+        $li_List = '';
+        foreach($datalist as $row){
+            $item_id = $row->item_id;
+            $custom_url = $row->custom_url;
+            $target_window = ($row->target_window == '_blank') ? ' target="_blank"' : '';
 
-		$item_id = $row->item_id;
-		$custom_url = $row->custom_url;
+            if($row->menu_type == 'page'){
+                $li_List .= '<li><a'.$target_window.' href="'.route('frontend.page', [$item_id, $custom_url]).'">'.$row->item_label.'</a></li>';
 
-		if($row->target_window == '_blank'){
-			$target_window = ' target="_blank"';
-		}else{
-			$target_window = '';
-		}
+            }elseif($row->menu_type == 'brand'){
+                $li_List .= '<li><a'.$target_window.' href="'.route('frontend.brand', [$item_id, $custom_url]).'">'.$row->item_label.'</a></li>';
 
-		if($row->menu_type == 'page'){
-			$li_List .= '<li><a'.$target_window.' href="'.route('frontend.page', [$item_id, $custom_url]).'">'.$row->item_label.'</a></li>';
+            }elseif($row->menu_type == 'custom_link'){
+                $li_List .= '<li><a'.$target_window.' href="'.$custom_url.'">'.$row->item_label.'</a></li>';
 
-		}elseif($row->menu_type == 'brand'){
-			$li_List .= '<li><a'.$target_window.' href="'.route('frontend.brand', [$item_id, $custom_url]).'">'.$row->item_label.'</a></li>';
+            }elseif($row->menu_type == 'product'){
+                $li_List .= '<li><a'.$target_window.' href="'.route('frontend.product', [$item_id, $custom_url]).'">'.$row->item_label.'</a></li>';
 
-		}elseif($row->menu_type == 'custom_link'){
-			$li_List .= '<li><a'.$target_window.' href="'.$custom_url.'">'.$row->item_label.'</a></li>';
+            }elseif($row->menu_type == 'product_category'){
+                $li_List .= '<li><a'.$target_window.' href="'.route('frontend.product-category', [$item_id, $custom_url]).'">'.$row->item_label.'</a></li>';
 
-		}elseif($row->menu_type == 'product'){
-			$li_List .= '<li><a'.$target_window.' href="'.route('frontend.product', [$item_id, $custom_url]).'">'.$row->item_label.'</a></li>';
+            }elseif($row->menu_type == 'blog'){
+                if($item_id == 0){
+                    $li_List .= '<li><a'.$target_window.' href="'.route('frontend.blog').'">'.$row->item_label.'</a></li>';
+                }else{
+                    $li_List .= '<li><a'.$target_window.' href="'.route('frontend.blog-category', [$item_id, $custom_url]).'">'.$row->item_label.'</a></li>';
+                }
+            }
+        }
 
-		}elseif($row->menu_type == 'product_category'){
-			$li_List .= '<li><a'.$target_window.' href="'.route('frontend.product-category', [$item_id, $custom_url]).'">'.$row->item_label.'</a></li>';
-
-		}elseif($row->menu_type == 'blog'){
-			if($item_id == 0){
-				$li_List .= '<li><a'.$target_window.' href="'.route('frontend.blog').'">'.$row->item_label.'</a></li>';
-			}else{
-				$li_List .= '<li><a'.$target_window.' href="'.route('frontend.blog-category', [$item_id, $custom_url]).'">'.$row->item_label.'</a></li>';
-			}
-		}
-	}
-
-	return $li_List;
+        return $li_List;
+    });
 }
 
 function makeDropdownMenu($menu_id, $menu_parent_id, $MenuType){
