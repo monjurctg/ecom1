@@ -456,16 +456,15 @@
 	<!-- /Offer Section/ -->
 
 	<!-- New Products -->
-	@if($section4->is_publish == 1)
-<section class="section product-section">
+@if($section4->is_publish == 1)
+<section class="section product-section py-4">
     <div class="container">
         <div class="row">
             <div class="col">
-                <div class="section-heading text-center">
+                <div class="section-heading text-center mb-4">
                     @if($section4->desc !='')
                         <h5>{{ $section4->desc }}</h5>
                     @endif
-
                     @if($section4->title !='')
                         <h2>{{ $section4->title }}</h2>
                     @endif
@@ -473,10 +472,12 @@
             </div>
         </div>
 
-        <div class="row g-4">
+        <div class="row g-3">
             @foreach ($new_products as $row)
-            <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-                <div class="item-card h-100">
+            <div class="col-lg-3 col-md-4 col-sm-6 col-6">
+                <div class="item-card h-100 shadow-sm rounded p-2">
+                    
+                    <!-- Image -->
                     <div class="item-image position-relative">
                         @if(($row->is_discount == 1) && ($row->old_price !=''))
                             @php
@@ -485,60 +486,75 @@
                             <span class="item-label">{{ $discount }}% {{ __('Off') }}</span>
                         @endif
                         <a href="{{ route('frontend.product', [$row->id, $row->slug]) }}">
-                            <img src="{{ asset('public/media/'.$row->f_thumbnail) }}" class="img-fluid" alt="{{ $row->title }}" />
+                            <img src="{{ asset('public/media/'.$row->f_thumbnail) }}" 
+                                 alt="{{ $row->title }}" 
+                                 class="img-fluid product-img"/>
                         </a>
                     </div>
 
-                    <div class="item-title mt-2">
+                    <!-- Title -->
+                    <div class="item-title mt-2 text-truncate">
                         <a href="{{ route('frontend.product', [$row->id, $row->slug]) }}">
                             {{ str_limit($row->title, 40) }}
                         </a>
                     </div>
 
-                    <div class="rating-wrap mb-2">
+                    <!-- Rating -->
+                    <div class="rating-wrap small mb-1">
                         <div class="stars-outer">
                             <div class="stars-inner" style="width:{{ $row->ReviewPercentage }}%;"></div>
                         </div>
                         <span class="rating-count">({{ $row->TotalReview }})</span>
                     </div>
 
-                    <div class="item-sold">
+                    <!-- Seller -->
+                    <div class="item-sold small mb-2">
                         {{ __('Sold By') }} 
                         <a href="{{ route('frontend.stores', [$row->seller_id, str_slug($row->shop_url)]) }}">
                             {{ str_limit($row->shop_name, 20) }}
                         </a>
                     </div>
 
-                    <div class="item-pric-card my-2">
+                    <!-- Price -->
+                    <div class="item-pric-card mb-2">
                         @if($row->sale_price != '')
-                            @if($gtext['currency_position'] == 'left')
-                                <div class="new-price fw-bold">{{ $gtext['currency_icon'] }}{{ NumberFormat($row->sale_price) }}</div>
-                            @else
-                                <div class="new-price fw-bold">{{ NumberFormat($row->sale_price) }}{{ $gtext['currency_icon'] }}</div>
-                            @endif
+                            <div class="new-price fw-bold text-primary">
+                                @if($gtext['currency_position'] == 'left')
+                                    {{ $gtext['currency_icon'] }}{{ NumberFormat($row->sale_price) }}
+                                @else
+                                    {{ NumberFormat($row->sale_price) }}{{ $gtext['currency_icon'] }}
+                                @endif
+                            </div>
                         @endif
                         @if(($row->is_discount == 1) && ($row->old_price !=''))
-                            @if($gtext['currency_position'] == 'left')
-                                <div class="old-price text-muted"><del>{{ $gtext['currency_icon'] }}{{ NumberFormat($row->old_price) }}</del></div>
-                            @else
-                                <div class="old-price text-muted"><del>{{ NumberFormat($row->old_price) }}{{ $gtext['currency_icon'] }}</del></div>
-                            @endif
+                            <div class="old-price text-muted small">
+                                <del>
+                                @if($gtext['currency_position'] == 'left')
+                                    {{ $gtext['currency_icon'] }}{{ NumberFormat($row->old_price) }}
+                                @else
+                                    {{ NumberFormat($row->old_price) }}{{ $gtext['currency_icon'] }}
+                                @endif
+                                </del>
+                            </div>
                         @endif
                     </div>
 
+                    <!-- Buttons -->
                     <div class="item-card-bottom d-flex justify-content-between align-items-center">
-                        <a data-id="{{ $row->id }}" href="javascript:void(0);" class="btn btn-sm btn-primary add-to-cart addtocart">
+                        <a data-id="{{ $row->id }}" href="javascript:void(0);" 
+                           class="btn btn-sm btn-primary add-to-cart addtocart">
                             {{ __('Add To Cart') }}
                         </a>
-                        <ul class="item-cart-list list-unstyled d-flex mb-0">
-                            <li class="me-2">
-                                <a class="addtowishlist" data-id="{{ $row->id }}" href="javascript:void(0);"><i class="bi bi-heart"></i></a>
-                            </li>
-                            <li>
-                                <a href="{{ route('frontend.product', [$row->id, $row->slug]) }}"><i class="bi bi-eye"></i></a>
-                            </li>
-                        </ul>
+                        <div class="d-flex">
+                            <a class="addtowishlist me-2" data-id="{{ $row->id }}" href="javascript:void(0);">
+                                <i class="bi bi-heart"></i>
+                            </a>
+                            <a href="{{ route('frontend.product', [$row->id, $row->slug]) }}">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </div>
                     </div>
+
                 </div>
             </div>
             @endforeach
@@ -546,6 +562,7 @@
     </div>
 </section>
 @endif
+
 
 	<!-- /New Products/ -->
 
