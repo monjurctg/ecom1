@@ -1769,8 +1769,10 @@ ul.categories-wrap li ul.nav-category-list li.cat-list-hideshow.open {
 	height: auto;
 }
 
+
 /* ======================
    Products Section
+   
    ====================== */
 .product-section {
 	background-position: 50%;
@@ -1783,8 +1785,8 @@ ul.categories-wrap li ul.nav-category-list li.cat-list-hideshow.open {
 	background: var(--color-white);
 	padding: 15px 15px 10px 15px;
 	border: 1px solid var(--color-light-green);
-	border-radius: 5px;
-	margin-bottom: 10px;
+	border-radius: 10px;
+	/* margin-bottom: 10px; */
 	-webkit-transition: all 0.3s ease-out 0s;
 	-moz-transition: all 0.3s ease-out 0s;
 	transition: all 0.3s ease-out 0s;	
