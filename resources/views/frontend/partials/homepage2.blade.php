@@ -457,79 +457,450 @@
 
 	<!-- New Products -->
 	@if($section4->is_publish == 1)
-	<section class="section product-section">
-		<div class="container">
-			<div class="row">
-				<div class="col">
-					<div class="section-heading text-center">
-						@if($section4->desc !='')
-						<h5>{{ $section4->desc }}</h5>
-						@endif
+<section class="modern-product-section">
+    <div class="container">
+        <div class="section-header">
+            @if($section4->desc != '')
+            <p class="section-subtitle">{{ $section4->desc }}</p>
+            @endif
 
-						@if($section4->title !='')
-						<h2>{{ $section4->title }}</h2>
-						@endif
-					</div>
-				</div>
-			</div>
-			<div class="row owl-carousel caro-common category-carousel">
+            @if($section4->title != '')
+            <h2 class="section-title">{{ $section4->title }}</h2>
+            @endif
+        </div>
 
-				@foreach ($new_products as $row)
-				<div class="col-lg-12">
-					<div class="item-card">
-						<div class="item-image">
-							@if(($row->is_discount == 1) && ($row->old_price !=''))
-								@php
-									$discount = number_format((($row->old_price - $row->sale_price)*100)/$row->old_price);
-								@endphp
-							<span class="item-label">{{ $discount }}% {{ __('Off') }}</span>
-							@endif
-							<a href="{{ route('frontend.product', [$row->id, $row->slug]) }}">
-								<img src="{{ asset('public/media/'.$row->f_thumbnail) }}" alt="{{ $row->title }}" />
-							</a>
-						</div>
-						<div class="item-title">
-							<a href="{{ route('frontend.product', [$row->id, $row->slug]) }}">{{ str_limit($row->title) }}</a>
-						</div>
-						<div class="rating-wrap">
-							<div class="stars-outer">
-								<div class="stars-inner" style="width:{{ $row->ReviewPercentage }}%;"></div>
-							</div>
-							<span class="rating-count">({{ $row->TotalReview }})</span>
-						</div>
-						<div class="item-sold">
-							{{ __('Sold By') }} <a href="{{ route('frontend.stores', [$row->seller_id, str_slug($row->shop_url)]) }}">{{ str_limit($row->shop_name) }}</a>
-						</div>
-						<div class="item-pric-card">
-							@if($row->sale_price != '')
-								@if($gtext['currency_position'] == 'left')
-								<div class="new-price">{{ $gtext['currency_icon'] }}{{ NumberFormat($row->sale_price) }}</div>
-								@else
-								<div class="new-price">{{ NumberFormat($row->sale_price) }}{{ $gtext['currency_icon'] }}</div>
-								@endif
-							@endif
-							@if(($row->is_discount == 1) && ($row->old_price !=''))
-								@if($gtext['currency_position'] == 'left')
-								<div class="old-price">{{ $gtext['currency_icon'] }}{{ NumberFormat($row->old_price) }}</div>
-								@else
-								<div class="old-price">{{ NumberFormat($row->old_price) }}{{ $gtext['currency_icon'] }}</div>
-								@endif
-							@endif
-						</div>
-						<div class="item-card-bottom">
-							<a data-id="{{ $row->id }}" href="javascript:void(0);" class="btn add-to-cart addtocart">{{ __('Add To Cart') }}</a>
-							<ul class="item-cart-list">
-								<li><a class="addtowishlist" data-id="{{ $row->id }}" href="javascript:void(0);"><i class="bi bi-heart"></i></a></li>
-								<li><a href="{{ route('frontend.product', [$row->id, $row->slug]) }}"><i class="bi bi-eye"></i></a></li>
-							</ul>
-						</div>
-					</div>
-				</div>
-				@endforeach
-			</div>
-		</div>
-	</section>
-	@endif
+        <div class="products-grid">
+            @foreach ($new_products as $row)
+            <div class="product-card">
+                <div class="product-badge">
+                    @if(($row->is_discount == 1) && ($row->old_price != ''))
+                        @php
+                            $discount = number_format((($row->old_price - $row->sale_price)*100)/$row->old_price);
+                        @endphp
+                    <span class="discount-badge">{{ $discount }}% {{ __('Off') }}</span>
+                    @endif
+                </div>
+                
+                <div class="product-image">
+                    <a href="{{ route('frontend.product', [$row->id, $row->slug]) }}">
+                        <img src="{{ asset('public/media/'.$row->f_thumbnail) }}" alt="{{ $row->title }}" loading="lazy" />
+                    </a>
+                    <button class="wishlist-btn addtowishlist" data-id="{{ $row->id }}" aria-label="Add to wishlist">
+                        <i class="bi bi-heart"></i>
+                    </button>
+                </div>
+                
+                <div class="product-info">
+                    <div class="product-vendor">
+                        {{ __('Sold By') }} <a href="{{ route('frontend.stores', [$row->seller_id, str_slug($row->shop_url)]) }}">{{ str_limit($row->shop_name) }}</a>
+                    </div>
+                    
+                    <h3 class="product-title">
+                        <a href="{{ route('frontend.product', [$row->id, $row->slug]) }}">{{ str_limit($row->title) }}</a>
+                    </h3>
+                    
+                    <div class="product-rating">
+                        <div class="stars-outer">
+                            <div class="stars-inner" style="width:{{ $row->ReviewPercentage }}%;"></div>
+                        </div>
+                        <span class="rating-count">({{ $row->TotalReview }})</span>
+                    </div>
+                    
+                    <div class="product-price">
+                        @if($row->sale_price != '')
+                            @if($gtext['currency_position'] == 'left')
+                            <div class="current-price">{{ $gtext['currency_icon'] }}{{ NumberFormat($row->sale_price) }}</div>
+                            @else
+                            <div class="current-price">{{ NumberFormat($row->sale_price) }}{{ $gtext['currency_icon'] }}</div>
+                            @endif
+                        @endif
+                        
+                        @if(($row->is_discount == 1) && ($row->old_price != ''))
+                            @if($gtext['currency_position'] == 'left')
+                            <div class="original-price">{{ $gtext['currency_icon'] }}{{ NumberFormat($row->old_price) }}</div>
+                            @else
+                            <div class="original-price">{{ NumberFormat($row->old_price) }}{{ $gtext['currency_icon'] }}</div>
+                            @endif
+                        @endif
+                    </div>
+                    
+                    <div class="product-actions">
+                        <a data-id="{{ $row->id }}" href="javascript:void(0);" class="add-to-cart-btn addtocart">
+                            <i class="bi bi-cart-plus"></i> {{ __('Add To Cart') }}
+                        </a>
+                        <a href="{{ route('frontend.product', [$row->id, $row->slug]) }}" class="view-details-btn" aria-label="View product details">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+<style>
+/* Modern Product Section Styles */
+.modern-product-section {
+    padding: 3rem 0;
+    background: #fafafa;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding: 0 1rem;
+}
+
+.section-subtitle {
+    color: var(--theme-color);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.75rem;
+    display: block;
+}
+
+.section-title {
+    color: #1a1a1a;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+.section-title:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: var(--theme-color);
+    border-radius: 2px;
+}
+
+/* Products Grid - 2 columns on mobile */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 0 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.product-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.product-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+}
+
+.discount-badge {
+    background: #ff4444;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.product-image {
+    position: relative;
+    padding-top: 100%; /* 1:1 Aspect Ratio */
+    background: #f8f9fa;
+    overflow: hidden;
+}
+
+.product-image a {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.product-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.4s ease;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.05);
+}
+
+.wishlist-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+.wishlist-btn:hover {
+    background: #fff;
+    color: #ff4444;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.product-info {
+    padding: 1rem;
+}
+
+.product-vendor {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+}
+
+.product-vendor a {
+    color: #495057;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.product-vendor a:hover {
+    color: var(--theme-color);
+}
+
+.product-title {
+    margin: 0 0 0.75rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.product-title a {
+    color: #1a1a1a;
+    text-decoration: none;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-title a:hover {
+    color: var(--theme-color);
+}
+
+.product-rating {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.stars-outer {
+    position: relative;
+    display: inline-block;
+    font-size: 0.875rem;
+}
+
+.stars-outer::before {
+    content: "★★★★★";
+    color: #e0e0e0;
+}
+
+.stars-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 0;
+}
+
+.stars-inner::before {
+    content: "★★★★★";
+    color: #ffc107;
+}
+
+.rating-count {
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-left: 0.5rem;
+}
+
+.product-price {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.current-price {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.original-price {
+    font-size: 0.875rem;
+    color: #6c757d;
+    text-decoration: line-through;
+}
+
+.product-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.add-to-cart-btn {
+    flex: 1;
+    background: var(--theme-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    text-decoration: none;
+}
+
+.add-to-cart-btn:hover {
+    background: var(--theme-color-dark);
+    transform: translateY(-2px);
+}
+
+.view-details-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    background: #f8f9fa;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.view-details-btn:hover {
+    background: #e9ecef;
+    color: var(--theme-color);
+}
+
+/* Tablet View */
+@media (min-width: 768px) {
+    .products-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        padding: 0 1.5rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+}
+
+/* Desktop View */
+@media (min-width: 992px) {
+    .products-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.75rem;
+    }
+    
+    .modern-product-section {
+        padding: 4rem 0;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 360px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.8rem;
+        padding: 0 0.8rem;
+    }
+    
+    .product-info {
+        padding: 0.75rem;
+    }
+    
+    .product-title {
+        font-size: 0.875rem;
+    }
+    
+    .add-to-cart-btn {
+        font-size: 0.8125rem;
+        padding: 0.5rem;
+    }
+}
+
+/* Animation Enhancements */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.product-card {
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
+}
+
+/* Staggered animation delays */
+.product-card:nth-child(1) { animation-delay: 0.05s; }
+.product-card:nth-child(2) { animation-delay: 0.1s; }
+.product-card:nth-child(3) { animation-delay: 0.15s; }
+.product-card:nth-child(4) { animation-delay: 0.2s; }
+.product-card:nth-child(5) { animation-delay: 0.25s; }
+.product-card:nth-child(6) { animation-delay: 0.3s; }
+.product-card:nth-child(7) { animation-delay: 0.35s; }
+.product-card:nth-child(8) { animation-delay: 0.4s; }
+.product-card:nth-child(9) { animation-delay: 0.45s; }
+.product-card:nth-child(10) { animation-delay: 0.5s; }
+.product-card:nth-child(11) { animation-delay: 0.55s; }
+.product-card:nth-child(12) { animation-delay: 0.6s; }
+</style>
+@endif
 	<!-- /New Products/ -->
 
 	<!-- Popular Products -->
