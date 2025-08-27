@@ -1784,7 +1784,7 @@ ul.categories-wrap li ul.nav-category-list li.cat-list-hideshow.open {
 	padding: 15px 15px 10px 15px;
 	border: 1px solid var(--color-light-green);
 	border-radius: 5px;
-	margin-bottom: 25px;
+	margin-bottom: 10px;
 	-webkit-transition: all 0.3s ease-out 0s;
 	-moz-transition: all 0.3s ease-out 0s;
 	transition: all 0.3s ease-out 0s;	
@@ -1798,7 +1798,7 @@ ul.categories-wrap li ul.nav-category-list li.cat-list-hideshow.open {
 .item-card .item-image {
 	width: 100%;
 	position: relative;
-	margin-bottom: 15px;
+	margin-bottom: 5px;
 	overflow: hidden;
 	-webkit-transition: all 0.5s ease-in-out 0s;
 	-moz-transition: all 0.5s ease-in-out 0s;
@@ -1884,8 +1884,8 @@ ul.categories-wrap li ul.nav-category-list li.cat-list-hideshow.open {
 .item-card .item-title a {
 	font-family: var(--secondary-font-family);
 	color: var(--color-black);
-	font-weight: 700;
-	font-size: var(--font-size-200);
+	font-weight: 600;
+	font-size: var(--font-size-100);
 	margin-bottom: 5px;
 }
 .item-card .item-title a:hover {
