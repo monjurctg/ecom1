@@ -35,7 +35,7 @@
 
 	<!-- Featured Categories -->
 	@if($section2->is_publish == 1)
-	<section class="section">
+	<section class="section d-none d-md-block">
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12">
