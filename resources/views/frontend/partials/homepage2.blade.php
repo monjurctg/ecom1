@@ -74,15 +74,15 @@
 @if($section2->is_publish == 1)
 <section class="category-section">
     <div class="container">
-       	<div class="section-heading text-center">
-						@if($section2->desc !='')
-						<h5>{{ $section2->desc }}</h5>
-						@endif
+        <div class="section-heading text-center">
+            @if($section2->desc != '')
+            <h5 class="section-subtitle">{{ $section2->desc }}</h5>
+            @endif
 
-						@if($section2->title !='')
-						<h2>{{ $section2->title }}</h2>
-						@endif
-					</div>
+            @if($section2->title != '')
+            <h2 class="section-title">{{ $section2->title }}</h2>
+            @endif
+        </div>
 
         <!-- Mobile/Tablet Grid -->
         <div class="categories-grid">
@@ -96,10 +96,11 @@
                                  class="category-img"
                                  loading="lazy">
                         </div>
+                        <div class="category-overlay"></div>
                     </div>
                     <div class="category-content">
                         <h3 class="category-title">{{ $row->name }}</h3>
-                        <!-- <span class="category-cta">Shop Now <i class="bi bi-arrow-right"></i></span> -->
+                        <span class="category-cta">Shop Now <i class="bi bi-arrow-right"></i></span>
                     </div>
                 </a>
             </div>
@@ -110,53 +111,68 @@
 
 <style>
 /* ======================
-   Professional Mobile Category Grid
+   Enhanced Professional Category Grid
    ====================== */
 .category-section {
-    padding: 1rem 0;
-    background: #f8f9fa;
+    padding: 2rem 0;
+    background: linear-gradient(180deg, #f9fafb 0%, #ffffff 100%);
 }
 
-.section-header {
-    text-align: center;
-    margin-bottom: 1rem;
-    padding: 0 1rem;
+.section-heading {
+    margin-bottom: 2rem;
 }
 
 .section-subtitle {
-    color: #6c757d;
+    color: var(--theme-color);
     font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
     margin-bottom: 0.5rem;
-    font-weight: 500;
+    display: block;
 }
 
 .section-title {
-    color: #212529;
-    font-size: 1rem;
+    color: #1f2937;
+    font-size: 1.5rem;
     font-weight: 700;
-    margin: 0;
+    position: relative;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0;
+}
+
+.section-title:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: var(--theme-color);
+    border-radius: 2px;
 }
 
 /* Grid Layout */
 .categories-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.7rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
     padding: 0 0.5rem;
 }
 
 .category-card {
     background: #fff;
-    border-radius: 12px;
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
     position: relative;
 }
 
 .category-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
 }
 
 .category-link {
@@ -170,7 +186,8 @@
 .category-img-container {
     position: relative;
     padding-top: 100%; /* 1:1 Aspect Ratio */
-    background: #f1f3f5;
+    background: #f8fafc;
+    overflow: hidden;
 }
 
 .category-img-wrapper {
@@ -182,39 +199,56 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1rem;
+    padding: 1.5rem;
+    z-index: 2;
+}
+
+.category-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(0deg, rgba(0,0,0,0.03) 0%, rgba(0,0,0,0) 100%);
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+.category-card:hover .category-overlay {
+    background: linear-gradient(0deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0) 100%);
 }
 
 .category-img {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    transition: transform 0.3s ease;
+    transition: all 0.4s ease;
 }
 
 .category-card:hover .category-img {
-    transform: scale(1.05);
+    transform: scale(1.08);
 }
 
 .category-content {
-    padding: 1rem;
+    padding: 1rem 1rem 1.25rem;
     text-align: center;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
 .category-title {
-    font-size: 13px;
-    font-weight: 500;
-    color: #212529;
-    margin: 0 0 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 0.75rem;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    /* min-height: 2.8rem; */
+    line-height: 1.4;
 }
 
 .category-cta {
@@ -225,27 +259,42 @@
     align-items: center;
     justify-content: center;
     gap: 0.25rem;
-    margin-top: auto;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(5px);
+}
+
+.category-card:hover .category-cta {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* Tablet View */
 @media (min-width: 576px) {
     .categories-grid {
         grid-template-columns: repeat(3, 1fr);
-        gap: 0.5rem;
-        padding: 0 0.5rem;
+        gap: 1.25rem;
+        padding: 0 1rem;
     }
-	.category-title {
-		 font-size: 12px;
-		    font-weight: 500;
-	}
+    
+    .section-title {
+        font-size: 1.75rem;
+    }
+    
+    .category-content {
+        padding: 1.25rem 1rem 1.5rem;
+    }
+    
+    .category-title {
+        font-size: 0.9375rem;
+    }
+}
 
-    .category-img-container {
-        padding-top: 80%; /* Slightly rectangular */
+/* Small Desktop View */
+@media (min-width: 768px) and (max-width: 991px) {
+    .categories-grid {
+        grid-template-columns: repeat(4, 1fr);
     }
-	.category-content {
-		padding:0.5rem
-	}
 }
 
 /* Desktop View - Hide completely */
@@ -256,16 +305,21 @@
 }
 
 /* Animation Enhancements */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+@keyframes fadeInUp {
+    from { 
+        opacity: 0; 
+        transform: translateY(15px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
 }
 
 .category-card {
-    animation: fadeIn 0.4s ease forwards;
+    animation: fadeInUp 0.5s ease forwards;
     opacity: 0;
 }
-/* Animation Enhancements */
 
 /* Manual staggered animation delays */
 .category-card:nth-child(1) { animation-delay: 0.05s; }
@@ -280,8 +334,15 @@
 .category-card:nth-child(10) { animation-delay: 0.5s; }
 .category-card:nth-child(11) { animation-delay: 0.55s; }
 .category-card:nth-child(12) { animation-delay: 0.6s; }
+
+/* Focus states for accessibility */
+.category-link:focus {
+    outline: 2px solid var(--theme-color);
+    outline-offset: 2px;
+    border-radius: 16px;
+}
 </style>
-	@endif
+@endif
 	<!-- /Featured Categories/ -->
 
 	<!-- Offer Section -->
