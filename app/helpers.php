@@ -20,36 +20,32 @@ use App\Models\Social_media;
 use App\Models\Section_manage;
 use Illuminate\Support\Facades\Auth;
 
-//Page Variation
+use Illuminate\Support\Facades\Cache;
+
 function PageVariation(){
-	// hello test
+    // Cache for 1 hour (3600 seconds)
+    return Cache::remember('page_variation', 3600, function () {
+        $data = [];
 
-	$data = array();
-	$results = Tp_option::where('option_name', 'page_variation')->get();
+        $results = Tp_option::where('option_name', 'page_variation')->get();
 
-	$id = '';
-	foreach ($results as $row){
-		$id = $row->id;
-	}
+        if ($results->isNotEmpty()) {
+            $dataObj = json_decode($results[0]->option_value);
 
-	if($id != ''){
+            $data['home_variation']     = $dataObj->home_variation ?? 'home_1';
+            $data['category_variation'] = $dataObj->category_variation ?? 'left_sidebar';
+            $data['brand_variation']    = $dataObj->brand_variation ?? 'left_sidebar';
+            $data['seller_variation']   = $dataObj->seller_variation ?? 'left_sidebar';
+        } else {
+            $data['home_variation']     = 'home_1';
+            $data['category_variation'] = 'left_sidebar';
+            $data['brand_variation']    = 'left_sidebar';
+            $data['seller_variation']   = 'left_sidebar';
+        }
 
-		$sData = json_decode($results);
-		$dataObj = json_decode($sData[0]->option_value);
-
-		$data['home_variation'] = $dataObj->home_variation;
-		$data['category_variation'] = $dataObj->category_variation;
-		$data['brand_variation'] = $dataObj->brand_variation;
-		$data['seller_variation'] = $dataObj->seller_variation;
-	}else{
-		$data['home_variation'] = 'home_1';
-		$data['category_variation'] = 'left_sidebar';
-		$data['brand_variation'] = 'left_sidebar';
-		$data['seller_variation'] = 'left_sidebar';
-	}
-
-	return $data;
-}	
+        return $data;
+    });
+}
 
 
 
