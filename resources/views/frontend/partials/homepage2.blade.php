@@ -475,86 +475,79 @@
         <div class="row g-3">
             @foreach ($new_products as $row)
             <div class="col-lg-3 col-md-4 col-sm-6 col-6">
-                <div class="item-card h-100 shadow-sm rounded p-2">
-                    
+                <div class="product-card shadow-sm rounded h-100">
+
                     <!-- Image -->
-                    <div class="item-image position-relative">
+                    <div class="product-img-wrapper position-relative">
                         @if(($row->is_discount == 1) && ($row->old_price !=''))
                             @php
                                 $discount = number_format((($row->old_price - $row->sale_price)*100)/$row->old_price);
                             @endphp
-                            <span class="item-label">{{ $discount }}% {{ __('Off') }}</span>
+                            <span class="discount-badge">{{ $discount }}% Off</span>
                         @endif
                         <a href="{{ route('frontend.product', [$row->id, $row->slug]) }}">
-                            <img src="{{ asset('public/media/'.$row->f_thumbnail) }}" 
-                                 alt="{{ $row->title }}" 
-                                 class="img-fluid product-img"/>
+                            <img src="{{ asset('public/media/'.$row->f_thumbnail) }}" alt="{{ $row->title }}" class="product-img"/>
                         </a>
                     </div>
 
-                    <!-- Title -->
-                    <div class="item-title mt-2 text-truncate">
-                        <a href="{{ route('frontend.product', [$row->id, $row->slug]) }}">
-                            {{ str_limit($row->title, 40) }}
-                        </a>
-                    </div>
-
-                    <!-- Rating -->
-                    <div class="rating-wrap small mb-1">
-                        <div class="stars-outer">
-                            <div class="stars-inner" style="width:{{ $row->ReviewPercentage }}%;"></div>
-                        </div>
-                        <span class="rating-count">({{ $row->TotalReview }})</span>
-                    </div>
-
-                    <!-- Seller -->
-                    <div class="item-sold small mb-2">
-                        {{ __('Sold By') }} 
-                        <a href="{{ route('frontend.stores', [$row->seller_id, str_slug($row->shop_url)]) }}">
-                            {{ str_limit($row->shop_name, 20) }}
-                        </a>
-                    </div>
-
-                    <!-- Price -->
-                    <div class="item-pric-card mb-2">
-                        @if($row->sale_price != '')
-                            <div class="new-price fw-bold text-primary">
-                                @if($gtext['currency_position'] == 'left')
-                                    {{ $gtext['currency_icon'] }}{{ NumberFormat($row->sale_price) }}
-                                @else
-                                    {{ NumberFormat($row->sale_price) }}{{ $gtext['currency_icon'] }}
-                                @endif
-                            </div>
-                        @endif
-                        @if(($row->is_discount == 1) && ($row->old_price !=''))
-                            <div class="old-price text-muted small">
-                                <del>
-                                @if($gtext['currency_position'] == 'left')
-                                    {{ $gtext['currency_icon'] }}{{ NumberFormat($row->old_price) }}
-                                @else
-                                    {{ NumberFormat($row->old_price) }}{{ $gtext['currency_icon'] }}
-                                @endif
-                                </del>
-                            </div>
-                        @endif
-                    </div>
-
-                    <!-- Buttons -->
-                    <div class="item-card-bottom d-flex justify-content-between align-items-center">
-                        <a data-id="{{ $row->id }}" href="javascript:void(0);" 
-                           class="btn btn-sm btn-primary add-to-cart addtocart">
-                            {{ __('Add To Cart') }}
-                        </a>
-                        <div class="d-flex">
-                            <a class="addtowishlist me-2" data-id="{{ $row->id }}" href="javascript:void(0);">
-                                <i class="bi bi-heart"></i>
-                            </a>
+                    <!-- Body -->
+                    <div class="p-2 d-flex flex-column justify-content-between">
+                        <!-- Title -->
+                        <h6 class="product-title text-truncate mb-1">
                             <a href="{{ route('frontend.product', [$row->id, $row->slug]) }}">
-                                <i class="bi bi-eye"></i>
+                                {{ str_limit($row->title, 40) }}
                             </a>
+                        </h6>
+
+                        <!-- Rating -->
+                        <div class="rating-wrap small mb-1">
+                            <div class="stars-outer">
+                                <div class="stars-inner" style="width:{{ $row->ReviewPercentage }}%;"></div>
+                            </div>
+                            <span class="rating-count">({{ $row->TotalReview }})</span>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="price-box mb-2">
+                            @if($row->sale_price != '')
+                                <span class="new-price fw-bold text-primary">
+                                    @if($gtext['currency_position'] == 'left')
+                                        {{ $gtext['currency_icon'] }}{{ NumberFormat($row->sale_price) }}
+                                    @else
+                                        {{ NumberFormat($row->sale_price) }}{{ $gtext['currency_icon'] }}
+                                    @endif
+                                </span>
+                            @endif
+                            @if(($row->is_discount == 1) && ($row->old_price !=''))
+                                <span class="old-price text-muted small">
+                                    <del>
+                                    @if($gtext['currency_position'] == 'left')
+                                        {{ $gtext['currency_icon'] }}{{ NumberFormat($row->old_price) }}
+                                    @else
+                                        {{ NumberFormat($row->old_price) }}{{ $gtext['currency_icon'] }}
+                                    @endif
+                                    </del>
+                                </span>
+                            @endif
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a data-id="{{ $row->id }}" href="javascript:void(0);" 
+                               class="btn btn-sm btn-primary flex-grow-1 me-2 addtocart">
+                                {{ __('Add To Cart') }}
+                            </a>
+                            <div class="d-flex">
+                                <a class="btn btn-sm btn-light me-1 addtowishlist" data-id="{{ $row->id }}" href="javascript:void(0);">
+                                    <i class="bi bi-heart"></i>
+                                </a>
+                                <a class="btn btn-sm btn-light" href="{{ route('frontend.product', [$row->id, $row->slug]) }}">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
-
+                    
                 </div>
             </div>
             @endforeach
@@ -562,6 +555,7 @@
     </div>
 </section>
 @endif
+
 
 
 	<!-- /New Products/ -->
