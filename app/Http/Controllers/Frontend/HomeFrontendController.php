@@ -242,7 +242,7 @@ class HomeFrontendController extends Controller
 			INNER JOIN users b ON a.user_id = b.id AND b.status_id = 1
 			WHERE a.is_publish = 1 
 			AND a.lan = '".$lan."'
-			ORDER BY a.id DESC LIMIT 8;";
+			ORDER BY a.id DESC LIMIT 15;";
 			$new_products = DB::select($np_sql);
 			
 			for($i=0; $i<count($new_products); $i++){
