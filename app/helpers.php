@@ -95,18 +95,28 @@ function CategoryMenuList()
             $slug = $row->slug;
             $thumbnail = '<img src="' . $Path . '/' . $row->thumbnail . '" />';
 
-            if ($count > 8) {
-                $li_List .= '<li class="cat-list-hideshow"><a href="' . route('frontend.product-category', [$id, $slug]) . '"><div class="cat-icon">' . $thumbnail . '</div>' . e($row->name) . '</a></li>';
-            } else {
-                $li_List .= '<li><a href="' . route('frontend.product-category', [$id, $slug]) . '"><div class="cat-icon">' . $thumbnail . '</div>' . e($row->name) . '</a></li>';
-            }
+            // Main Category Item
+            $li = '<li' . ($count > 8 ? ' class="cat-list-hideshow"' : '') . '>';
+            $li .= '<a href="' . route('frontend.product-category', [$id, $slug]) . '">';
+            $li .= '<div class="cat-icon">' . $thumbnail . '</div>' . e($row->name) . '</a>';
 
+            // --- Dummy Subcategories ---
+            $li .= '<ul class="sub-category-list">';
+            $li .= '<li><a href="#">' . e($row->name) . ' Sub 1</a></li>';
+            $li .= '<li><a href="#">' . e($row->name) . ' Sub 2</a></li>';
+            $li .= '<li><a href="#">' . e($row->name) . ' Sub 3</a></li>';
+            $li .= '</ul>';
+
+            $li .= '</li>';
+
+            $li_List .= $li;
             $count++;
         }
 
         return $li_List;
     });
 }
+
 
 //Category List
 // function CategoryMenuList(){
