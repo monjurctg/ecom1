@@ -95,13 +95,12 @@ function CategoryMenuList()
             $slug = $row->slug;
             $thumbnail = '<img src="' . $Path . '/' . $row->thumbnail . '" />';
 
-            // Main Category Item
-            $li = '<li' . ($count > 8 ? ' class="cat-list-hideshow"' : '') . '>';
+            $li = '<li class="category-item'.($count > 8 ? ' cat-list-hideshow' : '').'">';
             $li .= '<a href="' . route('frontend.product-category', [$id, $slug]) . '">';
             $li .= '<div class="cat-icon">' . $thumbnail . '</div>' . e($row->name) . '</a>';
 
-            // --- Dummy Subcategories ---
-            $li .= '<ul class="sub-category-list">';
+            // Dummy Subcategories - dropdown on hover
+            $li .= '<ul class="sub-category-menu">';
             $li .= '<li><a href="#">' . e($row->name) . ' Sub 1</a></li>';
             $li .= '<li><a href="#">' . e($row->name) . ' Sub 2</a></li>';
             $li .= '<li><a href="#">' . e($row->name) . ' Sub 3</a></li>';
