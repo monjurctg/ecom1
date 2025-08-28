@@ -4359,57 +4359,49 @@ ul.errors-list li {
 }
 
 
-.categories-wrap {
-    position: relative;
-}
+/* Container */
+.categories-wrap { position: relative; }
+.nav-category-list { position: relative; overflow: visible; padding: 0; margin: 0; }
 
-.category-item {
-    position: relative;
-    list-style: none;
+/* Parent items */
+.category-item { position: relative; list-style: none; }
+.category-link {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; text-decoration: none;
+    color: #222; background: #fff;
+    border-radius: 8px; transition: background .2s, box-shadow .2s;
 }
+.category-link:hover { background: #f6f7f9; box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+.cat-icon img { width: 26px; height: 26px; object-fit: contain; display: block; }
+.cat-label { flex: 1; font-size: 14px; line-height: 1.2; }
+.cat-caret { font-size: 18px; opacity: .5; }
 
-.category-item > a {
-    display: flex;
-    align-items: center;
-    padding: 8px 12px;
-    text-decoration: none;
-}
-
-.cat-icon img {
-    width: 24px;
-    height: 24px;
-    margin-right: 8px;
-}
-
-/* Subcategory Menu (hidden by default) */
-.sub-category-menu {
+/* Flyout (right side) */
+.sub-flyout {
     display: none;
-    position: absolute;
-    left: 100%;
-    top: 0;
-    background: #fff;
-    border: 1px solid #ddd;
-    min-width: 180px;
-    z-index: 999;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    position: absolute; top: 0; left: 100%;
+    margin-left: 4px;
+    min-width: 220px; max-width: 320px;
+    background: #fff; border: 1px solid #e5e7eb; border-radius: 10px;
+    box-shadow: 0 12px 28px rgba(0,0,0,.12);
+    z-index: 1000; padding: 8px;
 }
+.category-item:hover > .sub-flyout { display: block; }
 
-.sub-category-menu li {
-    list-style: none;
+/* Submenu items */
+.sub-category-menu { list-style: none; margin: 0; padding: 4px; }
+.sub-category-menu > li > a {
+    display: block; padding: 10px 12px; border-radius: 8px;
+    text-decoration: none; color: #222; font-size: 14px;
 }
+.sub-category-menu > li > a:hover { background: #f3f4f6; }
 
-.sub-category-menu li a {
-    display: block;
-    padding: 8px 12px;
-    text-decoration: none;
-    color: #333;
-}
+/* Keep flyout open while moving mouse into it */
+.category-item:hover > .sub-flyout,
+.sub-flyout:hover { display: block; }
 
-.sub-category-menu li a:hover {
-    background: #f5f5f5;
-}
+/* Make sure nothing clips the flyout */
+.col-lg-3, .categories-wrap, .nav-category-list { overflow: visible !important; }
 
-/* Show subcategories on hover */
-.category-item:hover > .sub-category-menu {
-    display: block;
-}
+/* Optional: compact the “Show More” item */
+.cat-more-btn { display: block; text-align: center; margin-top: 8px; }

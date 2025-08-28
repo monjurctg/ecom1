@@ -93,28 +93,35 @@ function CategoryMenuList()
         foreach ($datalist as $row) {
             $id   = $row->id;
             $slug = $row->slug;
-            $thumbnail = '<img src="' . $Path . '/' . $row->thumbnail . '" />';
+            $thumbUrl = $Path . '/' . ltrim($row->thumbnail, '/');
 
-            $li = '<li class="category-item'.($count > 8 ? ' cat-list-hideshow' : '').'">';
-            $li .= '<a href="' . route('frontend.product-category', [$id, $slug]) . '">';
-            $li .= '<div class="cat-icon">' . $thumbnail . '</div>' . e($row->name) . '</a>';
+            // parent item
+            $li_List .= '<li class="category-item'.($count > 8 ? ' cat-list-hideshow' : '').'">';
 
-            // Dummy Subcategories - dropdown on hover
-            $li .= '<ul class="sub-category-menu">';
-            $li .= '<li><a href="#">' . e($row->name) . ' Sub 1</a></li>';
-            $li .= '<li><a href="#">' . e($row->name) . ' Sub 2</a></li>';
-            $li .= '<li><a href="#">' . e($row->name) . ' Sub 3</a></li>';
-            $li .= '</ul>';
+            $li_List .= '<a class="category-link" href="' . route('frontend.product-category', [$id, $slug]) . '">
+                            <span class="cat-icon"><img src="'. e($thumbUrl) .'" alt="'. e($row->name) .'"></span>
+                            <span class="cat-label">'. e($row->name) .'</span>
+                            <span class="cat-caret" aria-hidden="true">›</span>
+                         </a>';
 
-            $li .= '</li>';
+            // flyout submenu (dummy items)
+            $li_List .= '<div class="sub-flyout">
+                            <ul class="sub-category-menu">
+                                <li><a href="javascript:void(0);">'. e($row->name) .' Sub 1</a></li>
+                                <li><a href="javascript:void(0);">'. e($row->name) .' Sub 2</a></li>
+                                <li><a href="javascript:void(0);">'. e($row->name) .' Sub 3</a></li>
+                                <li><a href="javascript:void(0);">'. e($row->name) .' Sub 4</a></li>
+                            </ul>
+                         </div>';
 
-            $li_List .= $li;
+            $li_List .= '</li>';
             $count++;
         }
 
         return $li_List;
     });
 }
+
 
 
 //Category List
