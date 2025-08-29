@@ -78,14 +78,19 @@ function glan(){
 
 function CategoryMenuList()
 {
-    $lan = glan();
+    $lan = glan(); // current language
     $cacheKey = "category_menu_list_{$lan}";
 
     return Cache::remember($cacheKey, now()->addDays(2), function () use ($lan) {
-        $datalist = Pro_category::with('children')
+        // শুধু main categories (parent_id = 0 বা NULL)
+        $categories = Pro_category::with(['children' => function ($q) {
+                $q->where('is_publish', 1)->orderBy('id', 'ASC');
+            }])
             ->where('lan', $lan)
             ->where('is_publish', 1)
-            ->whereNull('parent_id') // শুধু main categories
+            ->where(function($q){
+                $q->whereNull('parent_id')->orWhere('parent_id', 0);
+            })
             ->orderBy('id', 'ASC')
             ->get();
 
@@ -93,26 +98,35 @@ function CategoryMenuList()
         $Path = asset('public/media');
         $count = 1;
 
-        foreach ($datalist as $row) {
+        foreach ($categories as $row) {
             if (!$row) continue; // safety check
 
             $id   = $row->id;
             $slug = $row->slug;
             $thumbUrl = $Path . '/' . ltrim($row->thumbnail, '/');
 
+            // parent item
             $li_List .= '<li class="category-item'.($count > 8 ? ' cat-list-hideshow' : '').'">';
-            $li_List .= '<a href="' . route('frontend.product-category', [$id, $slug]) . '">
+            $li_List .= '<a class="category-link" href="' . route('frontend.product-category', [$id, $slug]) . '">
                             <span class="cat-icon"><img src="'. e($thumbUrl) .'" alt="'. e($row->name) .'"></span>
                             <span class="cat-label">'. e($row->name) .'</span>
+                            <span class="cat-caret" aria-hidden="true">›</span>
                          </a>';
 
-            // যদি subcategory থাকে
+            // subcategories থাকলে flyout menu
             if ($row->children && $row->children->count() > 0) {
-                $li_List .= '<ul class="sub-category-menu">';
-                foreach ($row->children as $child) {
-                    $li_List .= '<li><a href="' . route('frontend.product-category', [$child->id, $child->slug]) . '">'. e($child->name) .'</a></li>';
+                $li_List .= '<div class="sub-flyout">
+                                <ul class="sub-category-menu">';
+                foreach ($row->children as $sub) {
+                    $subThumb = $Path . '/' . ltrim($sub->thumbnail, '/');
+                    $li_List .= '<li>
+                                    <a href="' . route('frontend.product-category', [$sub->id, $sub->slug]) . '">
+                                        <span class="sub-cat-icon"><img src="'. e($subThumb) .'" alt="'. e($sub->name) .'"></span>
+                                        <span class="sub-cat-label">'. e($sub->name) .'</span>
+                                    </a>
+                                 </li>';
                 }
-                $li_List .= '</ul>';
+                $li_List .= '</ul></div>';
             }
 
             $li_List .= '</li>';
