@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Pro_category extends Model
 {
     use HasFactory;
-	
+
     protected $fillable = [
         'name',
         'slug',
@@ -25,4 +25,16 @@ class Pro_category extends Model
         'og_description',
         'og_keywords',
     ];
+
+    public function children()
+{
+    return $this->hasMany(Pro_category::class, 'parent_id');
 }
+
+public function parent()
+{
+    return $this->belongsTo(Pro_category::class, 'parent_id');
+}
+
+}
+

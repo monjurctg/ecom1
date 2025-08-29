@@ -75,52 +75,7 @@ function glan(){
 	return $lan;
 }
 
-function CategoryMenuList()
-{
-    $lan = glan(); // current language
-    $cacheKey = "category_menu_list_{$lan}";
 
-    return Cache::remember($cacheKey, now()->addDays(2), function () use ($lan) {
-        $datalist = Pro_category::where('lan', $lan)
-            ->where('is_publish', 1)
-            ->orderBy('id', 'ASC')
-            ->get();
-
-        $li_List = '';
-        $Path = asset('public/media');
-        $count = 1;
-
-        foreach ($datalist as $row) {
-            $id   = $row->id;
-            $slug = $row->slug;
-            $thumbUrl = $Path . '/' . ltrim($row->thumbnail, '/');
-
-            // parent item
-            $li_List .= '<li class="category-item'.($count > 8 ? ' cat-list-hideshow' : '').'">';
-
-            $li_List .= '<a class="category-link" href="' . route('frontend.product-category', [$id, $slug]) . '">
-                            <span class="cat-icon"><img src="'. e($thumbUrl) .'" alt="'. e($row->name) .'"></span>
-                            <span class="cat-label">'. e($row->name) .'</span>
-                            <span class="cat-caret" aria-hidden="true">›</span>
-                         </a>';
-
-            // flyout submenu (dummy items)
-            $li_List .= '<div class="sub-flyout">
-                            <ul class="sub-category-menu">
-                                <li><a href="javascript:void(0);">'. e($row->name) .' Sub 1</a></li>
-                                <li><a href="javascript:void(0);">'. e($row->name) .' Sub 2</a></li>
-                                <li><a href="javascript:void(0);">'. e($row->name) .' Sub 3</a></li>
-                                <li><a href="javascript:void(0);">'. e($row->name) .' Sub 4</a></li>
-                            </ul>
-                         </div>';
-
-            $li_List .= '</li>';
-            $count++;
-        }
-
-        return $li_List;
-    });
-}
 
 
 
@@ -149,7 +104,59 @@ function CategoryMenuList()
 // 	return $li_List;
 // }
 
-//Category List for Mobile
+//Category List for Mobilefunction CategoryMenuList()
+{
+    $lan = glan(); // current language
+    $cacheKey = "category_menu_list_{$lan}";
+
+    return Cache::remember($cacheKey, now()->addDays(2), function () use ($lan) {
+        // শুধু parent (main) categories আনা
+        $datalist = Pro_category::where('lan', $lan)
+            ->where('is_publish', 1)
+            ->where(function ($q) {
+                $q->whereNull('parent_id')->orWhere('parent_id', 0);
+            })
+            ->with(['children' => function ($q) {
+                $q->where('is_publish', 1)->orderBy('id', 'ASC');
+            }])
+            ->orderBy('id', 'ASC')
+            ->get();
+
+        $li_List = '';
+        $Path = asset('public/media');
+        $count = 1;
+
+        foreach ($datalist as $row) {
+            $id   = $row->id;
+            $slug = $row->slug;
+            $thumbUrl = $Path . '/' . ltrim($row->thumbnail, '/');
+
+            // parent item
+            $li_List .= '<li class="category-item'.($count > 8 ? ' cat-list-hideshow' : '').'">';
+
+            $li_List .= '<a class="category-link" href="' . route('frontend.product-category', [$id, $slug]) . '">
+                            <span class="cat-icon"><img src="'. e($thumbUrl) .'" alt="'. e($row->name) .'"></span>
+                            <span class="cat-label">'. e($row->name) .'</span>
+                            <span class="cat-caret" aria-hidden="true">›</span>
+                         </a>';
+
+            // subcategories থাকলে flyout মেনু বানানো
+            if ($row->children->count()) {
+                $li_List .= '<div class="sub-flyout"><ul class="sub-category-menu">';
+                foreach ($row->children as $sub) {
+                    $li_List .= '<li><a href="' . route('frontend.product-category', [$sub->id, $sub->slug]) . '">' . e($sub->name) . '</a></li>';
+                }
+                $li_List .= '</ul></div>';
+            }
+
+            $li_List .= '</li>';
+            $count++;
+        }
+
+        return $li_List;
+    });
+}
+
 function CategoryListForMobile(){
 	$lan = glan();
 
