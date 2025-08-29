@@ -113,16 +113,14 @@ function CategoryMenuList()
                             <span class="cat-caret" aria-hidden="true">›</span>
                          </a>';
 
-            // subcategories থাকলে flyout menu
+            // subcategories থাকলে flyout menu (image বাদ)
             if ($row->children && $row->children->count() > 0) {
                 $li_List .= '<div class="sub-flyout">
                                 <ul class="sub-category-menu">';
                 foreach ($row->children as $sub) {
-                    $subThumb = $Path . '/' . ltrim($sub->thumbnail, '/');
                     $li_List .= '<li>
                                     <a href="' . route('frontend.product-category', [$sub->id, $sub->slug]) . '">
-                                        <span class="sub-cat-icon"><img src="'. e($subThumb) .'" alt="'. e($sub->name) .'"></span>
-                                        <span class="sub-cat-label">'. e($sub->name) .'</span>
+                                        '. e($sub->name) .'
                                     </a>
                                  </li>';
                 }
@@ -136,6 +134,11 @@ function CategoryMenuList()
         return $li_List;
     });
 }
+
+
+
+
+
 
 
 
