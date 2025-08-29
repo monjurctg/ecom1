@@ -76,6 +76,52 @@ function glan(){
 }
 
 
+function CategoryMenuList()
+{
+    $lan = glan();
+    $cacheKey = "category_menu_list_{$lan}";
+
+    return Cache::remember($cacheKey, now()->addDays(2), function () use ($lan) {
+        $datalist = Pro_category::with('children')
+            ->where('lan', $lan)
+            ->where('is_publish', 1)
+            ->whereNull('parent_id') // শুধু main categories
+            ->orderBy('id', 'ASC')
+            ->get();
+
+        $li_List = '';
+        $Path = asset('public/media');
+        $count = 1;
+
+        foreach ($datalist as $row) {
+            if (!$row) continue; // safety check
+
+            $id   = $row->id;
+            $slug = $row->slug;
+            $thumbUrl = $Path . '/' . ltrim($row->thumbnail, '/');
+
+            $li_List .= '<li class="category-item'.($count > 8 ? ' cat-list-hideshow' : '').'">';
+            $li_List .= '<a href="' . route('frontend.product-category', [$id, $slug]) . '">
+                            <span class="cat-icon"><img src="'. e($thumbUrl) .'" alt="'. e($row->name) .'"></span>
+                            <span class="cat-label">'. e($row->name) .'</span>
+                         </a>';
+
+            // যদি subcategory থাকে
+            if ($row->children && $row->children->count() > 0) {
+                $li_List .= '<ul class="sub-category-menu">';
+                foreach ($row->children as $child) {
+                    $li_List .= '<li><a href="' . route('frontend.product-category', [$child->id, $child->slug]) . '">'. e($child->name) .'</a></li>';
+                }
+                $li_List .= '</ul>';
+            }
+
+            $li_List .= '</li>';
+            $count++;
+        }
+
+        return $li_List;
+    });
+}
 
 
 
@@ -104,59 +150,7 @@ function glan(){
 // 	return $li_List;
 // }
 
-//Category List for Mobilefunction CategoryMenuList()
-{
-    $lan = glan(); // current language
-    $cacheKey = "category_menu_list_{$lan}";
-
-    return Cache::remember($cacheKey, now()->addDays(2), function () use ($lan) {
-        // শুধু parent (main) categories আনা
-        $datalist = Pro_category::where('lan', $lan)
-            ->where('is_publish', 1)
-            ->where(function ($q) {
-                $q->whereNull('parent_id')->orWhere('parent_id', 0);
-            })
-            ->with(['children' => function ($q) {
-                $q->where('is_publish', 1)->orderBy('id', 'ASC');
-            }])
-            ->orderBy('id', 'ASC')
-            ->get();
-
-        $li_List = '';
-        $Path = asset('public/media');
-        $count = 1;
-
-        foreach ($datalist as $row) {
-            $id   = $row->id;
-            $slug = $row->slug;
-            $thumbUrl = $Path . '/' . ltrim($row->thumbnail, '/');
-
-            // parent item
-            $li_List .= '<li class="category-item'.($count > 8 ? ' cat-list-hideshow' : '').'">';
-
-            $li_List .= '<a class="category-link" href="' . route('frontend.product-category', [$id, $slug]) . '">
-                            <span class="cat-icon"><img src="'. e($thumbUrl) .'" alt="'. e($row->name) .'"></span>
-                            <span class="cat-label">'. e($row->name) .'</span>
-                            <span class="cat-caret" aria-hidden="true">›</span>
-                         </a>';
-
-            // subcategories থাকলে flyout মেনু বানানো
-            if ($row->children->count()) {
-                $li_List .= '<div class="sub-flyout"><ul class="sub-category-menu">';
-                foreach ($row->children as $sub) {
-                    $li_List .= '<li><a href="' . route('frontend.product-category', [$sub->id, $sub->slug]) . '">' . e($sub->name) . '</a></li>';
-                }
-                $li_List .= '</ul></div>';
-            }
-
-            $li_List .= '</li>';
-            $count++;
-        }
-
-        return $li_List;
-    });
-}
-
+//Category List for Mobile
 function CategoryListForMobile(){
 	$lan = glan();
 
