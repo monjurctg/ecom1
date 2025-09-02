@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" {!! $gtext['is_rtl'] == 1 ? 'dir="rtl"' : '' !!}>
-
 <head>
 	<!-- Required meta tags -->
 	<meta charset="utf-8">
@@ -13,7 +12,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
 	<title>@yield('title')</title>
-
 	@yield('meta-content')
 	@if($gtext['fb_pixel_publish'] == 1)
 	<!-- Facebook Pixel Code -->
@@ -37,7 +35,7 @@
 	@endif
 
 	@if($gtext['ga_publish'] == 1)
-
+	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id={{ $gtext['tracking_id'] }}"></script>
 	<script>
 	  window.dataLayer = window.dataLayer || [];
@@ -49,15 +47,14 @@
 	@endif
 
 	@if($gtext['gtm_publish'] == 1)
-
+	<!-- Google Tag Manager -->
 	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 	new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 	j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 	'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 	})(window,document,'script','dataLayer','{{ $gtext["google_tag_manager_id"] }}');</script>
-
+	<!-- End Google Tag Manager -->
 	@endif
-
 	<!--favicon-->
 	<link rel="shortcut icon" href="{{ $gtext['favicon'] ? asset('public/media/'.$gtext['favicon']) : asset('public/backend/images/favicon.ico') }}" type="image/x-icon">
 	<link rel="icon" href="{{ $gtext['favicon'] ? asset('public/media/'.$gtext['favicon']) : asset('public/backend/images/favicon.ico') }}" type="image/x-icon">
@@ -143,7 +140,7 @@
 	</a>
 	<!-- /scrollToTop -->
 
-	@if($PageVariation['home_variation'] == 'home_2')
+	@if($PageVariation['home_variation'] == 'home_3')
 	<div class="container {{ $PageVariation['home_variation'] }}">
 	@yield('header')
 	@yield('content')
