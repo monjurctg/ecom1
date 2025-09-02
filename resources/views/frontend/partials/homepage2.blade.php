@@ -99,7 +99,7 @@
                     </div>
                     <div class="category-content">
                         <h3 class="category-title">{{ $row->name }}</h3>
-                       
+
                     </div>
                 </a>
             </div>
@@ -251,7 +251,7 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    
+
 }
 
 .category-cta {
@@ -281,7 +281,7 @@
         gap: 0.7rem;
         padding: 0 0.7rem;
     }
-    
+
     .category-title {
         font-size: 0.75rem;
     }
@@ -294,11 +294,11 @@
         gap: 0.6rem;
         padding: 0 0.6rem;
     }
-    
+
     .category-title {
         font-size: 0.75rem;
     }
-    
+
     .category-content {
         padding: 0.7rem 0.4rem 0.8rem;
     }
@@ -320,7 +320,7 @@
         gap: 0.9rem;
         padding: 0 0.9rem;
     }
-    
+
     .category-title {
         font-size: 0.7525rem;
     }
@@ -333,15 +333,15 @@
         gap: 1rem;
         padding: 0 1rem;
     }
-    
+
     .section-title {
         font-size: 1.75rem;
     }
-    
+
     .category-content {
         padding: 1rem 0.5rem 1.1rem;
     }
-    
+
     .category-title {
         font-size: 0.7525rem;
     }
@@ -364,13 +364,13 @@
 
 /* Animation Enhancements */
 @keyframes fadeInUp {
-    from { 
-        opacity: 0; 
-        transform: translateY(10px); 
+    from {
+        opacity: 0;
+        transform: translateY(10px);
     }
-    to { 
-        opacity: 1; 
-        transform: translateY(0); 
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
@@ -476,7 +476,7 @@
             @foreach ($new_products as $row)
             <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                 <div class="item-card h-100 shadow-sm rounded p-2">
-                    
+
                     <!-- Image -->
                     <div class="item-image position-relative">
                         @if(($row->is_discount == 1) && ($row->old_price !=''))
@@ -486,8 +486,8 @@
                             <span class="item-label">{{ $discount }}% {{ __('Off') }}</span>
                         @endif
                         <a href="{{ route('frontend.product', [$row->id, $row->slug]) }}">
-                            <img src="{{ asset('public/media/'.$row->f_thumbnail) }}" 
-                                 alt="{{ $row->title }}" 
+                            <img src="{{ asset('public/media/'.$row->f_thumbnail) }}"
+                                 alt="{{ $row->title }}"
                                  class="img-fluid product-img"/>
                         </a>
                     </div>
@@ -533,7 +533,7 @@
 
                     <!-- Buttons -->
                     <div class="item-card-bottom d-flex justify-content-between align-items-center">
-                        <a data-id="{{ $row->id }}" href="javascript:void(0);" 
+                        <a data-id="{{ $row->id }}" href="javascript:void(0);"
                            class="btn btn-sm btn-primary add-to-cart addtocart">
                             {{ __('Add To Cart') }}
                         </a>

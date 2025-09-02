@@ -56,22 +56,17 @@
 		</div>
 	</div>
 	<!-- /Page Breadcrumb/ -->
-	
+
 	<!-- Inner Section -->
 	<section class="inner-section inner-section-bg">
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-12">
-					<div class="row mt10 mb5">
-						<div class="col-md-12 text-center">
-							<a href="{{ route('frontend.register') }}" class="btn white-btn text-initial mr10 mb5 font-bold active">{{ __('I am a customer') }}</a>
-							<a href="{{ route('frontend.seller-register') }}" class="btn white-btn text-initial mb5 font-bold">{{ __('I am a seller') }}</a>
-						</div>
-					</div>
+
 					<div class="register">
 						<h4>{{ __('Create an customer account') }}</h4>
 						<p>{{ __('Please fill in the information below') }}</p>
-						
+
 						@if(Session::has('success'))
 						<div class="alert alert-success">
 							{{Session::get('success')}}
