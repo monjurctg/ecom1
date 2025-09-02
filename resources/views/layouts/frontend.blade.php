@@ -143,7 +143,7 @@
 	</a>
 	<!-- /scrollToTop -->
 
-	@if($PageVariation['home_variation'] == 'home_3')
+	@if($PageVariation['home_variation'] == 'home_2')
 	<div class="container {{ $PageVariation['home_variation'] }}">
 	@yield('header')
 	@yield('content')
