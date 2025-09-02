@@ -211,22 +211,7 @@ class HomeFrontendController extends Controller
 			//Brand
 			$brand = Brand::where('is_publish', '=', 1)->where('is_featured', '=', 1)->where('lan', '=', $lan)->orderBy('id', 'desc')->get();
 			
-			//Popular Products
-			$pp_sql = "SELECT a.id, a.brand_id, a.title, a.slug, a.f_thumbnail, a.sale_price, a.old_price, a.end_date, a.is_discount, b.shop_name, b.id seller_id, b.shop_url
-			FROM products a
-			INNER JOIN users b ON a.user_id = b.id AND b.status_id = 1
-			WHERE a.is_publish = 1 
-			AND a.is_featured = 1
-			AND a.lan = '".$lan."'
-			ORDER BY a.id DESC LIMIT 15;";
 			
-			$popular_products = DB::select($pp_sql);
-			for($i=0; $i<count($popular_products); $i++){
-				$Reviews = getReviews($popular_products[$i]->id);
-				$popular_products[$i]->TotalReview = $Reviews[0]->TotalReview;
-				$popular_products[$i]->TotalRating = $Reviews[0]->TotalRating;
-				$popular_products[$i]->ReviewPercentage = number_format($Reviews[0]->ReviewPercentage);
-			}
 			
 			//New Products
 			$np_sql = "SELECT a.id, a.brand_id, a.title, a.slug, a.f_thumbnail, a.sale_price, a.old_price, a.end_date, a.is_discount, b.shop_name, b.id seller_id, b.shop_url
@@ -340,7 +325,7 @@ class HomeFrontendController extends Controller
 			'offer_ad_position2', 
 			'home_video', 
 			'brand', 
-			'popular_products', 
+			
 			'new_products', 
 			'top_selling', 
 			'trending_products', 

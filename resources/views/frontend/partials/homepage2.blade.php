@@ -511,78 +511,31 @@
 
 	<!-- Popular Products -->
 	@if($section5->is_publish == 1)
-	<section class="section product-section" style="background-image: url({{ $section5->image ? asset('public/media/'.$section5->image) : '' }});">
-		<div class="container">
-			<div class="row">
-				<div class="col">
-					<div class="section-heading text-center">
-						@if($section5->desc !='')
-						<h5>{{ $section5->desc }}</h5>
-						@endif
+<section class="section product-section" 
+         style="background-image: url({{ $section5->image ? asset('public/media/'.$section5->image) : '' }});">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="section-heading text-center">
+                    @if($section5->desc !='')
+                        <h5>{{ $section5->desc }}</h5>
+                    @endif
+                    @if($section5->title !='')
+                        <h2>{{ $section5->title }}</h2>
+                    @endif
+                </div>
+            </div>
+        </div>
 
-						@if($section5->title !='')
-						<h2>{{ $section5->title }}</h2>
-						@endif
-					</div>
-				</div>
-			</div>
-			<div class="row owl-carousel caro-common category-carousel">
-				@foreach ($popular_products as $row)
-				<div class="col-lg-12">
-					<div class="item-card">
-						<div class="item-image">
-							@if(($row->is_discount == 1) && ($row->old_price !=''))
-								@php
-									$discount = number_format((($row->old_price - $row->sale_price)*100)/$row->old_price);
-								@endphp
-							<span class="item-label">{{ $discount }}% {{ __('Off') }}</span>
-							@endif
-							<a href="{{ route('frontend.product', [$row->id, $row->slug]) }}">
-								<img src="{{ asset('public/media/'.$row->f_thumbnail) }}" alt="{{ $row->title }}" />
-							</a>
-						</div>
-						<div class="item-title">
-							<a href="{{ route('frontend.product', [$row->id, $row->slug]) }}">{{ str_limit($row->title) }}</a>
-						</div>
-						<div class="rating-wrap">
-							<div class="stars-outer">
-								<div class="stars-inner" style="width:{{ $row->ReviewPercentage }}%;"></div>
-							</div>
-							<span class="rating-count">({{ $row->TotalReview }})</span>
-						</div>
-						<div class="item-sold">
-							{{ __('Sold By') }} <a href="{{ route('frontend.stores', [$row->seller_id, str_slug($row->shop_url)]) }}">{{ str_limit($row->shop_name) }}</a>
-						</div>
-						<div class="item-pric-card">
-							@if($row->sale_price != '')
-								@if($gtext['currency_position'] == 'left')
-								<div class="new-price">{{ $gtext['currency_icon'] }}{{ NumberFormat($row->sale_price) }}</div>
-								@else
-								<div class="new-price">{{ NumberFormat($row->sale_price) }}{{ $gtext['currency_icon'] }}</div>
-								@endif
-							@endif
-							@if(($row->is_discount == 1) && ($row->old_price !=''))
-								@if($gtext['currency_position'] == 'left')
-								<div class="old-price">{{ $gtext['currency_icon'] }}{{ NumberFormat($row->old_price) }}</div>
-								@else
-								<div class="old-price">{{ NumberFormat($row->old_price) }}{{ $gtext['currency_icon'] }}</div>
-								@endif
-							@endif
-						</div>
-						<div class="item-card-bottom">
-							<a data-id="{{ $row->id }}" href="javascript:void(0);" class="btn add-to-cart addtocart">{{ __('Add To Cart') }}</a>
-							<ul class="item-cart-list">
-								<li><a class="addtowishlist" data-id="{{ $row->id }}" href="javascript:void(0);"><i class="bi bi-heart"></i></a></li>
-								<li><a href="{{ route('frontend.product', [$row->id, $row->slug]) }}"><i class="bi bi-eye"></i></a></li>
-							</ul>
-						</div>
-					</div>
-				</div>
-				@endforeach
-			</div>
-		</div>
-	</section>
-	@endif
+        <div class="row owl-carousel caro-common category-carousel" id="popular-products">
+            <div class="text-center p-5 w-100" id="loader">
+                <i class="bi bi-arrow-repeat spin"></i> Loading products...
+            </div>
+        </div>
+    </div>
+</section>
+@endif
+
 	<!-- /Popular Products/ -->
 
 	<!-- Top Selling Products -->
@@ -944,4 +897,82 @@
 	</section>
 	@endif
 	<!-- /Deals Section/ -->
+
+
+
+
+	<script>
+document.addEventListener("DOMContentLoaded", function () {
+    fetch("/api/popular-products")
+        .then(res => res.json())
+        .then(res => {
+            if (res.status) {
+                let html = "";
+                res.products.forEach(row => {
+                    let discount = "";
+                    if (row.is_discount == 1 && row.old_price) {
+                        discount = Math.round(((row.old_price - row.sale_price) * 100) / row.old_price);
+                    }
+
+                    html += `
+                        <div class="col-lg-12">
+                            <div class="item-card">
+                                <div class="item-image">
+                                    ${discount ? `<span class="item-label">${discount}% Off</span>` : ""}
+                                    <a href="/product/${row.id}/${row.slug}">
+                                        <img src="/public/media/${row.f_thumbnail}" alt="${row.title}" />
+                                    </a>
+                                </div>
+                                <div class="item-title">
+                                    <a href="/product/${row.id}/${row.slug}">${row.title}</a>
+                                </div>
+                                <div class="rating-wrap">
+                                    <div class="stars-outer">
+                                        <div class="stars-inner" style="width:${row.ReviewPercentage}%;"></div>
+                                    </div>
+                                    <span class="rating-count">(${row.TotalReview})</span>
+                                </div>
+                                <div class="item-sold">
+                                    Sold By <a href="/store/${row.seller_id}/${row.shop_url}">${row.shop_name}</a>
+                                </div>
+                                <div class="item-pric-card">
+                                    <div class="new-price">$${row.sale_price}</div>
+                                    ${row.is_discount == 1 && row.old_price ? `<div class="old-price">$${row.old_price}</div>` : ""}
+                                </div>
+                                <div class="item-card-bottom">
+                                    <a data-id="${row.id}" href="javascript:void(0);" class="btn add-to-cart addtocart">Add To Cart</a>
+                                    <ul class="item-cart-list">
+                                        <li><a class="addtowishlist" data-id="${row.id}" href="javascript:void(0);"><i class="bi bi-heart"></i></a></li>
+                                        <li><a href="/product/${row.id}/${row.slug}"><i class="bi bi-eye"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                document.getElementById("popular-products").innerHTML = html;
+
+                // re-init carousel after load
+                if ($(".category-carousel").length) {
+                    $(".category-carousel").owlCarousel({
+                        loop: true,
+                        margin: 10,
+                        nav: true,
+                        responsive: {
+                            0: { items: 1 },
+                            600: { items: 2 },
+                            1000: { items: 4 }
+                        }
+                    });
+                }
+            }
+        })
+        .catch(err => {
+            document.getElementById("popular-products").innerHTML =
+                `<div class="text-danger text-center w-100">Failed to load products.</div>`;
+        });
+});
+</script>
+
 </main>
