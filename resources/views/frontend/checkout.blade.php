@@ -377,32 +377,7 @@
 											</tbody>
 										</table>
 
-										@if(count($shipping_list) > 0)
-											<h5>{{ __('Shipping Method') }}</h5>
-											<div class="row">
-												<div class="col-md-12">
-													<span class="text-danger error-text shipping_method_error"></span>
-													@foreach($shipping_list as $row)
-														@php
-															if ($gtext['currency_position'] == 'left') {
-																$shipping_fee = $gtext['currency_icon'] . $row->shipping_fee;
-															} else {
-																$shipping_fee = $row->shipping_fee . $gtext['currency_icon'];
-															}
-														@endphp
-														<div class="checkboxlist">
-															<label class="checkbox-title">
-																<input data-seller_count="{{ $SellerCount }}"
-																	data-shippingfee="{{ $row->shipping_fee }}"
-																	data-total="{{ NumberFormat($TotalPrice) }}" class="shipping_method"
-																	name="shipping_method" type="radio"
-																	value="{{ $row->id }}">{{ $row->title }} : {{ $shipping_fee }}
-															</label>
-														</div>
-													@endforeach
-												</div>
-											</div>
-										@endif
+										
 										<input name="customer_id" type="hidden"
 											value="@if(isset(Auth::user()->id)) {{ Auth::user()->id }} @endif" />
 										<input name="razorpay_payment_id" id="razorpay_payment_id" type="hidden" />
