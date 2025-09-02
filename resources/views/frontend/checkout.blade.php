@@ -151,7 +151,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="row">
+							<!-- <div class="row">
 								<div class="col-md-12">
 									<div class="checkboxlist">
 										<label class="checkbox-title">
@@ -163,8 +163,8 @@
 										<span class="text-danger">{{ $errors->first('password') }}</span>
 									@endif
 								</div>
-							</div>
-
+							</div> -->
+<!-- 
 							<div class="row hideclass" id="new_account_pass">
 								<div class="col-md-6">
 									<div class="mb-3">
@@ -179,7 +179,7 @@
 											class="form-control" placeholder="{{ __('Confirm password') }}">
 									</div>
 								</div>
-							</div>
+							</div> -->
 
 							<h5 class="mt10">{{ __('Payment Method') }}</h5>
 							<div class="row">
