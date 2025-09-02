@@ -348,4 +348,36 @@ class HomeFrontendController extends Controller
 			'deals_products'
 		));
     }
+
+
+
+	public function popularProducts()
+{
+    $lan = glan();
+
+    $pp_sql = "SELECT a.id, a.brand_id, a.title, a.slug, a.f_thumbnail, 
+                      a.sale_price, a.old_price, a.end_date, a.is_discount, 
+                      b.shop_name, b.id seller_id, b.shop_url
+               FROM products a
+               INNER JOIN users b ON a.user_id = b.id AND b.status_id = 1
+               WHERE a.is_publish = 1 
+               AND a.is_featured = 1
+               AND a.lan = '".$lan."'
+               ORDER BY a.id DESC LIMIT 15;";
+
+    $popular_products = DB::select($pp_sql);
+
+    foreach ($popular_products as $row) {
+        $Reviews = getReviews($row->id);
+        $row->TotalReview = $Reviews[0]->TotalReview ?? 0;
+        $row->TotalRating = $Reviews[0]->TotalRating ?? 0;
+        $row->ReviewPercentage = number_format($Reviews[0]->ReviewPercentage ?? 0);
+    }
+
+    return response()->json([
+        'status' => true,
+        'products' => $popular_products
+    ]);
+}
+
 }
