@@ -403,56 +403,7 @@
 @endif
 	<!-- /Featured Categories/ -->
 
-	<!-- Offer Section -->
-	@if($section3->is_publish == 1)
-	@if(count($offer_ad_position1)>0)
-	<section class="section offer-section" style="background-image: url({{ $section3->image ? asset('public/media/'.$section3->image) : '' }});">
-		<div class="container">
-			<div class="row">
-				<div class="col-md-12">
-					<div class="section-heading text-center">
-						@if($section3->desc !='')
-						<h5>{{ $section3->desc }}</h5>
-						@endif
-
-						@if($section3->title !='')
-						<h2>{{ $section3->title }}</h2>
-						@endif
-					</div>
-				</div>
-			</div>
-
-			<div class="row">
-				@foreach ($offer_ad_position1 as $row)
-				@php $aRow = json_decode($row->desc); @endphp
-				<div class="col-lg-4">
-					<div class="offer-card" style="background:{{ $aRow->bg_color == '' ? '#daeac5' : $aRow->bg_color }};">
-						@if($aRow->text_1 != '')
-						<div class="offer-heading">
-							<h2>{{ $aRow->text_1 }}</h2>
-						</div>
-						@endif
-						@if($aRow->text_1 != '')
-						<div class="offer-body">
-							<p>{{ $aRow->text_2 }}</p>
-						</div>
-						@endif
-						<div class="offer-footer">
-							@if($aRow->button_text != '')
-							<a href="{{ $row->url }}" class="btn theme-btn" {{ $aRow->target =='' ? '' : "target=".$aRow->target }}>{{ $aRow->button_text }}</a>
-							@endif
-							<div class="offer-image">
-								<img src="{{ asset('public/media/'.$row->image) }}" alt="{{ $aRow->text_1 }}" />
-							</div>
-						</div>
-					</div>
-				</div>
-				@endforeach
-			</div>
-		</div>
-	</section>
-	@endif
-	@endif
+	
 	<!-- /Offer Section/ -->
 
 	<!-- New Products -->
