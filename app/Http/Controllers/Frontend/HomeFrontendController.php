@@ -22,7 +22,7 @@ class HomeFrontendController extends Controller
 		$PageVariation = PageVariation();
 		
 		
-		if($PageVariation['home_variation'] == 'home_2'){
+		if($PageVariation['home_variation'] == 'home_3'){
 			//Home Page Section 1
 			$section1 = Section_manage::where('manage_type', '=', 'home_2')->where('section', '=', 'section_1')->where('is_publish', '=', 1)->first();
 			if($section1 ==''){
