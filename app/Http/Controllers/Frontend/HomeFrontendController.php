@@ -22,7 +22,7 @@ class HomeFrontendController extends Controller
 		$PageVariation = PageVariation();
 		
 		
-		if($PageVariation['home_variation'] == 'home_3'){
+		if($PageVariation['home_variation'] == 'home_2'){
 			//Home Page Section 1
 			$section1 = Section_manage::where('manage_type', '=', 'home_2')->where('section', '=', 'section_1')->where('is_publish', '=', 1)->first();
 			if($section1 ==''){
@@ -42,15 +42,7 @@ class HomeFrontendController extends Controller
 				$section2 = json_decode(json_encode($section2_array));
 			}
 			
-			//Home Page Section 3
-			$section3 = Section_manage::where('manage_type', '=', 'home_2')->where('section', '=', 'section_3')->where('is_publish', '=', 1)->first();
-			if($section3 ==''){
-				$section3_array =  array();
-				$section3_array['title'] = '';
-				$section3_array['desc'] = '';
-				$section3_array['is_publish'] = 2;
-				$section3 = json_decode(json_encode($section3_array));
-			}
+		
 
 			//Home Page Section 4
 			$section4 = Section_manage::where('manage_type', '=', 'home_2')->where('section', '=', 'section_4')->where('is_publish', '=', 1)->first();
@@ -330,7 +322,7 @@ class HomeFrontendController extends Controller
         return view('frontend.home', compact(
 			'section1', 
 			'section2', 
-			'section3', 
+			 
 			'section4', 
 			'section5', 
 			'section6',
