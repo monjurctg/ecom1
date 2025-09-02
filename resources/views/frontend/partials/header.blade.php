@@ -56,7 +56,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<!--/Top Header/-->
 
 		<!--Desktop Header-->
@@ -214,9 +214,9 @@
 						<div class="tp-mega-full">
 							<div class="tp-menu align-self-center">
 								<nav>
-									<!-- <ul class="main-menu">
+									<ul class="main-menu">
 										@php echo HeaderMenuList('HeaderMenuListForDesktop'); @endphp
-									</ul> -->
+									</ul>
 								</nav>
 							</div>
 						</div>
@@ -224,7 +224,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<!--/Menu/-->
 	</header>
 
@@ -247,11 +247,11 @@
 				<nav>
 					<ul class="mobile-menu">
 						<li class="has-children-menu"><a href="#">{{ __('Browse Categories') }}</a>
-							<!-- <ul class="dropdown">
+							<ul class="dropdown">
 								@php echo CategoryListForMobile(); @endphp
-							</ul> -->
+							</ul>
 						</li>
-						<!-- @php echo HeaderMenuList('HeaderMenuListForMobile'); @endphp -->
+						@php echo HeaderMenuList('HeaderMenuListForMobile'); @endphp
 					</ul>
 				</nav>
 			</div>
