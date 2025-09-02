@@ -510,13 +510,12 @@
 	<!-- /New Products/ -->
 
 	<!-- Popular Products -->
-	@if($section5->is_publish == 1)
-<section class="section product-section" 
-         style="background-image: url({{ $section5->image ? asset('public/media/'.$section5->image) : '' }});">
+@if($section5->is_publish == 1)
+<section class="section product-section py-4">
     <div class="container">
         <div class="row">
             <div class="col">
-                <div class="section-heading text-center">
+                <div class="section-heading text-center mb-4">
                     @if($section5->desc !='')
                         <h5>{{ $section5->desc }}</h5>
                     @endif
@@ -527,14 +526,16 @@
             </div>
         </div>
 
-        <div class="row owl-carousel caro-common category-carousel" id="popular-products">
-            <div class="text-center p-5 w-100" id="loader">
+        <!-- Popular Products -->
+        <div class="row g-3" id="popular-products">
+            <div class="col-12 text-center py-5" id="loader">
                 <i class="bi bi-arrow-repeat spin"></i> Loading products...
             </div>
         </div>
     </div>
 </section>
 @endif
+
 
 	<!-- /Popular Products/ -->
 
@@ -900,10 +901,9 @@
 
 
 
-
-	<script>
+<script>
 document.addEventListener("DOMContentLoaded", function () {
-    fetch("/api/popular-products")
+    fetch("{{ url('/api/popular-products') }}")
         .then(res => res.json())
         .then(res => {
             if (res.status) {
@@ -915,64 +915,81 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
 
                     html += `
-                        <div class="col-lg-12">
-                            <div class="item-card">
-                                <div class="item-image">
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-6">
+                            <div class="item-card h-100 shadow-sm rounded p-2">
+
+                                <!-- Image -->
+                                <div class="item-image position-relative">
                                     ${discount ? `<span class="item-label">${discount}% Off</span>` : ""}
                                     <a href="/product/${row.id}/${row.slug}">
-                                        <img src="/public/media/${row.f_thumbnail}" alt="${row.title}" />
+                                        <img src="/public/media/${row.f_thumbnail}" 
+                                             alt="${row.title}" 
+                                             class="img-fluid product-img"/>
                                     </a>
                                 </div>
-                                <div class="item-title">
-                                    <a href="/product/${row.id}/${row.slug}">${row.title}</a>
+
+                                <!-- Title -->
+                                <div class="item-title mt-2 text-truncate">
+                                    <a href="/product/${row.id}/${row.slug}">
+                                        ${row.title.length > 40 ? row.title.substring(0,40)+'…' : row.title}
+                                    </a>
                                 </div>
-                                <div class="rating-wrap">
+
+                                <!-- Rating -->
+                                <div class="rating-wrap small mb-1">
                                     <div class="stars-outer">
                                         <div class="stars-inner" style="width:${row.ReviewPercentage}%;"></div>
                                     </div>
                                     <span class="rating-count">(${row.TotalReview})</span>
                                 </div>
-                                <div class="item-sold">
-                                    Sold By <a href="/store/${row.seller_id}/${row.shop_url}">${row.shop_name}</a>
+
+                                <!-- Price -->
+                                <div class="item-pric-card mb-2">
+                                    <div class="new-price fw-bold text-primary">
+                                        {{ $gtext['currency_position'] == 'left' 
+                                            ? $gtext['currency_icon'] : '' }}${Number(row.sale_price).toFixed(2)}{{ $gtext['currency_position'] == 'right' 
+                                            ? $gtext['currency_icon'] : '' }}
+                                    </div>
+                                    ${row.is_discount == 1 && row.old_price ? `
+                                        <div class="old-price text-muted small">
+                                            <del>
+                                            {{ $gtext['currency_position'] == 'left' 
+                                                ? $gtext['currency_icon'] : '' }}${Number(row.old_price).toFixed(2)}{{ $gtext['currency_position'] == 'right' 
+                                                ? $gtext['currency_icon'] : '' }}
+                                            </del>
+                                        </div>` : ""}
                                 </div>
-                                <div class="item-pric-card">
-                                    <div class="new-price">$${row.sale_price}</div>
-                                    ${row.is_discount == 1 && row.old_price ? `<div class="old-price">$${row.old_price}</div>` : ""}
+
+                                <!-- Buttons -->
+                                <div class="item-card-bottom d-flex justify-content-between align-items-center">
+                                    <a data-id="${row.id}" href="javascript:void(0);" 
+                                       class="btn btn-sm btn-primary add-to-cart addtocart">
+                                        Add To Cart
+                                    </a>
+                                    <div class="d-flex">
+                                        <a class="addtowishlist me-2" data-id="${row.id}" href="javascript:void(0);">
+                                            <i class="bi bi-heart"></i>
+                                        </a>
+                                        <a href="/product/${row.id}/${row.slug}">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </div>
                                 </div>
-                                <div class="item-card-bottom">
-                                    <a data-id="${row.id}" href="javascript:void(0);" class="btn add-to-cart addtocart">Add To Cart</a>
-                                    <ul class="item-cart-list">
-                                        <li><a class="addtowishlist" data-id="${row.id}" href="javascript:void(0);"><i class="bi bi-heart"></i></a></li>
-                                        <li><a href="/product/${row.id}/${row.slug}"><i class="bi bi-eye"></i></a></li>
-                                    </ul>
-                                </div>
+
                             </div>
                         </div>
                     `;
                 });
 
                 document.getElementById("popular-products").innerHTML = html;
-
-                // re-init carousel after load
-                if ($(".category-carousel").length) {
-                    $(".category-carousel").owlCarousel({
-                        loop: true,
-                        margin: 10,
-                        nav: true,
-                        responsive: {
-                            0: { items: 1 },
-                            600: { items: 2 },
-                            1000: { items: 4 }
-                        }
-                    });
-                }
             }
         })
         .catch(err => {
             document.getElementById("popular-products").innerHTML =
-                `<div class="text-danger text-center w-100">Failed to load products.</div>`;
+                `<div class="col-12 text-center text-danger py-5">Failed to load products.</div>`;
         });
 });
 </script>
+
 
 </main>
