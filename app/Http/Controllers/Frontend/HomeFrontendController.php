@@ -213,43 +213,7 @@ class HomeFrontendController extends Controller
 			
 			
 			
-			//New Products
-			$np_sql = "SELECT a.id, a.brand_id, a.title, a.slug, a.f_thumbnail, a.sale_price, a.old_price, a.end_date, a.is_discount, b.shop_name, b.id seller_id, b.shop_url
-			FROM products a
-			INNER JOIN users b ON a.user_id = b.id AND b.status_id = 1
-			WHERE a.is_publish = 1 
-			AND a.lan = '".$lan."'
-			ORDER BY a.id DESC LIMIT 15;";
-
-			$new_products = DB::select($np_sql);
 			
-			for($i=0; $i<count($new_products); $i++){
-				$Reviews = getReviews($new_products[$i]->id);
-				$new_products[$i]->TotalReview = $Reviews[0]->TotalReview;
-				$new_products[$i]->TotalRating = $Reviews[0]->TotalRating;
-				$new_products[$i]->ReviewPercentage = number_format($Reviews[0]->ReviewPercentage);
-			}
-			
-			//Top Selling
-			$top_sql = "SELECT COUNT(c.product_id) TotalSell, a.id, a.title, a.slug, a.f_thumbnail, a.sale_price, a.old_price, a.end_date, a.is_discount, b.shop_name, b.id seller_id, b.shop_url
-			FROM products a
-			INNER JOIN users b ON a.user_id = b.id AND b.status_id = 1
-			INNER JOIN order_items c ON a.id = c.product_id
-			INNER JOIN order_masters d ON c.order_master_id = d.id
-			WHERE a.is_publish = 1 
-			AND a.lan = '".$lan."'
-			AND d.order_status_id = 4
-			GROUP BY a.id, a.title, a.slug, a.f_thumbnail, a.sale_price, a.old_price, a.end_date, a.is_discount, b.shop_name, b.id, b.shop_url
-			ORDER BY TotalSell DESC
-			LIMIT 15;";
-
-			$top_selling = DB::select($top_sql);
-			for($i=0; $i<count($top_selling); $i++){
-				$Reviews = getReviews($top_selling[$i]->id);
-				$top_selling[$i]->TotalReview = $Reviews[0]->TotalReview;
-				$top_selling[$i]->TotalRating = $Reviews[0]->TotalRating;
-				$top_selling[$i]->ReviewPercentage = number_format($Reviews[0]->ReviewPercentage);
-			}
 			
 			//Trending Products
 			$tp_sql = "SELECT a.id, a.brand_id, a.title, a.slug, a.f_thumbnail, a.sale_price, a.old_price, a.end_date, a.is_discount, b.shop_name, b.id seller_id, b.shop_url
@@ -326,7 +290,7 @@ class HomeFrontendController extends Controller
 			'home_video', 
 			'brand', 
 			
-			'new_products', 
+		
 			'top_selling', 
 			'trending_products', 
 			'top_rated', 
@@ -364,5 +328,65 @@ class HomeFrontendController extends Controller
         'products' => $popular_products
     ]);
 }
+
+public function getNewProducts(Request $request)
+{
+    $lan = app()->getLocale();
+
+    $np_sql = "SELECT a.id, a.brand_id, a.title, a.slug, a.f_thumbnail, a.sale_price, a.old_price, a.end_date, a.is_discount, b.shop_name, b.id seller_id, b.shop_url
+        FROM products a
+        INNER JOIN users b ON a.user_id = b.id AND b.status_id = 1
+        WHERE a.is_publish = 1 
+        AND a.lan = '".$lan."'
+        ORDER BY a.id DESC LIMIT 15;";
+
+    $new_products = DB::select($np_sql);
+
+    foreach ($new_products as $product) {
+        $Reviews = getReviews($product->id);
+        $product->TotalReview = $Reviews[0]->TotalReview ?? 0;
+        $product->TotalRating = $Reviews[0]->TotalRating ?? 0;
+        $product->ReviewPercentage = number_format($Reviews[0]->ReviewPercentage ?? 0);
+    }
+
+    return response()->json([
+        'status' => true,
+        'products' => $new_products
+    ]);
+}
+
+public function getTopSellingProducts(Request $request)
+{
+    $lan = app()->getLocale();
+
+    $top_sql = "SELECT COUNT(c.product_id) TotalSell, a.id, a.title, a.slug, a.f_thumbnail, a.sale_price, a.old_price, a.end_date, a.is_discount, 
+                       b.shop_name, b.id seller_id, b.shop_url
+                FROM products a
+                INNER JOIN users b ON a.user_id = b.id AND b.status_id = 1
+                INNER JOIN order_items c ON a.id = c.product_id
+                INNER JOIN order_masters d ON c.order_master_id = d.id
+                WHERE a.is_publish = 1 
+                AND a.lan = '".$lan."'
+                AND d.order_status_id = 4
+                GROUP BY a.id, a.title, a.slug, a.f_thumbnail, a.sale_price, a.old_price, a.end_date, a.is_discount, b.shop_name, b.id, b.shop_url
+                ORDER BY TotalSell DESC
+                LIMIT 15;";
+
+    $top_selling = DB::select($top_sql);
+
+    foreach ($top_selling as $product) {
+        $Reviews = getReviews($product->id);
+        $product->TotalReview = $Reviews[0]->TotalReview ?? 0;
+        $product->TotalRating = $Reviews[0]->TotalRating ?? 0;
+        $product->ReviewPercentage = number_format($Reviews[0]->ReviewPercentage ?? 0);
+    }
+
+    return response()->json([
+        'status' => true,
+        'products' => $top_selling
+    ]);
+}
+
+
 
 }

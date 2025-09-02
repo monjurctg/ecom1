@@ -423,91 +423,17 @@
             </div>
         </div>
 
-        <div class="row g-3">
-            @foreach ($new_products as $row)
-            <div class="col-lg-3 col-md-4 col-sm-6 col-6">
-                <div class="item-card h-100 shadow-sm rounded p-2">
-
-                    <!-- Image -->
-                    <div class="item-image position-relative">
-                        @if(($row->is_discount == 1) && ($row->old_price !=''))
-                            @php
-                                $discount = number_format((($row->old_price - $row->sale_price)*100)/$row->old_price);
-                            @endphp
-                            <span class="item-label">{{ $discount }}% {{ __('Off') }}</span>
-                        @endif
-                        <a href="{{ route('frontend.product', [$row->id, $row->slug]) }}">
-                            <img src="{{ asset('public/media/'.$row->f_thumbnail) }}"
-                                 alt="{{ $row->title }}"
-                                 class="img-fluid product-img"/>
-                        </a>
-                    </div>
-
-                    <!-- Title -->
-                    <div class="item-title mt-2 text-truncate">
-                        <a href="{{ route('frontend.product', [$row->id, $row->slug]) }}">
-                            {{ str_limit($row->title, 40) }}
-                        </a>
-                    </div>
-
-                    <!-- Rating -->
-                    <div class="rating-wrap small mb-1">
-                        <div class="stars-outer">
-                            <div class="stars-inner" style="width:{{ $row->ReviewPercentage }}%;"></div>
-                        </div>
-                        <span class="rating-count">({{ $row->TotalReview }})</span>
-                    </div>
-
-                    <!-- Price -->
-                    <div class="item-pric-card mb-2">
-                        @if($row->sale_price != '')
-                            <div class="new-price fw-bold text-primary">
-                                @if($gtext['currency_position'] == 'left')
-                                    {{ $gtext['currency_icon'] }}{{ NumberFormat($row->sale_price) }}
-                                @else
-                                    {{ NumberFormat($row->sale_price) }}{{ $gtext['currency_icon'] }}
-                                @endif
-                            </div>
-                        @endif
-                        @if(($row->is_discount == 1) && ($row->old_price !=''))
-                            <div class="old-price text-muted small">
-                                <del>
-                                @if($gtext['currency_position'] == 'left')
-                                    {{ $gtext['currency_icon'] }}{{ NumberFormat($row->old_price) }}
-                                @else
-                                    {{ NumberFormat($row->old_price) }}{{ $gtext['currency_icon'] }}
-                                @endif
-                                </del>
-                            </div>
-                        @endif
-                    </div>
-
-                    <!-- Buttons -->
-                    <div class="item-card-bottom d-flex justify-content-between align-items-center">
-                        <a data-id="{{ $row->id }}" href="javascript:void(0);"
-                           class="btn btn-sm btn-primary add-to-cart addtocart">
-                            {{ __('Add To Cart') }}
-                        </a>
-                        <div class="d-flex">
-                            <a class="addtowishlist me-2" data-id="{{ $row->id }}" href="javascript:void(0);">
-                                <i class="bi bi-heart"></i>
-                            </a>
-                            <a href="{{ route('frontend.product', [$row->id, $row->slug]) }}">
-                                <i class="bi bi-eye"></i>
-                            </a>
-                        </div>
-                    </div>
-
-                </div>
+        <!-- New Products -->
+        <div class="row g-3" id="new-products">
+            <div class="col-12 text-center py-5" id="loader-new">
+                <i class="bi bi-arrow-repeat spin"></i> Loading new products...
             </div>
-            @endforeach
         </div>
     </div>
 </section>
 @endif
 
 
-	<!-- /New Products/ -->
 
 	<!-- Popular Products -->
 @if($section5->is_publish == 1)
@@ -540,79 +466,32 @@
 	<!-- /Popular Products/ -->
 
 	<!-- Top Selling Products -->
-	@if($section6->is_publish == 1)
-	<section class="section product-section">
-		<div class="container">
-			<div class="row">
-				<div class="col">
-					<div class="section-heading text-center">
-						@if($section6->desc !='')
-						<h5>{{ $section6->desc }}</h5>
-						@endif
+@if($section6->is_publish == 1)
+<section class="section product-section py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="section-heading text-center mb-4">
+                    @if($section6->desc !='')
+                        <h5>{{ $section6->desc }}</h5>
+                    @endif
+                    @if($section6->title !='')
+                        <h2>{{ $section6->title }}</h2>
+                    @endif
+                </div>
+            </div>
+        </div>
 
-						@if($section6->title !='')
-						<h2>{{ $section6->title }}</h2>
-						@endif
-					</div>
-				</div>
-			</div>
-			<div class="row owl-carousel caro-common category-carousel">
-				@foreach ($top_selling as $row)
-				<div class="col-lg-12">
-					<div class="item-card">
-						<div class="item-image">
-							@if(($row->is_discount == 1) && ($row->old_price !=''))
-								@php
-									$discount = number_format((($row->old_price - $row->sale_price)*100)/$row->old_price);
-								@endphp
-							<span class="item-label">{{ $discount }}% {{ __('Off') }}</span>
-							@endif
-							<a href="{{ route('frontend.product', [$row->id, $row->slug]) }}">
-								<img src="{{ asset('public/media/'.$row->f_thumbnail) }}" alt="{{ $row->title }}" />
-							</a>
-						</div>
-						<div class="item-title">
-							<a href="{{ route('frontend.product', [$row->id, $row->slug]) }}">{{ str_limit($row->title) }}</a>
-						</div>
-						<div class="rating-wrap">
-							<div class="stars-outer">
-								<div class="stars-inner" style="width:{{ $row->ReviewPercentage }}%;"></div>
-							</div>
-							<span class="rating-count">({{ $row->TotalReview }})</span>
-						</div>
-						<div class="item-sold">
-							{{ __('Sold By') }} <a href="{{ route('frontend.stores', [$row->seller_id, str_slug($row->shop_url)]) }}">{{ str_limit($row->shop_name) }}</a>
-						</div>
-						<div class="item-pric-card">
-							@if($row->sale_price != '')
-								@if($gtext['currency_position'] == 'left')
-								<div class="new-price">{{ $gtext['currency_icon'] }}{{ NumberFormat($row->sale_price) }}</div>
-								@else
-								<div class="new-price">{{ NumberFormat($row->sale_price) }}{{ $gtext['currency_icon'] }}</div>
-								@endif
-							@endif
-							@if(($row->is_discount == 1) && ($row->old_price !=''))
-								@if($gtext['currency_position'] == 'left')
-								<div class="old-price">{{ $gtext['currency_icon'] }}{{ NumberFormat($row->old_price) }}</div>
-								@else
-								<div class="old-price">{{ NumberFormat($row->old_price) }}{{ $gtext['currency_icon'] }}</div>
-								@endif
-							@endif
-						</div>
-						<div class="item-card-bottom">
-							<a data-id="{{ $row->id }}" href="javascript:void(0);" class="btn add-to-cart addtocart">{{ __('Add To Cart') }}</a>
-							<ul class="item-cart-list">
-								<li><a class="addtowishlist" data-id="{{ $row->id }}" href="javascript:void(0);"><i class="bi bi-heart"></i></a></li>
-								<li><a href="{{ route('frontend.product', [$row->id, $row->slug]) }}"><i class="bi bi-eye"></i></a></li>
-							</ul>
-						</div>
-					</div>
-				</div>
-				@endforeach
-			</div>
-		</div>
-	</section>
-	@endif
+        <!-- Top Selling Products -->
+        <div class="row g-3" id="top-selling-products">
+            <div class="col-12 text-center py-5" id="loader-top">
+                <i class="bi bi-arrow-repeat spin"></i> Loading top selling products...
+            </div>
+        </div>
+    </div>
+</section>
+@endif
+
 	<!-- /Top Selling Products/ -->
 
 	<!-- Trending Products -->
@@ -989,7 +868,189 @@ document.addEventListener("DOMContentLoaded", function () {
                 `<div class="col-12 text-center text-danger py-5">Failed to load products.</div>`;
         });
 });
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    fetch("{{ url('/api/new-products') }}")
+        .then(res => res.json())
+        .then(res => {
+            if (res.status) {
+                let html = "";
+                res.products.forEach(row => {
+                    let discount = "";
+                    if (row.is_discount == 1 && row.old_price) {
+                        discount = Math.round(((row.old_price - row.sale_price) * 100) / row.old_price);
+                    }
+
+                    html += `
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-6">
+                            <div class="item-card h-100 shadow-sm rounded p-2">
+
+                                <!-- Image -->
+                                <div class="item-image position-relative">
+                                    ${discount ? `<span class="item-label">${discount}% Off</span>` : ""}
+                                    <a href="/product/${row.id}/${row.slug}">
+                                        <img src="/public/media/${row.f_thumbnail}" 
+                                             alt="${row.title}" 
+                                             class="img-fluid product-img"/>
+                                    </a>
+                                </div>
+
+                                <!-- Title -->
+                                <div class="item-title mt-2 text-truncate">
+                                    <a href="/product/${row.id}/${row.slug}">
+                                        ${row.title.length > 40 ? row.title.substring(0,40)+'…' : row.title}
+                                    </a>
+                                </div>
+
+                                <!-- Rating -->
+                                <div class="rating-wrap small mb-1">
+                                    <div class="stars-outer">
+                                        <div class="stars-inner" style="width:${row.ReviewPercentage}%;"></div>
+                                    </div>
+                                    <span class="rating-count">(${row.TotalReview})</span>
+                                </div>
+
+                                <!-- Price -->
+                                <div class="item-pric-card mb-2">
+                                    <div class="new-price fw-bold text-primary">
+                                        {{ $gtext['currency_position'] == 'left' 
+                                            ? $gtext['currency_icon'] : '' }}${Number(row.sale_price).toFixed(2)}{{ $gtext['currency_position'] == 'right' 
+                                            ? $gtext['currency_icon'] : '' }}
+                                    </div>
+                                    ${row.is_discount == 1 && row.old_price ? `
+                                        <div class="old-price text-muted small">
+                                            <del>
+                                            {{ $gtext['currency_position'] == 'left' 
+                                                ? $gtext['currency_icon'] : '' }}${Number(row.old_price).toFixed(2)}{{ $gtext['currency_position'] == 'right' 
+                                                ? $gtext['currency_icon'] : '' }}
+                                            </del>
+                                        </div>` : ""}
+                                </div>
+
+                                <!-- Buttons -->
+                                <div class="item-card-bottom d-flex justify-content-between align-items-center">
+                                    <a data-id="${row.id}" href="javascript:void(0);" 
+                                       class="btn btn-sm btn-primary add-to-cart addtocart">
+                                        Add To Cart
+                                    </a>
+                                    <div class="d-flex">
+                                        <a class="addtowishlist me-2" data-id="${row.id}" href="javascript:void(0);">
+                                            <i class="bi bi-heart"></i>
+                                        </a>
+                                        <a href="/product/${row.id}/${row.slug}">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    `;
+                });
+
+                document.getElementById("new-products").innerHTML = html;
+            }
+        })
+        .catch(err => {
+            document.getElementById("new-products").innerHTML =
+                `<div class="col-12 text-center text-danger py-5">Failed to load new products.</div>`;
+        });
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    fetch("{{ url('/api/top-selling-products') }}")
+        .then(res => res.json())
+        .then(res => {
+            if (res.status) {
+                let html = "";
+                res.products.forEach(row => {
+                    let discount = "";
+                    if (row.is_discount == 1 && row.old_price) {
+                        discount = Math.round(((row.old_price - row.sale_price) * 100) / row.old_price);
+                    }
+
+                    html += `
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-6">
+                            <div class="item-card h-100 shadow-sm rounded p-2">
+
+                                <!-- Image -->
+                                <div class="item-image position-relative">
+                                    ${discount ? `<span class="item-label">${discount}% Off</span>` : ""}
+                                    <a href="/product/${row.id}/${row.slug}">
+                                        <img src="/public/media/${row.f_thumbnail}" 
+                                             alt="${row.title}" 
+                                             class="img-fluid product-img"/>
+                                    </a>
+                                </div>
+
+                                <!-- Title -->
+                                <div class="item-title mt-2 text-truncate">
+                                    <a href="/product/${row.id}/${row.slug}">
+                                        ${row.title.length > 40 ? row.title.substring(0,40)+'…' : row.title}
+                                    </a>
+                                </div>
+
+                                <!-- Rating -->
+                                <div class="rating-wrap small mb-1">
+                                    <div class="stars-outer">
+                                        <div class="stars-inner" style="width:${row.ReviewPercentage}%;"></div>
+                                    </div>
+                                    <span class="rating-count">(${row.TotalReview})</span>
+                                </div>
+
+                                <!-- Price -->
+                                <div class="item-pric-card mb-2">
+                                    <div class="new-price fw-bold text-primary">
+                                        {{ $gtext['currency_position'] == 'left' 
+                                            ? $gtext['currency_icon'] : '' }}${Number(row.sale_price).toFixed(2)}{{ $gtext['currency_position'] == 'right' 
+                                            ? $gtext['currency_icon'] : '' }}
+                                    </div>
+                                    ${row.is_discount == 1 && row.old_price ? `
+                                        <div class="old-price text-muted small">
+                                            <del>
+                                            {{ $gtext['currency_position'] == 'left' 
+                                                ? $gtext['currency_icon'] : '' }}${Number(row.old_price).toFixed(2)}{{ $gtext['currency_position'] == 'right' 
+                                                ? $gtext['currency_icon'] : '' }}
+                                            </del>
+                                        </div>` : ""}
+                                </div>
+
+                                <!-- Buttons -->
+                                <div class="item-card-bottom d-flex justify-content-between align-items-center">
+                                    <a data-id="${row.id}" href="javascript:void(0);" 
+                                       class="btn btn-sm btn-primary add-to-cart addtocart">
+                                        Add To Cart
+                                    </a>
+                                    <div class="d-flex">
+                                        <a class="addtowishlist me-2" data-id="${row.id}" href="javascript:void(0);">
+                                            <i class="bi bi-heart"></i>
+                                        </a>
+                                        <a href="/product/${row.id}/${row.slug}">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    `;
+                });
+
+                document.getElementById("top-selling-products").innerHTML = html;
+            }
+        })
+        .catch(err => {
+            document.getElementById("top-selling-products").innerHTML =
+                `<div class="col-12 text-center text-danger py-5">Failed to load top selling products.</div>`;
+        });
+});
 </script>
+
+
+
 
 
 </main>

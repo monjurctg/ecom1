@@ -20,3 +20,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/popular-products', [HomeFrontendController::class, 'popularProducts']);
+Route::get('/new-products', [HomeFrontendController::class, 'getNewProducts']);
+Route::get('/top-selling-products', [HomeFrontendController::class, 'getTopSellingProducts']);
