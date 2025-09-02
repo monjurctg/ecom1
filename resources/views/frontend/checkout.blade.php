@@ -151,7 +151,7 @@
 									</div>
 								</div>
 							</div>
-							<!-- <div class="row">
+							<div class="row">
 								<div class="col-md-12">
 									<div class="checkboxlist">
 										<label class="checkbox-title">
@@ -163,8 +163,8 @@
 										<span class="text-danger">{{ $errors->first('password') }}</span>
 									@endif
 								</div>
-							</div> -->
-<!-- 
+							</div>
+
 							<div class="row hideclass" id="new_account_pass">
 								<div class="col-md-6">
 									<div class="mb-3">
@@ -179,7 +179,7 @@
 											class="form-control" placeholder="{{ __('Confirm password') }}">
 									</div>
 								</div>
-							</div> -->
+							</div>
 
 							<h5 class="mt10">{{ __('Payment Method') }}</h5>
 							<div class="row">
@@ -188,7 +188,7 @@
 
 
 
-									@if($gtext['cod_isenable'] == '1')
+									@if($gtext['cod_isenable'] == 1)
 										<div class="payment_card">
 											<div class="checkboxlist">
 												<label class="checkbox-title">
@@ -202,19 +202,7 @@
 										</div>
 									@endif
 
-									@if($gtext['bank_isenable'] == '1')
-										<div class="payment_card">
-											<div class="checkboxlist">
-												<label class="checkbox-title">
-													<input id="payment_method_bank" name="payment_method" type="radio"
-														value="2"><img
-														src="{{ asset('public/frontend/images/bank_transfer.png') }}"
-														alt="Bank Transfer" />
-												</label>
-											</div>
-											<p id="pay_bank" class="hideclass">{{ $gtext['bank_description'] }}</p>
-										</div>
-									@endif
+									
 								</div>
 							</div>
 							<div class="row">
@@ -377,7 +365,7 @@
 											</tbody>
 										</table>
 
-										
+									
 										<input name="customer_id" type="hidden"
 											value="@if(isset(Auth::user()->id)) {{ Auth::user()->id }} @endif" />
 										<input name="razorpay_payment_id" id="razorpay_payment_id" type="hidden" />
