@@ -247,9 +247,9 @@
 				<nav>
 					<ul class="mobile-menu">
 						<li class="has-children-menu"><a href="#">{{ __('Browse Categories') }}</a>
-							<ul class="dropdown">
+							<!-- <ul class="dropdown">
 								@php echo CategoryListForMobile(); @endphp
-							</ul>
+							</ul> -->
 						</li>
 						<!-- @php echo HeaderMenuList('HeaderMenuListForMobile'); @endphp -->
 					</ul>
