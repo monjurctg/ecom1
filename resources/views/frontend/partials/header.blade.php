@@ -55,7 +55,9 @@
 					</div>
 				</div>
 			</div>
-		</div><!--/Top Header/-->
+		</div>
+		
+		<!--/Top Header/-->
 
 		<!--Desktop Header-->
 		<div class="header-desktop">
@@ -221,7 +223,9 @@
 					</div>
 				</div>
 			</div>
-		</div><!--/Menu/-->
+		</div>
+		
+		<!--/Menu/-->
 	</header>
 
 	<!-- off-canvas menu start -->
