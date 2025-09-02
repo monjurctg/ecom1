@@ -478,197 +478,195 @@ function FooterMenuList($MenuType)
     });
 }
 
-
-
-
 function gtext()
 {
     return Cache::remember('gtext', 3600, function () {
-
         $data = [];
 
-        // Fetch all options in one query
+        // Define all required option names
         $optionNames = [
-            'general_settings','theme_logo','currency','theme_option_header','language_switcher',
-            'theme_option_footer','facebook','twitter','theme_option_seo','facebook-pixel',
-            'google_analytics','google_tag_manager','google_recaptcha','google_map','theme_color',
-            'mail_settings','stripe','paypal','razorpay','mollie','cash_on_delivery','bank_transfer',
-            'mailchimp','subscribe_popup','whatsapp','custom_css','custom_js','cookie_consent'
+            'general_settings', 'theme_logo', 'currency', 'theme_option_header',
+            'language_switcher', 'theme_option_footer', 'facebook', 'twitter',
+            'theme_option_seo', 'facebook-pixel', 'google_analytics', 'google_tag_manager',
+            'google_recaptcha', 'google_map', 'theme_color', 'mail_settings',
+            'stripe', 'paypal', 'razorpay', 'mollie', 'cash_on_delivery', 'bank_transfer',
+            'mailchimp', 'subscribe_popup', 'whatsapp', 'custom_css', 'custom_js', 'cookie_consent'
         ];
 
-        $allOptions = Tp_option::whereIn('option_name', $optionNames)->get()->keyBy('option_name');
+        // Fetch all options in one query and index by option_name
+        $options = Tp_option::whereIn('option_name', $optionNames)
+            ->pluck('option_value', 'option_name'); // More efficient than get()->keyBy()
 
-        // Helper function to decode JSON safely
-        $getOption = function($key) use ($allOptions) {
-            if (isset($allOptions[$key])) {
-                return json_decode($allOptions[$key]->option_value);
-            }
-            return null;
+        // Helper to safely decode JSON or return empty object
+        $decode = function ($value) {
+            return $value ? json_decode($value, true) : [];
         };
 
         // General Settings
-        $general = $getOption('general_settings');
-        $data['site_name'] = $general->site_name ?? 'bShop';
-        $data['site_title'] = $general->site_title ?? 'Laravel eCommerce Shopping Platform';
-        $data['company'] = $general->company ?? '';
-        $data['invoice_email'] = $general->email ?? '';
-        $data['invoice_phone'] = $general->phone ?? '';
-        $data['invoice_address'] = $general->address ?? '';
-        $data['timezone'] = $general->timezone ?? '';
+        $general = $decode($options->get('general_settings'));
+        $data['site_name'] = $general['site_name'] ?? 'bShop';
+        $data['site_title'] = $general['site_title'] ?? 'Laravel eCommerce Shopping Platform';
+        $data['company'] = $general['company'] ?? '';
+        $data['invoice_email'] = $general['email'] ?? '';
+        $data['invoice_phone'] = $general['phone'] ?? '';
+        $data['invoice_address'] = $general['address'] ?? '';
+        $data['timezone'] = $general['timezone'] ?? '';
 
         // Theme Logo
-        $logo = $getOption('theme_logo');
-        $data['favicon'] = $logo->favicon ?? '';
-        $data['front_logo'] = $logo->front_logo ?? '';
-        $data['back_logo'] = $logo->back_logo ?? '';
+        $logo = $decode($options->get('theme_logo'));
+        $data['favicon'] = $logo['favicon'] ?? '';
+        $data['front_logo'] = $logo['front_logo'] ?? '';
+        $data['back_logo'] = $logo['back_logo'] ?? '';
 
         // Currency
-        $currency = $getOption('currency');
-        $data['currency_name'] = $currency->currency_name ?? '';
-        $data['currency_icon'] = $currency->currency_icon ?? '';
-        $data['currency_position'] = $currency->currency_position ?? '';
+        $currency = $decode($options->get('currency'));
+        $data['currency_name'] = $currency['currency_name'] ?? '';
+        $data['currency_icon'] = $currency['currency_icon'] ?? '';
+        $data['currency_position'] = $currency['currency_position'] ?? '';
 
         // Header
-        $header = $getOption('theme_option_header');
-        $data['address'] = $header->address ?? '';
-        $data['phone'] = $header->phone ?? '';
-        $data['is_publish'] = $header->is_publish ?? '';
+        $header = $decode($options->get('theme_option_header'));
+        $data['address'] = $header['address'] ?? '';
+        $data['phone'] = $header['phone'] ?? '';
+        $data['is_publish'] = $header['is_publish'] ?? '';
 
         // Language Switcher
-        $lang = $getOption('language_switcher');
-        $data['is_language_switcher'] = $lang->is_language_switcher ?? '';
+        $lang = $decode($options->get('language_switcher'));
+        $data['is_language_switcher'] = $lang['is_language_switcher'] ?? '';
 
         // Footer
-        $footer = $getOption('theme_option_footer');
-        $data['about_logo_footer'] = $footer->about_logo ?? '';
-        $data['about_desc_footer'] = $footer->about_desc ?? '';
-        $data['is_publish_about'] = $footer->is_publish_about ?? '';
-        $data['address_footer'] = $footer->address ?? '';
-        $data['email_footer'] = $footer->email ?? '';
-        $data['phone_footer'] = $footer->phone ?? '';
-        $data['is_publish_contact'] = $footer->is_publish_contact ?? '';
-        $data['copyright'] = $footer->copyright ?? '';
-        $data['is_publish_copyright'] = $footer->is_publish_copyright ?? '';
-        $data['payment_gateway_icon'] = $footer->payment_gateway_icon ?? '';
-        $data['is_publish_payment'] = $footer->is_publish_payment ?? '';
+        $footer = $decode($options->get('theme_option_footer'));
+        $data['about_logo_footer'] = $footer['about_logo'] ?? '';
+        $data['about_desc_footer'] = $footer['about_desc'] ?? '';
+        $data['is_publish_about'] = $footer['is_publish_about'] ?? '';
+        $data['address_footer'] = $footer['address'] ?? '';
+        $data['email_footer'] = $footer['email'] ?? '';
+        $data['phone_footer'] = $footer['phone'] ?? '';
+        $data['is_publish_contact'] = $footer['is_publish_contact'] ?? '';
+        $data['copyright'] = $footer['copyright'] ?? '';
+        $data['is_publish_copyright'] = $footer['is_publish_copyright'] ?? '';
+        $data['payment_gateway_icon'] = $footer['payment_gateway_icon'] ?? '';
+        $data['is_publish_payment'] = $footer['is_publish_payment'] ?? '';
 
-        // RTL
-        $isRTL = Language::where('language_code', app()->getLocale())->first();
-        $data['is_rtl'] = $isRTL->is_rtl ?? 0;
+        // RTL Detection
+        $isRTL = Cache::remember('language_'.app()->getLocale(), 3600, function () {
+            return Language::where('language_code', app()->getLocale())->first();
+        });
+        $data['is_rtl'] = $isRTL?->is_rtl ?? 0;
 
         // Facebook
-        $facebook = $getOption('facebook');
-        $data['fb_app_id'] = $facebook->fb_app_id ?? '';
-        $data['fb_publish'] = $facebook->is_publish ?? '';
+        $facebook = $decode($options->get('facebook'));
+        $data['fb_app_id'] = $facebook['fb_app_id'] ?? '';
+        $data['fb_publish'] = $facebook['is_publish'] ?? '';
 
         // Twitter
-        $twitter = $getOption('twitter');
-        $data['twitter_id'] = $twitter->twitter_id ?? '';
-        $data['twitter_publish'] = $twitter->is_publish ?? '';
+        $twitter = $decode($options->get('twitter'));
+        $data['twitter_id'] = $twitter['twitter_id'] ?? '';
+        $data['twitter_publish'] = $twitter['is_publish'] ?? '';
 
         // SEO
-        $seo = $getOption('theme_option_seo');
-        $data['og_title'] = $seo->og_title ?? '';
-        $data['og_image'] = $seo->og_image ?? '';
-        $data['og_description'] = $seo->og_description ?? '';
-        $data['og_keywords'] = $seo->og_keywords ?? '';
-        $data['seo_publish'] = $seo->is_publish ?? '';
+        $seo = $decode($options->get('theme_option_seo'));
+        $data['og_title'] = $seo['og_title'] ?? '';
+        $data['og_image'] = $seo['og_image'] ?? '';
+        $data['og_description'] = $seo['og_description'] ?? '';
+        $data['og_keywords'] = $seo['og_keywords'] ?? '';
+        $data['seo_publish'] = $seo['is_publish'] ?? '';
 
         // Facebook Pixel
-        $fbPixel = $getOption('facebook-pixel');
-        $data['fb_pixel_id'] = $fbPixel->fb_pixel_id ?? '';
-        $data['fb_pixel_publish'] = $fbPixel->is_publish ?? '';
+        $fbPixel = $decode($options->get('facebook-pixel'));
+        $data['fb_pixel_id'] = $fbPixel['fb_pixel_id'] ?? '';
+        $data['fb_pixel_publish'] = $fbPixel['is_publish'] ?? '';
 
         // Google Analytics
-        $ga = $getOption('google_analytics');
-        $data['tracking_id'] = $ga->tracking_id ?? '';
-        $data['ga_publish'] = $ga->is_publish ?? '';
+        $ga = $decode($options->get('google_analytics'));
+        $data['tracking_id'] = $ga['tracking_id'] ?? '';
+        $data['ga_publish'] = $ga['is_publish'] ?? '';
 
         // Google Tag Manager
-        $gtm = $getOption('google_tag_manager');
-        $data['google_tag_manager_id'] = $gtm->google_tag_manager_id ?? '';
-        $data['gtm_publish'] = $gtm->is_publish ?? '';
+        $gtm = $decode($options->get('google_tag_manager'));
+        $data['google_tag_manager_id'] = $gtm['google_tag_manager_id'] ?? '';
+        $data['gtm_publish'] = $gtm['is_publish'] ?? '';
 
         // Google Recaptcha
-        $gr = $getOption('google_recaptcha');
-        $data['sitekey'] = $gr->sitekey ?? '';
-        $data['secretkey'] = $gr->secretkey ?? '';
-        $data['is_recaptcha'] = $gr->is_recaptcha ?? '';
+        $gr = $decode($options->get('google_recaptcha'));
+        $data['sitekey'] = $gr['sitekey'] ?? '';
+        $data['secretkey'] = $gr['secretkey'] ?? '';
+        $data['is_recaptcha'] = $gr['is_recaptcha'] ?? '';
 
         // Google Map
-        $gm = $getOption('google_map');
-        $data['googlemap_apikey'] = $gm->googlemap_apikey ?? '';
-        $data['is_googlemap'] = $gm->is_googlemap ?? '';
+        $gm = $decode($options->get('google_map'));
+        $data['googlemap_apikey'] = $gm['googlemap_apikey'] ?? '';
+        $data['is_googlemap'] = $gm['is_googlemap'] ?? '';
 
         // Theme Colors
-        $theme = $getOption('theme_color');
-        $data['theme_color'] = $theme->theme_color ?? '#61a402';
-        $data['green_color'] = $theme->green_color ?? '#65971e';
-        $data['light_green_color'] = $theme->light_green_color ?? '#daeac5';
-        $data['lightness_green_color'] = $theme->lightness_green_color ?? '#fdfff8';
-        $data['gray_color'] = $theme->gray_color ?? '#8d949d';
-        $data['dark_gray_color'] = $theme->dark_gray_color ?? '#595959';
-        $data['light_gray_color'] = $theme->light_gray_color ?? '#e7e7e7';
-        $data['black_color'] = $theme->black_color ?? '#232424';
-        $data['white_color'] = $theme->white_color ?? '#ffffff';
+        $theme = $decode($options->get('theme_color'));
+        $data['theme_color'] = $theme['theme_color'] ?? '#61a402';
+        $data['green_color'] = $theme['green_color'] ?? '#65971e';
+        $data['light_green_color'] = $theme['light_green_color'] ?? '#daeac5';
+        $data['lightness_green_color'] = $theme['lightness_green_color'] ?? '#fdfff8';
+        $data['gray_color'] = $theme['gray_color'] ?? '#8d949d';
+        $data['dark_gray_color'] = $theme['dark_gray_color'] ?? '#595959';
+        $data['light_gray_color'] = $theme['light_gray_color'] ?? '#e7e7e7';
+        $data['black_color'] = $theme['black_color'] ?? '#232424';
+        $data['white_color'] = $theme['white_color'] ?? '#ffffff';
 
         // Mail Settings
-        $mail = $getOption('mail_settings');
-        $data['ismail'] = $mail->ismail ?? '';
-        $data['from_name'] = $mail->from_name ?? '';
-        $data['from_mail'] = $mail->from_mail ?? '';
-        $data['to_name'] = $mail->to_name ?? '';
-        $data['to_mail'] = $mail->to_mail ?? '';
-        $data['mailer'] = $mail->mailer ?? '';
-        $data['smtp_host'] = $mail->smtp_host ?? '';
-        $data['smtp_port'] = $mail->smtp_port ?? '';
-        $data['smtp_security'] = $mail->smtp_security ?? '';
-        $data['smtp_username'] = $mail->smtp_username ?? '';
-        $data['smtp_password'] = $mail->smtp_password ?? '';
+        $mail = $decode($options->get('mail_settings'));
+        $data['ismail'] = $mail['ismail'] ?? '';
+        $data['from_name'] = $mail['from_name'] ?? '';
+        $data['from_mail'] = $mail['from_mail'] ?? '';
+        $data['to_name'] = $mail['to_name'] ?? '';
+        $data['to_mail'] = $mail['to_mail'] ?? '';
+        $data['mailer'] = $mail['mailer'] ?? '';
+        $data['smtp_host'] = $mail['smtp_host'] ?? '';
+        $data['smtp_port'] = $mail['smtp_port'] ?? '';
+        $data['smtp_security'] = $mail['smtp_security'] ?? '';
+        $data['smtp_username'] = $mail['smtp_username'] ?? '';
+        $data['smtp_password'] = $mail['smtp_password'] ?? '';
 
         // Payment Gateways
         $paymentOptions = ['stripe','paypal','razorpay','mollie','cash_on_delivery','bank_transfer'];
-        foreach($paymentOptions as $p){
-            $pData = $getOption($p);
-            $data[$p.'_data'] = $pData ?? new stdClass();
+        foreach ($paymentOptions as $p) {
+            $pData = $decode($options->get($p));
+            $data[$p.'_data'] = (object) $pData; // Convert to object for consistency
         }
 
         // Mailchimp
-        $mc = $getOption('mailchimp');
-        $data['mailchimp_api_key'] = $mc->mailchimp_api_key ?? '';
-        $data['audience_id'] = $mc->audience_id ?? '';
-        $data['is_mailchimp'] = $mc->is_mailchimp ?? '';
+        $mc = $decode($options->get('mailchimp'));
+        $data['mailchimp_api_key'] = $mc['mailchimp_api_key'] ?? '';
+        $data['audience_id'] = $mc['audience_id'] ?? '';
+        $data['is_mailchimp'] = $mc['is_mailchimp'] ?? '';
 
         // Subscribe Popup
-        $sp = $getOption('subscribe_popup');
-        $data['subscribe_title'] = $sp->subscribe_title ?? '';
-        $data['subscribe_popup_desc'] = $sp->subscribe_popup_desc ?? '';
-        $data['bg_image_popup'] = $sp->bg_image_popup ?? '';
-        $data['subscribe_background_image'] = $sp->background_image ?? '';
-        $data['is_subscribe_popup'] = $sp->is_subscribe_popup ?? '';
-        $data['is_subscribe_footer'] = $sp->is_subscribe_footer ?? '';
+        $sp = $decode($options->get('subscribe_popup'));
+        $data['subscribe_title'] = $sp['subscribe_title'] ?? '';
+        $data['subscribe_popup_desc'] = $sp['subscribe_popup_desc'] ?? '';
+        $data['bg_image_popup'] = $sp['bg_image_popup'] ?? '';
+        $data['subscribe_background_image'] = $sp['background_image'] ?? '';
+        $data['is_subscribe_popup'] = $sp['is_subscribe_popup'] ?? '';
+        $data['is_subscribe_footer'] = $sp['is_subscribe_footer'] ?? '';
 
         // WhatsApp
-        $wa = $getOption('whatsapp');
-        $data['whatsapp_id'] = $wa->whatsapp_id ?? '';
-        $data['whatsapp_text'] = $wa->whatsapp_text ?? '';
-        $data['position'] = $wa->position ?? '';
-        $data['is_whatsapp_publish'] = $wa->is_publish ?? '';
+        $wa = $decode($options->get('whatsapp'));
+        $data['whatsapp_id'] = $wa['whatsapp_id'] ?? '';
+        $data['whatsapp_text'] = $wa['whatsapp_text'] ?? '';
+        $data['position'] = $wa['position'] ?? '';
+        $data['is_whatsapp_publish'] = $wa['is_publish'] ?? '';
 
         // Custom CSS/JS
-        $data['custom_css'] = $allOptions['custom_css']->option_value ?? '';
-        $data['custom_js'] = $allOptions['custom_js']->option_value ?? '';
+        $data['custom_css'] = $options->get('custom_css') ?? '';
+        $data['custom_js'] = $options->get('custom_js') ?? '';
 
         // Cookie Consent
-        $cc = $getOption('cookie_consent');
-        $data['cookie_title'] = $cc->title ?? '';
-        $data['cookie_message'] = $cc->message ?? '';
-        $data['button_text'] = $cc->button_text ?? '';
-        $data['learn_more_url'] = $cc->learn_more_url ?? '';
-        $data['learn_more_text'] = $cc->learn_more_text ?? '';
-        $data['cookie_position'] = $cc->position ?? '';
-        $data['cookie_style'] = $cc->style ?? '';
-        $data['is_publish_cookie_consent'] = $cc->is_publish ?? '';
+        $cc = $decode($options->get('cookie_consent'));
+        $data['cookie_title'] = $cc['title'] ?? '';
+        $data['cookie_message'] = $cc['message'] ?? '';
+        $data['button_text'] = $cc['button_text'] ?? '';
+        $data['learn_more_url'] = $cc['learn_more_url'] ?? '';
+        $data['learn_more_text'] = $cc['learn_more_text'] ?? '';
+        $data['cookie_position'] = $cc['position'] ?? '';
+        $data['cookie_style'] = $cc['style'] ?? '';
+        $data['is_publish_cookie_consent'] = $cc['is_publish'] ?? '';
 
         return $data;
     });
