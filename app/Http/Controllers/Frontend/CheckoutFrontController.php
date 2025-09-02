@@ -105,7 +105,7 @@ class CheckoutFrontController extends Controller
 				'city' => 'required',
 				'address' => 'required',
 				'payment_method' => 'required',
-				'shipping_method' => 'required',
+				
 				'email' => 'required|email|unique:users',
 				'password' => 'required|confirmed',
 			]);
@@ -144,7 +144,7 @@ class CheckoutFrontController extends Controller
 				'city' => 'required',
 				'address' => 'required',
 				'payment_method' => 'required',
-				'shipping_method' => 'required'
+
 			]);
 			
 			if(!$validator->passes()){
@@ -165,10 +165,7 @@ class CheckoutFrontController extends Controller
 		$shipping_list = Shipping::where('id', '=', $shipping_method_id)->where('is_publish', '=', 1)->get();
 		$shipping_title = NULL;
 		$shipping_fee = NULL;
-		foreach ($shipping_list as $row){
-			$shipping_title = $row->title;
-			$shipping_fee = comma_remove($row->shipping_fee);
-		}
+		
 
 		$UniqueDataArray = array();
 		$key = 0;
@@ -200,7 +197,7 @@ class CheckoutFrontController extends Controller
 				'payment_method_id' => $payment_method_id,
 				'payment_status_id' => 2,
 				'order_status_id' => 1,
-				'shipping_title' => $shipping_title,
+				
 				'shipping_fee' => $shipping_fee,
 				'name' => $request->input('name'),
 				'email' => $request->input('email'),
@@ -511,6 +508,7 @@ class CheckoutFrontController extends Controller
 			->join('products as g', 'b.product_id', '=', 'g.id')
 			->select(
 				'a.id', 
+				
 				'a.customer_id', 
 				'a.seller_id', 
 				'a.payment_status_id', 
@@ -572,7 +570,7 @@ class CheckoutFrontController extends Controller
 				$mdata['method_name'] = $row->method_name;
 				$mdata['pstatus_name'] = $row->pstatus_name;
 				$mdata['ostatus_name'] = $row->ostatus_name;
-				$mdata['shipping_title'] = $row->shipping_title;
+				
 				$mdata['shipping_fee'] = $row->shipping_fee;
 			}
 			
@@ -762,10 +760,7 @@ class CheckoutFrontController extends Controller
 											<tr>
 												<td style="padding-top:5px;padding-bottom:20px;">
 													<table style="font-weight:bold;" border="0" cellpadding="5" cellspacing="0" width="100%">
-														<tr>
-															<td style="width:85%;text-align:left;">'.$mdata['shipping_title'].': '.$shippingFee.' <span style="float:right">'.__('Shipping Fee').':</span></td>
-															<td style="width:15%;text-align:right;">'.$shipping_fee.'</td>
-														</tr>
+														
 														<tr>
 															<td style="width:85%;text-align:right;">'.__('Tax').':</td>
 															<td style="width:15%;text-align:right;">'.$tax.'</td>
