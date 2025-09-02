@@ -289,9 +289,7 @@ class HomeFrontendController extends Controller
 			'offer_ad_position2', 
 			'home_video', 
 			'brand', 
-			
 		
-			'top_selling', 
 			'trending_products', 
 			'top_rated', 
 			'deals_products'
