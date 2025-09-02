@@ -4,9 +4,9 @@
 
 	//Preloader
 	var win = $(window);
-	// win.on('load',function() {
-	// 	$('.tw-loader').delay(100).fadeOut('slow');
-	// });
+	win.on('load',function() {
+		$('.tw-loader').delay(100).fadeOut('slow');
+	});
 
 	//Menu active
 	var href = location.href;
