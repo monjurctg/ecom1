@@ -54,19 +54,14 @@ use Illuminate\Support\Facades\Auth;
 
 function PageVariation()
 {
-    return Cache::remember('page_variation', now()->addDays(2), function () {
-        $option = Tp_option::where('option_name', 'page_variation')->first();
-
-        $dataObj = $option ? json_decode($option->option_value, true) : [];
-
-        return [
-            'home_variation'     => data_get($dataObj, 'home_variation', 'home_2'),
-            'category_variation' => data_get($dataObj, 'category_variation', 'left_sidebar'),
-            'brand_variation'    => data_get($dataObj, 'brand_variation', 'left_sidebar'),
-            'seller_variation'   => data_get($dataObj, 'seller_variation', 'left_sidebar'),
-        ];
-    });
+    return [
+        'home_variation'     => 'home_2',
+        'category_variation' => 'left_sidebar',
+        'brand_variation'    => 'left_sidebar',
+        'seller_variation'   => 'left_sidebar',
+    ];
 }
+
 
 //Get data for Language locale
 function glan(){
@@ -75,22 +70,14 @@ function glan(){
 	return $lan;
 }
 
-
 function CategoryMenuList()
 {
     $lan = glan(); // current language
     $cacheKey = "category_menu_list_{$lan}";
 
     return Cache::remember($cacheKey, now()->addDays(2), function () use ($lan) {
-        // শুধু main categories (parent_id = 0 বা NULL)
-        $categories = Pro_category::with(['children' => function ($q) {
-                $q->where('is_publish', 1)->orderBy('id', 'ASC');
-            }])
-            ->where('lan', $lan)
+        $datalist = Pro_category::where('lan', $lan)
             ->where('is_publish', 1)
-            ->where(function($q){
-                $q->whereNull('parent_id')->orWhere('parent_id', 0);
-            })
             ->orderBy('id', 'ASC')
             ->get();
 
@@ -98,36 +85,17 @@ function CategoryMenuList()
         $Path = asset('public/media');
         $count = 1;
 
-        foreach ($categories as $row) {
-            if (!$row) continue; // safety check
-
+        foreach ($datalist as $row) {
             $id   = $row->id;
             $slug = $row->slug;
-            $thumbUrl = $Path . '/' . ltrim($row->thumbnail, '/');
+            $thumbnail = '<img src="' . $Path . '/' . $row->thumbnail . '" />';
 
-            // parent item
-            $li_List .= '<li class="category-item'.($count > 8 ? ' cat-list-hideshow' : '').'">';
-            $li_List .= '<a class="category-link" href="' . route('frontend.product-category', [$id, $slug]) . '">
-                            <span class="cat-icon"><img src="'. e($thumbUrl) .'" alt="'. e($row->name) .'"></span>
-                            <span class="cat-label">'. e($row->name) .'</span>
-                            <span class="cat-caret" aria-hidden="true">›</span>
-                         </a>';
-
-            // subcategories থাকলে flyout menu (image বাদ)
-            if ($row->children && $row->children->count() > 0) {
-                $li_List .= '<div class="sub-flyout">
-                                <ul class="sub-category-menu">';
-                foreach ($row->children as $sub) {
-                    $li_List .= '<li>
-                                    <a href="' . route('frontend.product-category', [$sub->id, $sub->slug]) . '">
-                                        '. e($sub->name) .'
-                                    </a>
-                                 </li>';
-                }
-                $li_List .= '</ul></div>';
+            if ($count > 8) {
+                $li_List .= '<li class="cat-list-hideshow"><a href="' . route('frontend.product-category', [$id, $slug]) . '"><div class="cat-icon">' . $thumbnail . '</div>' . e($row->name) . '</a></li>';
+            } else {
+                $li_List .= '<li><a href="' . route('frontend.product-category', [$id, $slug]) . '"><div class="cat-icon">' . $thumbnail . '</div>' . e($row->name) . '</a></li>';
             }
 
-            $li_List .= '</li>';
             $count++;
         }
 
@@ -136,36 +104,6 @@ function CategoryMenuList()
 }
 
 
-
-
-
-
-
-
-//Category List
-// function CategoryMenuList(){
-// 	$lan = glan();
-
-// 	$datalist = Pro_category::where('lan', '=', $lan)->where('is_publish', '=', 1)->orderBy('id', 'ASC')->get();
-// 	$li_List = '';
-// 	$Path = asset('public/media');
-// 	$count = 1;
-// 	foreach($datalist as $row){
-// 		$id = $row->id;
-// 		$slug = $row->slug;
-// 		$thumbnail = '<img src="'.$Path.'/'.$row->thumbnail.'" />';
-
-// 		if($count>8){
-// 			$li_List .= '<li class="cat-list-hideshow"><a href="'.route('frontend.product-category', [$id, $slug]).'"><div class="cat-icon">'.$thumbnail.'</div>'.$row->name.'</a></li>';
-// 		}else{
-// 			$li_List .= '<li><a href="'.route('frontend.product-category', [$id, $slug]).'"><div class="cat-icon">'.$thumbnail.'</div>'.$row->name.'</a></li>';
-// 		}
-
-// 		$count++;
-// 	}
-
-// 	return $li_List;
-// }
 
 //Category List for Mobile
 function CategoryListForMobile(){

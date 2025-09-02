@@ -214,9 +214,9 @@
 						<div class="tp-mega-full">
 							<div class="tp-menu align-self-center">
 								<nav>
-									<ul class="main-menu">
+									<!-- <ul class="main-menu">
 										@php echo HeaderMenuList('HeaderMenuListForDesktop'); @endphp
-									</ul>
+									</ul> -->
 								</nav>
 							</div>
 						</div>
@@ -251,7 +251,7 @@
 								@php echo CategoryListForMobile(); @endphp
 							</ul>
 						</li>
-						@php echo HeaderMenuList('HeaderMenuListForMobile'); @endphp
+						<!-- @php echo HeaderMenuList('HeaderMenuListForMobile'); @endphp -->
 					</ul>
 				</nav>
 			</div>
