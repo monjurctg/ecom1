@@ -246,23 +246,7 @@ class HomeFrontendController extends Controller
 			LIMIT 15;";
 			$top_rated = DB::select($tr_sql);
 			
-			//Deals Of The Day
-			$dofd_sql = "SELECT a.id, a.brand_id, a.title, a.slug, a.f_thumbnail, a.sale_price, a.old_price, a.end_date, a.is_discount, b.shop_name, b.id seller_id, b.shop_url
-			FROM products a
-			INNER JOIN users b ON a.user_id = b.id AND b.status_id = 1
-			WHERE a.is_publish = 1 
-			AND a.is_discount = 1 
-			AND a.lan = '".$lan."'
-			ORDER BY a.id DESC;";
-			$deals_products = DB::select($dofd_sql);
 			
-			for($i=0; $i<count($deals_products); $i++){
-				$Reviews = getReviews($deals_products[$i]->id);
-				$deals_products[$i]->TotalReview = $Reviews[0]->TotalReview;
-				$deals_products[$i]->TotalRating = $Reviews[0]->TotalRating;
-				$deals_products[$i]->ReviewPercentage = number_format($Reviews[0]->ReviewPercentage);
-			}
-		
 		//Home Page 3
 		}
 		
@@ -292,7 +276,7 @@ class HomeFrontendController extends Controller
 		
 			'trending_products', 
 			'top_rated', 
-			'deals_products'
+			
 		));
     }
 
