@@ -76,15 +76,8 @@ function CategoryMenuList()
     $cacheKey = "category_menu_list_{$lan}";
 
     return Cache::remember($cacheKey, now()->addDays(2), function () use ($lan) {
-        // শুধু main categories (parent_id = 0 বা NULL)
-        $categories = Pro_category::with(['children' => function ($q) {
-                $q->where('is_publish', 1)->orderBy('id', 'ASC');
-            }])
-            ->where('lan', $lan)
+        $datalist = Pro_category::where('lan', $lan)
             ->where('is_publish', 1)
-            ->where(function($q){
-                $q->whereNull('parent_id')->orWhere('parent_id', 0);
-            })
             ->orderBy('id', 'ASC')
             ->get();
 
@@ -92,36 +85,17 @@ function CategoryMenuList()
         $Path = asset('public/media');
         $count = 1;
 
-        foreach ($categories as $row) {
-            if (!$row) continue; // safety check
-
+        foreach ($datalist as $row) {
             $id   = $row->id;
             $slug = $row->slug;
-            $thumbUrl = $Path . '/' . ltrim($row->thumbnail, '/');
+            $thumbnail = '<img src="' . $Path . '/' . $row->thumbnail . '" />';
 
-            // parent item
-            $li_List .= '<li class="category-item'.($count > 8 ? ' cat-list-hideshow' : '').'">';
-            $li_List .= '<a class="category-link" href="' . route('frontend.product-category', [$id, $slug]) . '">
-                            <span class="cat-icon"><img src="'. e($thumbUrl) .'" alt="'. e($row->name) .'"></span>
-                            <span class="cat-label">'. e($row->name) .'</span>
-                            <span class="cat-caret" aria-hidden="true">›</span>
-                         </a>';
-
-            // subcategories থাকলে flyout menu (image বাদ)
-            if ($row->children && $row->children->count() > 0) {
-                $li_List .= '<div class="sub-flyout">
-                                <ul class="sub-category-menu">';
-                foreach ($row->children as $sub) {
-                    $li_List .= '<li>
-                                    <a href="' . route('frontend.product-category', [$sub->id, $sub->slug]) . '">
-                                        '. e($sub->name) .'
-                                    </a>
-                                 </li>';
-                }
-                $li_List .= '</ul></div>';
+            if ($count > 8) {
+                $li_List .= '<li class="cat-list-hideshow"><a href="' . route('frontend.product-category', [$id, $slug]) . '"><div class="cat-icon">' . $thumbnail . '</div>' . e($row->name) . '</a></li>';
+            } else {
+                $li_List .= '<li><a href="' . route('frontend.product-category', [$id, $slug]) . '"><div class="cat-icon">' . $thumbnail . '</div>' . e($row->name) . '</a></li>';
             }
 
-            $li_List .= '</li>';
             $count++;
         }
 
@@ -504,198 +478,621 @@ function FooterMenuList($MenuType)
     });
 }
 
-function gtext()
-{
-    return Cache::remember('gtext', 3600, function () {
-        $data = [];
 
-        // Define all required option names
-        $optionNames = [
-            'general_settings', 'theme_logo', 'currency', 'theme_option_header',
-            'language_switcher', 'theme_option_footer', 'facebook', 'twitter',
-            'theme_option_seo', 'facebook-pixel', 'google_analytics', 'google_tag_manager',
-            'google_recaptcha', 'google_map', 'theme_color', 'mail_settings',
-            'stripe', 'paypal', 'razorpay', 'mollie', 'cash_on_delivery', 'bank_transfer',
-            'mailchimp', 'subscribe_popup', 'whatsapp', 'custom_css', 'custom_js', 'cookie_consent'
-        ];
+function gtext(){
 
-        // Fetch all options in one query and index by option_name
-        $options = Tp_option::whereIn('option_name', $optionNames)
-            ->pluck('option_value', 'option_name'); // More efficient than get()->keyBy()
+	$data = array();
 
-        // Helper to safely decode JSON or return empty object
-        $decode = function ($value) {
-            return $value ? json_decode($value, true) : [];
-        };
+	//general_settings
+	$general_settings = Tp_option::where('option_name', 'general_settings')->get();
 
-        // General Settings
-        $general = $decode($options->get('general_settings'));
-        $data['site_name'] = $general['site_name'] ?? 'bShop';
-        $data['site_title'] = $general['site_title'] ?? 'Laravel eCommerce Shopping Platform';
-        $data['company'] = $general['company'] ?? '';
-        $data['invoice_email'] = $general['email'] ?? '';
-        $data['invoice_phone'] = $general['phone'] ?? '';
-        $data['invoice_address'] = $general['address'] ?? '';
-        $data['timezone'] = $general['timezone'] ?? '';
+	$general_settings_id = '';
+	foreach ($general_settings as $row){
+		$general_settings_id = $row->id;
+	}
 
-        // Theme Logo
-        $logo = $decode($options->get('theme_logo'));
-        $data['favicon'] = $logo['favicon'] ?? '';
-        $data['front_logo'] = $logo['front_logo'] ?? '';
-        $data['back_logo'] = $logo['back_logo'] ?? '';
+	if($general_settings_id != ''){
+		$general_settingsData = json_decode($general_settings);
+		$general_settingsDataObj = json_decode($general_settingsData[0]->option_value);
+		$data['site_name'] = $general_settingsDataObj->site_name;
+		$data['site_title'] = $general_settingsDataObj->site_title;
+		$data['company'] = $general_settingsDataObj->company;
+		$data['invoice_email'] = $general_settingsDataObj->email;
+		$data['invoice_phone'] = $general_settingsDataObj->phone;
+		$data['invoice_address'] = $general_settingsDataObj->address;
+		$data['timezone'] = $general_settingsDataObj->timezone;
+	}else{
+		$data['site_name'] = 'bShop';
+		$data['site_title'] = 'Laravel eCommerce Shopping Platform';
+		$data['company'] = '';
+		$data['invoice_email'] = '';
+		$data['invoice_phone'] = '';
+		$data['invoice_address'] = '';
+		$data['timezone'] = '';
+	}
 
-        // Currency
-        $currency = $decode($options->get('currency'));
-        $data['currency_name'] = $currency['currency_name'] ?? '';
-        $data['currency_icon'] = $currency['currency_icon'] ?? '';
-        $data['currency_position'] = $currency['currency_position'] ?? '';
+	//theme_logo
+	$theme_logo = Tp_option::where('option_name', 'theme_logo')->get();
 
-        // Header
-        $header = $decode($options->get('theme_option_header'));
-        $data['address'] = $header['address'] ?? '';
-        $data['phone'] = $header['phone'] ?? '';
-        $data['is_publish'] = $header['is_publish'] ?? '';
+	$theme_logo_id = '';
+	foreach ($theme_logo as $row){
+		$theme_logo_id = $row->id;
+	}
 
-        // Language Switcher
-        $lang = $decode($options->get('language_switcher'));
-        $data['is_language_switcher'] = $lang['is_language_switcher'] ?? '';
+	if($theme_logo_id != ''){
+		$theme_logoData = json_decode($theme_logo);
+		$theme_logoObj = json_decode($theme_logoData[0]->option_value);
+		$data['favicon'] = $theme_logoObj->favicon;
+		$data['front_logo'] = $theme_logoObj->front_logo;
+		$data['back_logo'] = $theme_logoObj->back_logo;
+	}else{
+		$data['favicon'] = '';
+		$data['front_logo'] = '';
+		$data['back_logo'] = '';
+	}
 
-        // Footer
-        $footer = $decode($options->get('theme_option_footer'));
-        $data['about_logo_footer'] = $footer['about_logo'] ?? '';
-        $data['about_desc_footer'] = $footer['about_desc'] ?? '';
-        $data['is_publish_about'] = $footer['is_publish_about'] ?? '';
-        $data['address_footer'] = $footer['address'] ?? '';
-        $data['email_footer'] = $footer['email'] ?? '';
-        $data['phone_footer'] = $footer['phone'] ?? '';
-        $data['is_publish_contact'] = $footer['is_publish_contact'] ?? '';
-        $data['copyright'] = $footer['copyright'] ?? '';
-        $data['is_publish_copyright'] = $footer['is_publish_copyright'] ?? '';
-        $data['payment_gateway_icon'] = $footer['payment_gateway_icon'] ?? '';
-        $data['is_publish_payment'] = $footer['is_publish_payment'] ?? '';
+	//currency
+ 	$currency = Tp_option::where('option_name', 'currency')->get();
 
-        // RTL Detection
-        $isRTL = Cache::remember('language_'.app()->getLocale(), 3600, function () {
-            return Language::where('language_code', app()->getLocale())->first();
-        });
-        $data['is_rtl'] = $isRTL?->is_rtl ?? 0;
+	$currency_id = '';
+	foreach ($currency as $row){
+		$currency_id = $row->id;
+	}
 
-        // Facebook
-        $facebook = $decode($options->get('facebook'));
-        $data['fb_app_id'] = $facebook['fb_app_id'] ?? '';
-        $data['fb_publish'] = $facebook['is_publish'] ?? '';
+	if($currency_id != ''){
+		$currencyData = json_decode($currency);
+		$currencyObj = json_decode($currencyData[0]->option_value);
+		$data['currency_name'] = $currencyObj->currency_name;
+		$data['currency_icon'] = $currencyObj->currency_icon;
+		$data['currency_position'] = $currencyObj->currency_position;
+	}else{
+		$data['currency_name'] = '';
+		$data['currency_icon'] = '';
+		$data['currency_position'] = '';
+	}
 
-        // Twitter
-        $twitter = $decode($options->get('twitter'));
-        $data['twitter_id'] = $twitter['twitter_id'] ?? '';
-        $data['twitter_publish'] = $twitter['is_publish'] ?? '';
+	//theme_option_header
+ 	$theme_option_header = Tp_option::where('option_name', 'theme_option_header')->get();
 
-        // SEO
-        $seo = $decode($options->get('theme_option_seo'));
-        $data['og_title'] = $seo['og_title'] ?? '';
-        $data['og_image'] = $seo['og_image'] ?? '';
-        $data['og_description'] = $seo['og_description'] ?? '';
-        $data['og_keywords'] = $seo['og_keywords'] ?? '';
-        $data['seo_publish'] = $seo['is_publish'] ?? '';
+	$theme_option_header_id = '';
+	foreach ($theme_option_header as $row){
+		$theme_option_header_id = $row->id;
+	}
 
-        // Facebook Pixel
-        $fbPixel = $decode($options->get('facebook-pixel'));
-        $data['fb_pixel_id'] = $fbPixel['fb_pixel_id'] ?? '';
-        $data['fb_pixel_publish'] = $fbPixel['is_publish'] ?? '';
+	if($theme_option_header_id != ''){
+		$theme_option_headerData = json_decode($theme_option_header);
+		$theme_option_headerObj = json_decode($theme_option_headerData[0]->option_value);
+		$data['address'] = $theme_option_headerObj->address;
+		$data['phone'] = $theme_option_headerObj->phone;
+		$data['is_publish'] = $theme_option_headerObj->is_publish;
+	}else{
+		$data['address'] = '';
+		$data['phone'] = '';
+		$data['is_publish'] = '';
+	}
 
-        // Google Analytics
-        $ga = $decode($options->get('google_analytics'));
-        $data['tracking_id'] = $ga['tracking_id'] ?? '';
-        $data['ga_publish'] = $ga['is_publish'] ?? '';
+	//Language Switcher
+	$language_switcher_data = Tp_option::where('option_name', 'language_switcher')->get();
 
-        // Google Tag Manager
-        $gtm = $decode($options->get('google_tag_manager'));
-        $data['google_tag_manager_id'] = $gtm['google_tag_manager_id'] ?? '';
-        $data['gtm_publish'] = $gtm['is_publish'] ?? '';
+	$language_switcher_id = '';
+	foreach ($language_switcher_data as $row){
+		$language_switcher_id = $row->id;
+	}
 
-        // Google Recaptcha
-        $gr = $decode($options->get('google_recaptcha'));
-        $data['sitekey'] = $gr['sitekey'] ?? '';
-        $data['secretkey'] = $gr['secretkey'] ?? '';
-        $data['is_recaptcha'] = $gr['is_recaptcha'] ?? '';
+	if($language_switcher_id != ''){
+		$wsData = json_decode($language_switcher_data);
+		$wsObj = json_decode($wsData[0]->option_value);
 
-        // Google Map
-        $gm = $decode($options->get('google_map'));
-        $data['googlemap_apikey'] = $gm['googlemap_apikey'] ?? '';
-        $data['is_googlemap'] = $gm['is_googlemap'] ?? '';
+		$data['is_language_switcher'] = $wsObj->is_language_switcher;
+	}else{
+		$data['is_language_switcher'] = '';
+	}
 
-        // Theme Colors
-        $theme = $decode($options->get('theme_color'));
-        $data['theme_color'] = $theme['theme_color'] ?? '#61a402';
-        $data['green_color'] = $theme['green_color'] ?? '#65971e';
-        $data['light_green_color'] = $theme['light_green_color'] ?? '#daeac5';
-        $data['lightness_green_color'] = $theme['lightness_green_color'] ?? '#fdfff8';
-        $data['gray_color'] = $theme['gray_color'] ?? '#8d949d';
-        $data['dark_gray_color'] = $theme['dark_gray_color'] ?? '#595959';
-        $data['light_gray_color'] = $theme['light_gray_color'] ?? '#e7e7e7';
-        $data['black_color'] = $theme['black_color'] ?? '#232424';
-        $data['white_color'] = $theme['white_color'] ?? '#ffffff';
+	//theme_option_footer
+ 	$theme_option_footer = Tp_option::where('option_name', 'theme_option_footer')->get();
 
-        // Mail Settings
-        $mail = $decode($options->get('mail_settings'));
-        $data['ismail'] = $mail['ismail'] ?? '';
-        $data['from_name'] = $mail['from_name'] ?? '';
-        $data['from_mail'] = $mail['from_mail'] ?? '';
-        $data['to_name'] = $mail['to_name'] ?? '';
-        $data['to_mail'] = $mail['to_mail'] ?? '';
-        $data['mailer'] = $mail['mailer'] ?? '';
-        $data['smtp_host'] = $mail['smtp_host'] ?? '';
-        $data['smtp_port'] = $mail['smtp_port'] ?? '';
-        $data['smtp_security'] = $mail['smtp_security'] ?? '';
-        $data['smtp_username'] = $mail['smtp_username'] ?? '';
-        $data['smtp_password'] = $mail['smtp_password'] ?? '';
+	$theme_option_footer_id = '';
+	foreach ($theme_option_footer as $row){
+		$theme_option_footer_id = $row->id;
+	}
 
-        // Payment Gateways
-        $paymentOptions = ['stripe','paypal','razorpay','mollie','cash_on_delivery','bank_transfer'];
-        foreach ($paymentOptions as $p) {
-            $pData = $decode($options->get($p));
-            $data[$p.'_data'] = (object) $pData; // Convert to object for consistency
-        }
+	if($theme_option_footer_id != ''){
+		$theme_option_footerData = json_decode($theme_option_footer);
+		$theme_option_footerObj = json_decode($theme_option_footerData[0]->option_value);
 
-        // Mailchimp
-        $mc = $decode($options->get('mailchimp'));
-        $data['mailchimp_api_key'] = $mc['mailchimp_api_key'] ?? '';
-        $data['audience_id'] = $mc['audience_id'] ?? '';
-        $data['is_mailchimp'] = $mc['is_mailchimp'] ?? '';
+		$data['about_logo_footer'] = $theme_option_footerObj->about_logo;
+		$data['about_desc_footer'] = $theme_option_footerObj->about_desc;
+		$data['is_publish_about'] = $theme_option_footerObj->is_publish_about;
+		$data['address_footer'] = $theme_option_footerObj->address;
+		$data['email_footer'] = $theme_option_footerObj->email;
+		$data['phone_footer'] = $theme_option_footerObj->phone;
+		$data['is_publish_contact'] = $theme_option_footerObj->is_publish_contact;
+		$data['copyright'] = $theme_option_footerObj->copyright;
+		$data['is_publish_copyright'] = $theme_option_footerObj->is_publish_copyright;
+		$data['payment_gateway_icon'] = $theme_option_footerObj->payment_gateway_icon;
+		$data['is_publish_payment'] = $theme_option_footerObj->is_publish_payment;
+	}else{
+		$data['about_logo_footer'] = '';
+		$data['about_desc_footer'] = '';
+		$data['is_publish_about'] = '';
+		$data['address_footer'] = '';
+		$data['email_footer'] = '';
+		$data['phone_footer'] = '';
+		$data['is_publish_contact'] = '';
+		$data['copyright'] = '';
+		$data['is_publish_copyright'] = '';
+		$data['payment_gateway_icon'] = '';
+		$data['is_publish_payment'] = '';
+	}
 
-        // Subscribe Popup
-        $sp = $decode($options->get('subscribe_popup'));
-        $data['subscribe_title'] = $sp['subscribe_title'] ?? '';
-        $data['subscribe_popup_desc'] = $sp['subscribe_popup_desc'] ?? '';
-        $data['bg_image_popup'] = $sp['bg_image_popup'] ?? '';
-        $data['subscribe_background_image'] = $sp['background_image'] ?? '';
-        $data['is_subscribe_popup'] = $sp['is_subscribe_popup'] ?? '';
-        $data['is_subscribe_footer'] = $sp['is_subscribe_footer'] ?? '';
+	//isRTL
+	$isRTL = Language::where('language_code', app()->getLocale())->first();
+	$data['is_rtl'] = $isRTL['is_rtl'];
 
-        // WhatsApp
-        $wa = $decode($options->get('whatsapp'));
-        $data['whatsapp_id'] = $wa['whatsapp_id'] ?? '';
-        $data['whatsapp_text'] = $wa['whatsapp_text'] ?? '';
-        $data['position'] = $wa['position'] ?? '';
-        $data['is_whatsapp_publish'] = $wa['is_publish'] ?? '';
+	//facebook
+ 	$facebook = Tp_option::where('option_name', 'facebook')->get();
 
-        // Custom CSS/JS
-        $data['custom_css'] = $options->get('custom_css') ?? '';
-        $data['custom_js'] = $options->get('custom_js') ?? '';
+	$facebook_id = '';
+	foreach ($facebook as $row){
+		$facebook_id = $row->id;
+	}
 
-        // Cookie Consent
-        $cc = $decode($options->get('cookie_consent'));
-        $data['cookie_title'] = $cc['title'] ?? '';
-        $data['cookie_message'] = $cc['message'] ?? '';
-        $data['button_text'] = $cc['button_text'] ?? '';
-        $data['learn_more_url'] = $cc['learn_more_url'] ?? '';
-        $data['learn_more_text'] = $cc['learn_more_text'] ?? '';
-        $data['cookie_position'] = $cc['position'] ?? '';
-        $data['cookie_style'] = $cc['style'] ?? '';
-        $data['is_publish_cookie_consent'] = $cc['is_publish'] ?? '';
+	if($facebook_id != ''){
+		$facebookData = json_decode($facebook);
+		$facebookObj = json_decode($facebookData[0]->option_value);
+		$data['fb_app_id'] = $facebookObj->fb_app_id;
+		$data['fb_publish'] = $facebookObj->is_publish;
+	}else{
+		$data['fb_app_id'] = '';
+		$data['fb_publish'] = '';
+	}
 
-        return $data;
-    });
+	//twitter
+ 	$twitter = Tp_option::where('option_name', 'twitter')->get();
+
+	$twitter_id = '';
+	foreach ($twitter as $row){
+		$twitter_id = $row->id;
+	}
+
+	if($twitter_id != ''){
+		$twitterData = json_decode($twitter);
+		$twitterObj = json_decode($twitterData[0]->option_value);
+		$data['twitter_id'] = $twitterObj->twitter_id;
+		$data['twitter_publish'] = $twitterObj->is_publish;
+	}else{
+		$data['twitter_id'] = '';
+		$data['twitter_publish'] = '';
+	}
+
+	//Theme Option SEO
+ 	$theme_option_seo = Tp_option::where('option_name', 'theme_option_seo')->get();
+
+	$theme_option_seo_id = '';
+	foreach ($theme_option_seo as $row){
+		$theme_option_seo_id = $row->id;
+	}
+
+	if($theme_option_seo_id != ''){
+		$SEOData = json_decode($theme_option_seo);
+		$SEOObj = json_decode($SEOData[0]->option_value);
+		$data['og_title'] = $SEOObj->og_title;
+		$data['og_image'] = $SEOObj->og_image;
+		$data['og_description'] = $SEOObj->og_description;
+		$data['og_keywords'] = $SEOObj->og_keywords;
+		$data['seo_publish'] = $SEOObj->is_publish;
+	}else{
+		$data['og_title'] = '';
+		$data['og_image'] = '';
+		$data['og_description'] = '';
+		$data['og_keywords'] = '';
+		$data['seo_publish'] = '';
+	}
+
+	//Theme Option Facebook Pixel
+ 	$theme_option_facebook_pixel = Tp_option::where('option_name', 'facebook-pixel')->get();
+
+	$theme_option_fb_pixel_id = '';
+	foreach ($theme_option_facebook_pixel as $row){
+		$theme_option_fb_pixel_id = $row->id;
+	}
+
+	if($theme_option_fb_pixel_id != ''){
+		$fb_PixelData = json_decode($theme_option_facebook_pixel);
+		$fb_PixelObj = json_decode($fb_PixelData[0]->option_value);
+		$data['fb_pixel_id'] = $fb_PixelObj->fb_pixel_id;
+		$data['fb_pixel_publish'] = $fb_PixelObj->is_publish;
+	}else{
+		$data['fb_pixel_id'] = '';
+		$data['fb_pixel_publish'] = '';
+	}
+
+	//Theme Option Google Analytics
+ 	$theme_option_google_analytics = Tp_option::where('option_name', 'google_analytics')->get();
+
+	$theme_option_ga_id = '';
+	foreach ($theme_option_google_analytics as $row){
+		$theme_option_ga_id = $row->id;
+	}
+
+	if($theme_option_ga_id != ''){
+		$gaData = json_decode($theme_option_google_analytics);
+		$gaObj = json_decode($gaData[0]->option_value);
+		$data['tracking_id'] = $gaObj->tracking_id;
+		$data['ga_publish'] = $gaObj->is_publish;
+	}else{
+		$data['tracking_id'] = '';
+		$data['ga_publish'] = '';
+	}
+
+	//Theme Option Google Tag Manager
+ 	$theme_option_google_tag_manager = Tp_option::where('option_name', 'google_tag_manager')->get();
+
+	$theme_option_gtm_id = '';
+	foreach ($theme_option_google_tag_manager as $row){
+		$theme_option_gtm_id = $row->id;
+	}
+
+	if($theme_option_gtm_id != ''){
+		$gtmData = json_decode($theme_option_google_tag_manager);
+		$gtmObj = json_decode($gtmData[0]->option_value);
+		$data['google_tag_manager_id'] = $gtmObj->google_tag_manager_id;
+		$data['gtm_publish'] = $gtmObj->is_publish;
+	}else{
+		$data['google_tag_manager_id'] = '';
+		$data['gtm_publish'] = '';
+	}
+
+	//Google Recaptcha
+ 	$theme_option_google_recaptcha = Tp_option::where('option_name', 'google_recaptcha')->get();
+
+	$google_recaptcha_id = '';
+	foreach ($theme_option_google_recaptcha as $row){
+		$google_recaptcha_id = $row->id;
+	}
+
+	if($google_recaptcha_id != ''){
+		$grData = json_decode($theme_option_google_recaptcha);
+		$grObj = json_decode($grData[0]->option_value);
+		$data['sitekey'] = $grObj->sitekey;
+		$data['secretkey'] = $grObj->secretkey;
+		$data['is_recaptcha'] = $grObj->is_recaptcha;
+	}else{
+		$data['sitekey'] = '';
+		$data['secretkey'] = '';
+		$data['is_recaptcha'] = '';
+	}
+
+	//Google Map
+ 	$theme_option_google_map = Tp_option::where('option_name', 'google_map')->get();
+
+	$google_map_id = '';
+	foreach ($theme_option_google_map as $row){
+		$google_map_id = $row->id;
+	}
+
+	if($google_map_id != ''){
+		$gmData = json_decode($theme_option_google_map);
+		$gmObj = json_decode($gmData[0]->option_value);
+		$data['googlemap_apikey'] = $gmObj->googlemap_apikey;
+		$data['is_googlemap'] = $gmObj->is_googlemap;
+	}else{
+		$data['googlemap_apikey'] = '';
+		$data['is_googlemap'] = '';
+	}
+
+	//Theme Color
+ 	$theme_color = Tp_option::where('option_name', 'theme_color')->get();
+
+	$theme_color_id = '';
+	foreach ($theme_color as $row){
+		$theme_color_id = $row->id;
+	}
+
+	if($theme_color_id != ''){
+		$tcData = json_decode($theme_color);
+		$tcObj = json_decode($tcData[0]->option_value);
+		$data['theme_color'] = $tcObj->theme_color;
+		$data['green_color'] = $tcObj->green_color;
+		$data['light_green_color'] = $tcObj->light_green_color;
+		$data['lightness_green_color'] = $tcObj->lightness_green_color;
+		$data['gray_color'] = $tcObj->gray_color;
+		$data['dark_gray_color'] = $tcObj->dark_gray_color;
+		$data['light_gray_color'] = $tcObj->light_gray_color;
+		$data['black_color'] = $tcObj->black_color;
+		$data['white_color'] = $tcObj->white_color;
+	}else{
+		$data['theme_color'] = '#61a402';
+		$data['green_color'] = '#65971e';
+		$data['light_green_color'] = '#daeac5';
+		$data['lightness_green_color'] = '#fdfff8';
+		$data['gray_color'] = '#8d949d';
+		$data['dark_gray_color'] = '#595959';
+		$data['light_gray_color'] = '#e7e7e7';
+		$data['black_color'] = '#232424';
+		$data['white_color'] = '#ffffff';
+	}
+
+	//Mail Settings
+ 	$theme_option_mail_settings = Tp_option::where('option_name', 'mail_settings')->get();
+
+	$mail_settings_id = '';
+	foreach ($theme_option_mail_settings as $row){
+		$mail_settings_id = $row->id;
+	}
+
+	if($mail_settings_id != ''){
+		$msData = json_decode($theme_option_mail_settings);
+		$msObj = json_decode($msData[0]->option_value);
+		$data['ismail'] = $msObj->ismail;
+		$data['from_name'] = $msObj->from_name;
+		$data['from_mail'] = $msObj->from_mail;
+		$data['to_name'] = $msObj->to_name;
+		$data['to_mail'] = $msObj->to_mail;
+		$data['mailer'] = $msObj->mailer;
+		$data['smtp_host'] = $msObj->smtp_host;
+		$data['smtp_port'] = $msObj->smtp_port;
+		$data['smtp_security'] = $msObj->smtp_security;
+		$data['smtp_username'] = $msObj->smtp_username;
+		$data['smtp_password'] = $msObj->smtp_password;
+	}else{
+		$data['ismail'] = '';
+		$data['from_name'] = '';
+		$data['from_mail'] = '';
+		$data['to_name'] = '';
+		$data['to_mail'] = '';
+		$data['mailer'] = '';
+		$data['smtp_host'] = '';
+		$data['smtp_port'] = '';
+		$data['smtp_security'] = '';
+		$data['smtp_username'] = '';
+		$data['smtp_password'] = '';
+	}
+
+	//Stripe
+	$stripe_data = Tp_option::where('option_name', 'stripe')->get();
+
+	$stripe_id = '';
+	foreach ($stripe_data as $row){
+		$stripe_id = $row->id;
+	}
+
+	if($stripe_id != ''){
+		$sData = json_decode($stripe_data);
+		$sObj = json_decode($sData[0]->option_value);
+		$data['stripe_key'] = $sObj->stripe_key;
+		$data['stripe_secret'] = $sObj->stripe_secret;
+		$data['stripe_currency'] = $sObj->currency;
+		$data['stripe_isenable'] = $sObj->isenable;
+	}else{
+		$data['stripe_key'] = '';
+		$data['stripe_secret'] = '';
+		$data['stripe_currency'] = '';
+		$data['stripe_isenable'] = '';
+	}
+
+	//Paypal
+	$paypal_data = Tp_option::where('option_name', 'paypal')->get();
+
+	$paypal_id = '';
+	foreach ($paypal_data as $row){
+		$paypal_id = $row->id;
+	}
+
+	if($paypal_id != ''){
+		$paypalData = json_decode($paypal_data);
+		$paypalObj = json_decode($paypalData[0]->option_value);
+		$data['paypal_client_id'] = $paypalObj->paypal_client_id;
+		$data['paypal_secret'] = $paypalObj->paypal_secret;
+		$data['paypal_currency'] = $paypalObj->paypal_currency;
+		$data['ismode_paypal'] = $paypalObj->ismode_paypal;
+		$data['isenable_paypal'] = $paypalObj->isenable_paypal;
+	}else{
+		$data['paypal_client_id'] = '';
+		$data['paypal_secret'] = '';
+		$data['paypal_currency'] = 'USD';
+		$data['ismode_paypal'] = '';
+		$data['isenable_paypal'] = '';
+	}
+
+	//Razorpay
+	$razorpay_data = Tp_option::where('option_name', 'razorpay')->get();
+
+	$razorpay_id = '';
+	foreach ($razorpay_data as $row){
+		$razorpay_id = $row->id;
+	}
+
+	if($razorpay_id != ''){
+		$razorpayData = json_decode($razorpay_data);
+		$razorpayObj = json_decode($razorpayData[0]->option_value);
+		$data['razorpay_key_id'] = $razorpayObj->razorpay_key_id;
+		$data['razorpay_key_secret'] = $razorpayObj->razorpay_key_secret;
+		$data['razorpay_currency'] = $razorpayObj->razorpay_currency;
+		$data['ismode_razorpay'] = $razorpayObj->ismode_razorpay;
+		$data['isenable_razorpay'] = $razorpayObj->isenable_razorpay;
+	}else{
+		$data['razorpay_key_id'] = '';
+		$data['razorpay_key_secret'] = '';
+		$data['razorpay_currency'] = '';
+		$data['ismode_razorpay'] = '';
+		$data['isenable_razorpay'] = '';
+	}
+
+	//Mollie
+	$mollie_data = Tp_option::where('option_name', 'mollie')->get();
+
+	$mollie_id = '';
+	foreach ($mollie_data as $row){
+		$mollie_id = $row->id;
+	}
+
+	if($mollie_id != ''){
+		$mollieData = json_decode($mollie_data);
+		$mollieObj = json_decode($mollieData[0]->option_value);
+		$data['mollie_api_key'] = $mollieObj->mollie_api_key;
+		$data['mollie_currency'] = $mollieObj->mollie_currency;
+		$data['ismode_mollie'] = $mollieObj->ismode_mollie;
+		$data['isenable_mollie'] = $mollieObj->isenable_mollie;
+	}else{
+		$data['mollie_api_key'] = '';
+		$data['mollie_currency'] = '';
+		$data['ismode_mollie'] = '';
+		$data['isenable_mollie'] = '';
+	}
+
+	//Cash on Delivery (COD)
+	$cod_data = Tp_option::where('option_name', 'cash_on_delivery')->get();
+
+	$cod_id = '';
+	foreach ($cod_data as $row){
+		$cod_id = $row->id;
+	}
+
+	if($cod_id != ''){
+		$codData = json_decode($cod_data);
+		$codObj = json_decode($codData[0]->option_value);
+		$data['cod_description'] = $codObj->description;
+		$data['cod_isenable'] = $codObj->isenable;
+	}else{
+		$data['cod_description'] = '';
+		$data['cod_isenable'] = '';
+	}
+
+	//Bank Transfer
+	$bank_data = Tp_option::where('option_name', 'bank_transfer')->get();
+
+	$bank_id = '';
+	foreach ($bank_data as $row){
+		$bank_id = $row->id;
+	}
+
+	if($bank_id != ''){
+		$btData = json_decode($bank_data);
+		$btObj = json_decode($btData[0]->option_value);
+		$data['bank_description'] = $btObj->description;
+		$data['bank_isenable'] = $btObj->isenable;
+	}else{
+		$data['bank_description'] = '';
+		$data['bank_isenable'] = '';
+	}
+
+	//MailChimp
+	$mailchimp_data = Tp_option::where('option_name', 'mailchimp')->get();
+
+	$mailchimp_id = '';
+	foreach ($mailchimp_data as $row){
+		$mailchimp_id = $row->id;
+	}
+
+	if($mailchimp_id != ''){
+		$mcData = json_decode($mailchimp_data);
+		$mcObj = json_decode($mcData[0]->option_value);
+		$data['mailchimp_api_key'] = $mcObj->mailchimp_api_key;
+		$data['audience_id'] = $mcObj->audience_id;
+		$data['is_mailchimp'] = $mcObj->is_mailchimp;
+	}else{
+		$data['mailchimp_api_key'] = '';
+		$data['audience_id'] = '';
+		$data['is_mailchimp'] = '';
+	}
+
+	//Subscribe Popup
+	$subscribe_popup_data = Tp_option::where('option_name', 'subscribe_popup')->get();
+
+	$subscribe_id = '';
+	foreach ($subscribe_popup_data as $row){
+		$subscribe_id = $row->id;
+	}
+
+	if($subscribe_id != ''){
+		$spData = json_decode($subscribe_popup_data);
+		$spObj = json_decode($spData[0]->option_value);
+		$data['subscribe_title'] = $spObj->subscribe_title;
+		$data['subscribe_popup_desc'] = $spObj->subscribe_popup_desc;
+		$data['bg_image_popup'] = $spObj->bg_image_popup;
+		$data['subscribe_background_image'] = $spObj->background_image;
+		$data['is_subscribe_popup'] = $spObj->is_subscribe_popup;
+		$data['is_subscribe_footer'] = $spObj->is_subscribe_footer;
+	}else{
+		$data['subscribe_title'] = '';
+		$data['subscribe_popup_desc'] = '';
+		$data['bg_image_popup'] = '';
+		$data['subscribe_background_image'] = '';
+		$data['is_subscribe_popup'] = '';
+		$data['is_subscribe_footer'] = '';
+	}
+
+	//Whatsapp
+	$whatsapp_data = Tp_option::where('option_name', 'whatsapp')->get();
+
+	$whatsapp_id = '';
+	foreach ($whatsapp_data as $row){
+		$whatsapp_id = $row->id;
+	}
+
+	if($whatsapp_id != ''){
+		$wsData = json_decode($whatsapp_data);
+		$wsObj = json_decode($wsData[0]->option_value);
+		$data['whatsapp_id'] = $wsObj->whatsapp_id;
+		$data['whatsapp_text'] = $wsObj->whatsapp_text;
+		$data['position'] = $wsObj->position;
+		$data['is_whatsapp_publish'] = $wsObj->is_publish;
+	}else{
+		$data['whatsapp_id'] = '';
+		$data['whatsapp_text'] = '';
+		$data['position'] = '';
+		$data['is_whatsapp_publish'] = '';
+	}
+
+	//custom_css
+	$custom_css_data = Tp_option::where('option_name', 'custom_css')->get();
+	$custom_css = '';
+	foreach ($custom_css_data as $row){
+		$custom_css = $row->option_value;
+	}
+	$data['custom_css'] = $custom_css;
+
+	//custom_js
+	$custom_js_data = Tp_option::where('option_name', 'custom_js')->get();
+	$custom_js = '';
+	foreach ($custom_js_data as $row){
+		$custom_js = $row->option_value;
+	}
+	$data['custom_js'] = $custom_js;
+
+	//Cookie Consent
+ 	$theme_cookie_consent = Tp_option::where('option_name', 'cookie_consent')->get();
+
+	$theme_cookie_consent_id = '';
+	foreach ($theme_cookie_consent as $row){
+		$theme_cookie_consent_id = $row->id;
+	}
+
+	if($theme_cookie_consent_id != ''){
+		$theme_cookie_consentData = json_decode($theme_cookie_consent);
+		$theme_cookie_consentObj = json_decode($theme_cookie_consentData[0]->option_value);
+
+		$data['cookie_title'] = $theme_cookie_consentObj->title;
+		$data['cookie_message'] = $theme_cookie_consentObj->message;
+		$data['button_text'] = $theme_cookie_consentObj->button_text;
+		$data['learn_more_url'] = $theme_cookie_consentObj->learn_more_url;
+		$data['learn_more_text'] = $theme_cookie_consentObj->learn_more_text;
+		$data['cookie_position'] = $theme_cookie_consentObj->position;
+		$data['cookie_style'] = $theme_cookie_consentObj->style;
+		$data['is_publish_cookie_consent'] = $theme_cookie_consentObj->is_publish;
+	}else{
+		$data['cookie_title'] = '';
+		$data['cookie_message'] = '';
+		$data['button_text'] = '';
+		$data['learn_more_url'] = '';
+		$data['learn_more_text'] = '';
+		$data['cookie_position'] = '';
+		$data['cookie_style'] = '';
+		$data['is_publish_cookie_consent'] = '';
+	}
+
+	return $data;
 }
 
 //Blog Category List for Filter
