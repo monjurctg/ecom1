@@ -436,7 +436,7 @@
 		var TEXT = [];
 		TEXT['Please type valid card number'] = "{{ __('Please type valid card number') }}";
 	</script>
-	@if($gtext['stripe_isenable'] == 1)
+	@if($gtext['stripe_isenable'] == "1")
 		<script src="https://js.stripe.com/v3/"></script>
 		<script type="text/javascript">
 			var isenable_stripe = "{{ $gtext['stripe_isenable'] }}";
@@ -445,7 +445,7 @@
 		<script src="{{asset('public/frontend/pages/payment_method.js')}}"></script>
 	@endif
 
-	@if($gtext['isenable_razorpay'] == 1)
+	@if($gtext['isenable_razorpay'] == "1")
 		<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 		<script type="text/javascript">
 			var isenable_razorpay = "{{ $gtext['isenable_razorpay'] }}";
