@@ -1,4 +1,4 @@
-<main class="main {{ $PageVariation['home_variation'] }}">
+
 	<!-- Home Slider -->
 	@if($section1->is_publish == 1)
 	<section class="slider-section">
@@ -403,7 +403,7 @@
 @endif
 	<!-- /Featured Categories/ -->
 
-	
+
 	<!-- /Offer Section/ -->
 
 	<!-- New Products -->
@@ -698,8 +698,8 @@ document.addEventListener("DOMContentLoaded", function () {
                                 <div class="item-image position-relative">
                                     ${discount ? `<span class="item-label">${discount}% Off</span>` : ""}
                                     <a href="/product/${row.id}/${row.slug}">
-                                        <img src="/public/media/${row.f_thumbnail}" 
-                                             alt="${row.title}" 
+                                        <img src="/public/media/${row.f_thumbnail}"
+                                             alt="${row.title}"
                                              class="img-fluid product-img"/>
                                     </a>
                                 </div>
@@ -722,15 +722,15 @@ document.addEventListener("DOMContentLoaded", function () {
                                 <!-- Price -->
                                 <div class="item-pric-card mb-2">
                                     <div class="new-price fw-bold text-primary">
-                                        {{ $gtext['currency_position'] == 'left' 
-                                            ? $gtext['currency_icon'] : '' }}${Number(row.sale_price).toFixed(2)}{{ $gtext['currency_position'] == 'right' 
+                                        {{ $gtext['currency_position'] == 'left'
+                                            ? $gtext['currency_icon'] : '' }}${Number(row.sale_price).toFixed(2)}{{ $gtext['currency_position'] == 'right'
                                             ? $gtext['currency_icon'] : '' }}
                                     </div>
                                     ${row.is_discount == 1 && row.old_price ? `
                                         <div class="old-price text-muted small">
                                             <del>
-                                            {{ $gtext['currency_position'] == 'left' 
-                                                ? $gtext['currency_icon'] : '' }}${Number(row.old_price).toFixed(2)}{{ $gtext['currency_position'] == 'right' 
+                                            {{ $gtext['currency_position'] == 'left'
+                                                ? $gtext['currency_icon'] : '' }}${Number(row.old_price).toFixed(2)}{{ $gtext['currency_position'] == 'right'
                                                 ? $gtext['currency_icon'] : '' }}
                                             </del>
                                         </div>` : ""}
@@ -738,7 +738,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                                 <!-- Buttons -->
                                 <div class="item-card-bottom d-flex justify-content-between align-items-center">
-                                    <a data-id="${row.id}" href="javascript:void(0);" 
+                                    <a data-id="${row.id}" href="javascript:void(0);"
                                        class="btn btn-sm btn-primary add-to-cart addtocart">
                                         Add To Cart
                                     </a>
@@ -787,8 +787,8 @@ document.addEventListener("DOMContentLoaded", function () {
                                 <div class="item-image position-relative">
                                     ${discount ? `<span class="item-label">${discount}% Off</span>` : ""}
                                     <a href="/product/${row.id}/${row.slug}">
-                                        <img src="/public/media/${row.f_thumbnail}" 
-                                             alt="${row.title}" 
+                                        <img src="/public/media/${row.f_thumbnail}"
+                                             alt="${row.title}"
                                              class="img-fluid product-img"/>
                                     </a>
                                 </div>
@@ -811,15 +811,15 @@ document.addEventListener("DOMContentLoaded", function () {
                                 <!-- Price -->
                                 <div class="item-pric-card mb-2">
                                     <div class="new-price fw-bold text-primary">
-                                        {{ $gtext['currency_position'] == 'left' 
-                                            ? $gtext['currency_icon'] : '' }}${Number(row.sale_price).toFixed(2)}{{ $gtext['currency_position'] == 'right' 
+                                        {{ $gtext['currency_position'] == 'left'
+                                            ? $gtext['currency_icon'] : '' }}${Number(row.sale_price).toFixed(2)}{{ $gtext['currency_position'] == 'right'
                                             ? $gtext['currency_icon'] : '' }}
                                     </div>
                                     ${row.is_discount == 1 && row.old_price ? `
                                         <div class="old-price text-muted small">
                                             <del>
-                                            {{ $gtext['currency_position'] == 'left' 
-                                                ? $gtext['currency_icon'] : '' }}${Number(row.old_price).toFixed(2)}{{ $gtext['currency_position'] == 'right' 
+                                            {{ $gtext['currency_position'] == 'left'
+                                                ? $gtext['currency_icon'] : '' }}${Number(row.old_price).toFixed(2)}{{ $gtext['currency_position'] == 'right'
                                                 ? $gtext['currency_icon'] : '' }}
                                             </del>
                                         </div>` : ""}
@@ -827,7 +827,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                                 <!-- Buttons -->
                                 <div class="item-card-bottom d-flex justify-content-between align-items-center">
-                                    <a data-id="${row.id}" href="javascript:void(0);" 
+                                    <a data-id="${row.id}" href="javascript:void(0);"
                                        class="btn btn-sm btn-primary add-to-cart addtocart">
                                         Add To Cart
                                     </a>
@@ -877,8 +877,8 @@ document.addEventListener("DOMContentLoaded", function () {
                                 <div class="item-image position-relative">
                                     ${discount ? `<span class="item-label">${discount}% Off</span>` : ""}
                                     <a href="/product/${row.id}/${row.slug}">
-                                        <img src="/public/media/${row.f_thumbnail}" 
-                                             alt="${row.title}" 
+                                        <img src="/public/media/${row.f_thumbnail}"
+                                             alt="${row.title}"
                                              class="img-fluid product-img"/>
                                     </a>
                                 </div>
@@ -901,15 +901,15 @@ document.addEventListener("DOMContentLoaded", function () {
                                 <!-- Price -->
                                 <div class="item-pric-card mb-2">
                                     <div class="new-price fw-bold text-primary">
-                                        {{ $gtext['currency_position'] == 'left' 
-                                            ? $gtext['currency_icon'] : '' }}${Number(row.sale_price).toFixed(2)}{{ $gtext['currency_position'] == 'right' 
+                                        {{ $gtext['currency_position'] == 'left'
+                                            ? $gtext['currency_icon'] : '' }}${Number(row.sale_price).toFixed(2)}{{ $gtext['currency_position'] == 'right'
                                             ? $gtext['currency_icon'] : '' }}
                                     </div>
                                     ${row.is_discount == 1 && row.old_price ? `
                                         <div class="old-price text-muted small">
                                             <del>
-                                            {{ $gtext['currency_position'] == 'left' 
-                                                ? $gtext['currency_icon'] : '' }}${Number(row.old_price).toFixed(2)}{{ $gtext['currency_position'] == 'right' 
+                                            {{ $gtext['currency_position'] == 'left'
+                                                ? $gtext['currency_icon'] : '' }}${Number(row.old_price).toFixed(2)}{{ $gtext['currency_position'] == 'right'
                                                 ? $gtext['currency_icon'] : '' }}
                                             </del>
                                         </div>` : ""}
@@ -917,7 +917,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                                 <!-- Buttons -->
                                 <div class="item-card-bottom d-flex justify-content-between align-items-center">
-                                    <a data-id="${row.id}" href="javascript:void(0);" 
+                                    <a data-id="${row.id}" href="javascript:void(0);"
                                        class="btn btn-sm btn-primary add-to-cart addtocart">
                                         Add To Cart
                                     </a>
@@ -948,6 +948,3 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
-
-</main>
