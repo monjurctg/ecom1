@@ -128,11 +128,11 @@
 	<!-- End Google Tag Manager (noscript) -->
 	@endif
 	<!--loader-->
-	<div class="tw-loader">
+	<!-- <div class="tw-loader">
 		<div class="tw-ellipsis">
 			<div></div><div></div><div></div><div></div>
 		</div>
-	</div>
+	</div> -->
 	<!--/loader/-->
 	<!-- scrollToTop -->
 	<a href="#top" class="scroll-to-top">
