@@ -1,4 +1,4 @@
-
+@extends('layouts.frontend')
 
 @section('title', __('Home'))
 @php
@@ -142,3 +142,4 @@ $gtext = gtext();
 	@endif
 @endif
 
+@endpush
